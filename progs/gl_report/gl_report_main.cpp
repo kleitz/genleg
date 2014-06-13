@@ -154,6 +154,8 @@ static void print_help_message() {
 static void print_version_message() {
     std::cout << progname << " v0.1 (experimental)\n"
               << "Copyright (C) 2014 Paul Griffiths\n"
+              << "Compiled with " << gldb::get_database_type()
+              << " database support.\n"
               << "This is free software; see the source for copying"
               << " conditions. There is NO\n"
               << "warranty; not even for MERCHANTABILITY or FITNESS FOR A "

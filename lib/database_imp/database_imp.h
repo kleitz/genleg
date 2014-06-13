@@ -35,7 +35,14 @@ namespace gldb {
 DBConnImp * get_connection(const std::string database,
         const std::string hostname, const std::string username,
         const std::string password);
-}
+
+/*!
+ * \brief           Returns the name of the compiled-in database type.
+ * \returns         The name of the compiled-in database type.
+ */
+std::string get_database_type();
+
+}           //  namespace gldb
 
 #endif      //  PG_GENERAL_LEDGER_DATABASE_IMP_H
 
