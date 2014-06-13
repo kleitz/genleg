@@ -55,7 +55,7 @@ class Config {
          * \brief           Populates options from the command line.
          * \param argc      `argc` supplied to `main()`.
          * \param argv      `argv` supplied to `main()`.
-         * \throws          ConfigBadOption() if an unsupported option is
+         * \throws          ConfigBadOption If an unsupported option is
          * specified, or if a required argument is missing, or if an
          * unexpected argument is found.
          */
@@ -64,9 +64,9 @@ class Config {
         /*!
          * \brief           Populates options from a configuration file.
          * \param filename  The name of the configuration file.
-         * \throws          ConfigCouldNotOpenFile() if the configuration
+         * \throws          ConfigCouldNotOpenFile If the configuration
          * file cannot be opened.
-         * \throws          ConfigBadConfigFile() if the
+         * \throws          ConfigBadConfigFile If the
          * configuration file is badly formed.
          */
         void populate_from_file(const std::string filename);
@@ -84,7 +84,7 @@ class Config {
          * \details         Retrieves the value of a set option.
          * \param option    The name of the option.
          * \returns         The value of the option.
-         * \throws          ConfigOptionNotSet() if the named option has
+         * \throws          ConfigOptionNotSet If the named option has
          * not been set.
          */
         const std::string& operator[](const std::string& option) const;

@@ -28,7 +28,7 @@ class DBConnMySQL : public DBConnImp {
          * \param hostname  The hostname of the server.
          * \param username  The username to log into the database.
          * \param password  The password to log into the database.
-         * \throws          DBConnCouldNotConnect() if could not connect
+         * \throws          DBConnCouldNotConnect If could not connect
          * to database.
          */
         DBConnMySQL (const std::string database,
@@ -48,7 +48,7 @@ class DBConnMySQL : public DBConnImp {
          * \brief           Runs an SQL SELECT query.
          * \param query     The query.
          * \returns         A Table object containing the results.
-         * \throws          DBConnCouldNotQuery if could not successfully
+         * \throws          DBConnCouldNotQuery If could not successfully
          * execute query.
          */
         Table select(std::string query);
