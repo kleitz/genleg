@@ -1,0 +1,15 @@
+# Doxygen configuration file for general_ledger project
+
+PROJECT_NAME="general_ledger"
+PROJECT_BRIEF="Fully featured multi-user general ledger system"
+OUTPUT_LANGUAGE=English
+EXTRACT_ALL=YES
+EXTRACT_STATIC=YES
+INPUT=./
+FILE_PATTERNS=*.cpp *.h *.dox
+EXCLUDE=progs/unittests
+GENERATE_HTML=YES
+REPEAT_BRIEF=YES
+HAVE_DOT=YES
+PREDEFINED="DEBUG"
+RECURSIVE="YES"
