@@ -6,7 +6,6 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
 #ifndef PG_DATABASE_DBCONN_H
 #define PG_DATABASE_DBCONN_H
 
@@ -19,29 +18,52 @@
 
 namespace gldb {
 
-/*!  Could not connect to database exception class  */
-class DBConnCouldNotConnect : public std::runtime_error {
+/*!
+ * \brief       Base database connection exception class
+ * \ingroup     database
+ */
+class DBConnException : public std::runtime_error {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit DBConnException(const std::string& msg) :
+            std::runtime_error(msg) {};
+};
+
+/*!
+ * \brief       Could not connect to database exception class.
+ * \ingroup     database
+ */
+class DBConnCouldNotConnect : public DBConnException {
     public:
         /*!
          * \brief           Constructor
          * \param msg       Database error message
          */
         explicit DBConnCouldNotConnect(const std::string& msg) :
-            std::runtime_error(msg) {};
+            DBConnException(msg) {};
 };
 
-/*!  Could not execute database query exception class  */
-class DBConnCouldNotQuery : public std::runtime_error {
+/*!
+ * \brief       Could not execute database query exception class
+ * \ingroup     database
+ */
+class DBConnCouldNotQuery : public DBConnException {
     public:
         /*!
          * \brief           Constructor
          * \param msg       Database error message
          */
         explicit DBConnCouldNotQuery(const std::string& msg) :
-            std::runtime_error(msg) {};
+            DBConnException(msg) {};
 };
 
-/*!  Database connection class  */
+/*! 
+ * \brief       Database connection class
+ * \ingroup     database
+ */
 class DBConn {
     public:
         /*!

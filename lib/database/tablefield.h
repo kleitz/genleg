@@ -15,7 +15,10 @@
 
 namespace gldb {
 
-/*!  Database table field class  */
+/*!
+ * \brief       Database table field class
+ * \ingroup     database
+ */
 class TableField {
     public:
         /*  Default constructor  */

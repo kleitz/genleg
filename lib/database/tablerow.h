@@ -18,7 +18,10 @@
 
 namespace gldb {
 
-/*!  Database table row class  */
+/*!
+ * \brief       Database table row class
+ * \ingroup     database
+ */
 class TableRow {
     public:
         /*!  Default constructor  */

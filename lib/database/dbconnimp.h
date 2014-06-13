@@ -16,7 +16,10 @@
 
 namespace gldb {
 
-/*!  Abstract database implementation base class  */
+/*!
+ * \brief       Abstract database implementation base class
+ * \ingroup     database
+ */
 class DBConnImp {
     public:
         /*!  Constructor  */

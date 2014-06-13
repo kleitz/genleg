@@ -16,7 +16,10 @@
 
 namespace gldb {
 
-/*!  Database table class  */
+/*!
+ * \brief       Database table class
+ * \ingroup     database
+ */
 class Table {
     public:
         /*!

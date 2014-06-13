@@ -19,7 +19,10 @@
 
 namespace gldb {
 
-/*!  MySQL database implementation class  */
+/*!
+ * \brief       MySQL database implementation class
+ * \ingroup     database
+ */
 class DBConnMySQL : public DBConnImp {
     public:
         /*!

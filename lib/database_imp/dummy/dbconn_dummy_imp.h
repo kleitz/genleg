@@ -15,7 +15,10 @@
 
 namespace gldb {
 
-/*!  Dummy database implementation class  */
+/*!
+ * \brief       Dummy database implementation class
+ * \ingroup     database
+ */
 class DBConnDummy : public DBConnImp {
     public:
         /*!

@@ -15,26 +15,50 @@
 
 namespace genleg {
 
-/*!  Enumeration class for option argument specifications  */
+/*!
+ * \brief       Enumeration class for option argument specifications
+ * \ingroup     config
+ */
 enum class Argument {
     NO_ARG,         /*!<  No argument accepted              */
     OPT_ARG,        /*!<  Argument optionally accepted      */
     REQ_ARG         /*!<  Argument required                 */
 };
 
-/*!  Exception class for option not set  */
-class ConfigOptionNotSet : public std::exception {};
+/*!
+ * \brief       Configuration module exception base class
+ * \ingroup     config
+ */
+class ConfigException : public std::exception {};
 
-/*!  Exception class for bad provided option  */
-class ConfigBadOption : public std::exception {};
+/*!
+ * \brief       Exception class for option not set
+ * \ingroup     config
+ */
+class ConfigOptionNotSet : public ConfigException {};
 
-/*!  Exception class for when conf file cannot be opened  */
-class ConfigCouldNotOpenFile : public std::exception {};
+/*!
+ * \brief       Exception class for bad provided option
+ * \ingroup     config
+ */
+class ConfigBadOption : public ConfigException {};
 
-/*!  Exception class for badly formed configuration file  */
-class ConfigBadConfigFile : public std::exception {};
+/*!
+ * \brief       Exception class for when conf file cannot be opened
+ * \ingroup     config
+ */
+class ConfigCouldNotOpenFile : public ConfigException {};
 
-/*!  Configuration options class  */
+/*!
+ * \brief       Exception class for badly formed configuration file
+ * \ingroup     config
+ */
+class ConfigBadConfigFile : public ConfigException {};
+
+/*!
+ * \brief       Configuration options class
+ * \ingroup     config
+ */
 class Config {
     public:
         /*!  Constructor  */

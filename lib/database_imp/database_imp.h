@@ -26,6 +26,7 @@ namespace gldb {
  * implement this function to return the correct derived class prevents any
  * attempt to compile unsupported library code. This would not be feasible
  * if we were to simply provide each implementation as a subclass.
+ * \ingroup         database
  * \param database  The name of the database to which to connect.
  * \param hostname  The hostname of the computer running the database.
  * \param username  The username with which to log into the database.
@@ -38,6 +39,7 @@ DBConnImp * get_connection(const std::string database,
 
 /*!
  * \brief           Returns the name of the compiled-in database type.
+ * \ingroup         database
  * \returns         The name of the compiled-in database type.
  */
 std::string get_database_type();

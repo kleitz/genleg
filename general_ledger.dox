@@ -5,3 +5,20 @@
 General Ledger will be a fully-featured, multi-user, open-source general
 ledger system. The project is in the early stages of development.
 */
+
+/**
+ * \defgroup database Database interaction module
+ * \details Module for interacting with the database.
+ */
+
+/**
+ * \defgroup config Program configuration module
+ * \details Module for getting options from the command line and configuration
+ * files.
+ */
+
+/**
+ * \defgroup helpers General purpose helpers.
+ * \details General purpose helper classes and functions.
+ */
+

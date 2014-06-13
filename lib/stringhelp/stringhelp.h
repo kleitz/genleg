@@ -16,6 +16,7 @@ namespace pgstring {
 
 /*!
  * \brief               Trims leading whitespace from a string.
+ * \ingroup             helpers
  * \param s             The string to trim.
  * \returns             The trimmed string.
  */
@@ -23,6 +24,7 @@ std::string& trim_front(std::string& s);
 
 /*!
  * \brief               Trims trailing whitespace from a string.
+ * \ingroup             helpers
  * \param s             The string to trim.
  * \returns             The trimmed string.
  */
@@ -30,6 +32,7 @@ std::string& trim_back(std::string& s);
 
 /*!
  * \brief               Trims leading and trailing whitespace from a string.
+ * \ingroup             helpers
  * \param s             The string to trim.
  * \returns             The trimmed string.
  */
@@ -37,6 +40,7 @@ std::string& trim(std::string& s);
 
 /*!
  * \brief               Splits a delimited string into tokens.
+ * \ingroup             helpers
  * \param s             The string to split.
  * \param delim         The delimiter character on which to split.
  * \returns             A vector of tokens.
