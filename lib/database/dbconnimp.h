@@ -1,7 +1,6 @@
 /*!
  * \file            dbconnimp.h
  * \brief           Interface to abstract database implementation base class
- * \details         Interface to abstract database implementation base class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
@@ -17,10 +16,20 @@
 
 namespace gldb {
 
+/*!  Abstract database implementation base class  */
 class DBConnImp {
     public:
+        /*!  Constructor  */
         DBConnImp () {};
+
+        /*!  Destructor  */
         virtual ~DBConnImp () {};
+
+        /*!
+         * \brief           Runs an SQL SELECT query.
+         * \param query     The query.
+         * \returns         A Table object containing the results.
+         */
         virtual Table select(std::string query) = 0;
 
 };              //  class DBConnImp

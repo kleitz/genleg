@@ -1,30 +1,18 @@
 /*!
  * \file            table.cpp
- * \brief           Implementation of table data structure
- * \details         Implementation of table data structure
+ * \brief           Implementation of database table data structure
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
 #include "table.h"
 
 using namespace gldb;
 
-
-/*!
- * \brief           Constructor for Table class
- */
-
 Table::Table(const TableRow& headers) :
     m_headers(headers), m_records() {
 }
-
-
-/*!
- * \brief           Destructor for Table class
- */
 
 Table::~Table() {
 }
@@ -51,3 +39,4 @@ void Table::append_record(const TableRow& new_record) {
     }
     m_records.push_back(new_record);
 }
+

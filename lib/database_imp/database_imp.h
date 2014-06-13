@@ -1,5 +1,5 @@
 /*!
- * \file            database_imp.h.h
+ * \file            database_imp.h
  * \brief           Interface to database implementation factory function.
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms

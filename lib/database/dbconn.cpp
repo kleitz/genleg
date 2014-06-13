@@ -1,7 +1,6 @@
 /*!
  * \file            dbconn.cpp
- * \brief           Implementation of database connection abstract base class
- * \details         Implementation of database connection abstract base class
+ * \brief           Implementation of database connection class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>

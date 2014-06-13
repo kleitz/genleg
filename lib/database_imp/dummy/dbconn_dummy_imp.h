@@ -28,11 +28,21 @@ class DBConnDummy : public DBConnImp {
         DBConnDummy (const std::string database,
                 const std::string hostname, const std::string username,
                 const std::string password);
+
+        /*!  Deleted copy constructor  */
         DBConnDummy (const DBConnDummy&) = delete;
+
+        /*!  Destructor  */
         virtual ~DBConnDummy ();
 
+        /*!  Deleted assignment operator  */
         DBConnDummy& operator= (const DBConnDummy&) = delete;
 
+        /*!
+         * \brief           Fakes running of an SQL SELECT query.
+         * \param query     Any query.
+         * \returns         A Table object containing dummy results.
+         */
         Table select(std::string query);
 
 };              //  class DBConnDummy
@@ -40,3 +50,4 @@ class DBConnDummy : public DBConnImp {
 }               //  namespace gldb
 
 #endif          //  PG_GENERAL_LEDGER_DATABASE_DBCONNDUMMYIMP_H
+

@@ -1,21 +1,15 @@
 /*!
  * \file            dbconn_mysql_imp.cpp
- * \brief           Implementation of MySQL database connection implementation class
- * \details         Implementation of MySQL database connection implementation class
+ * \brief           Implementation of MySQL database connection implementation
+ * class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
 #include "dbconn_mysql_imp.h"
 
 using namespace gldb;
-
-
-/*!
- * \brief           Constructor for DBConnMySQL_imp class
- */
 
 DBConnMySQL::DBConnMySQL(const std::string database,
         const std::string hostname, const std::string username,
@@ -36,11 +30,6 @@ DBConnMySQL::DBConnMySQL(const std::string database,
         throw DBConnCouldNotConnect(msg);
     }
 }
-
-
-/*!
- * \brief           Destructor for DBConnMySQL_imp class
- */
 
 DBConnMySQL::~DBConnMySQL() {
     if ( m_conn ) {
@@ -93,5 +82,4 @@ Table DBConnMySQL::select(std::string query) {
     mysql_free_result(result);
     return table;
 }
-
 

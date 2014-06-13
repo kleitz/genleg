@@ -1,12 +1,11 @@
 /*!
  * \file            dbconn_dummy_imp.cpp
- * \brief           Implementation of Dummy database connection implementation class
- * \details         Implementation of Dummy database connection implementation class
+ * \brief           Implementation of Dummy database connection implementation
+ * class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
-
 
 #include <sstream>
 #include "dbconn_dummy_imp.h"
@@ -50,5 +49,4 @@ Table DBConnDummy::select(std::string query) {
     (void)query;
     return table;
 }
-
 
