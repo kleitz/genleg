@@ -15,16 +15,9 @@ using namespace genleg;
 using namespace pgstring;
 using ArgPair = std::pair<std::string, enum Argument>;
 
-/*!
- * \brief           Constructor for Config class
- */
 Config::Config() : m_opts_set(), m_opts_supp() {
 }
 
-
-/*!
- * \brief           Destructor for Config class
- */
 Config::~Config() {
 }
 
@@ -44,28 +37,40 @@ const std::string& Config::operator[](const std::string& option) const {
     return (m_opts_set.find(option))->second;
 }
 
-
 void Config::populate_from_file(const std::string filename) {
     std::ifstream ifs;
     ifs.open(filename);
 
     if ( ifs.is_open() ) {
         std::string line;
+
         while ( std::getline(ifs, line) ) {
             trim(line);
+
+            /*  Ignore blank lines and comment lines  */
+
             if ( line == "" || line[0] == '#' ) {
                 continue;
             }
 
+            /*  Split line and populate vector  */
+
             std::vector<std::string> tokens = split(line, '=');
             if ( tokens.size() != 2 ) {
+
+                /*  Badly formed line if not
+                 *  exactly one delimiter character  */
+
                 throw ConfigBadConfigFile();
             }
+
+            /*  Store key and value  */
+
             const std::string& key = trim_back(tokens[0]);
             const std::string& value = trim_front(tokens[1]);
-
             m_opts_set[key] = value;
         }
+
         ifs.close();
     }
     else {
