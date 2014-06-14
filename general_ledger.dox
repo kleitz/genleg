@@ -22,3 +22,8 @@ ledger system. The project is in the early stages of development.
  * \details General purpose helper classes and functions.
  */
 
+/**
+ * \defgroup gl_report Reporting program.
+ * \details Administrative reporting program.
+ */
+

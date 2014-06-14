@@ -1,17 +1,65 @@
+/*!
+ * \file            gl_report_main.cpp
+ * \brief           Main functionality for gl_report program.
+ * \author          Paul Griffiths
+ * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
+ * of the GNU General Public License. <http://www.gnu.org/licenses/>
+ */
+
 #include <iostream>
 
 #include "database/database.h"
 #include "database_imp/database_imp.h"
 #include "config/config.h"
 
+/*!
+ * \brief           Static variable for program name.
+ * \ingroup         gl_report
+ */
 static const char * progname = "gl_report";
 
+/*!
+ * \brief           Sets program configuration options.
+ * \ingroup         gl_report
+ * \param config    Reference to a Config object.
+ * \param argc      \c argc passed to \c main().
+ * \param argv      \c argv passed to \c main().
+ */
 static void set_configuration(genleg::Config& config, int argc, char *argv[]);
+
+/*!
+ * \brief           Prints a program usage message.
+ * \ingroup         gl_report
+ */
 static void print_usage_message();
+
+/*!
+ * \brief           Prints a program version message.
+ * \ingroup         gl_report
+ */
 static void print_version_message();
+
+/*!
+ * \brief           Prints a program help message.
+ * \ingroup         gl_report
+ */
 static void print_help_message();
+
+/*!
+ * \brief           Gets a password from the terminal.
+ * \ingroup         gl_report
+ * \returns         The password.
+ */
 static std::string login(void);
 
+
+/*!
+ * \brief           Main function
+ * \ingroup         gl_report
+ * \param argc      Number of command line arguments.
+ * \param argv      Command line arguments.
+ * \returns         Exit status code.
+ */
 int main(int argc, char *argv[]) {
     genleg::Config config;
     try {
