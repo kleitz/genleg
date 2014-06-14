@@ -36,7 +36,7 @@ size_t Table::num_records() const {
 
 void Table::set_quoted(std::vector<bool>& vec) {
     if (vec.size() != m_quoted.size()) {
-        throw "Quoted vectors are not the same size.";
+        throw TableMismatchedRecordLength(std::to_string(vec.size()));
     }
     m_quoted = vec;
 }
@@ -46,12 +46,15 @@ const TableRow& Table::get_headers() const {
 }
 
 const TableRow& Table::operator[](const size_t idx) const {
+    if ( idx >= m_records.size() ) {
+        throw TableNoSuchRecord(std::to_string(idx));
+    }
     return m_records[idx];
 }
 
 void Table::append_record(const TableRow& new_record) {
     if ( new_record.size() != m_headers.size() ) {
-        throw "Record does not contain the same number of fields as header.";
+        throw TableMismatchedRecordLength(std::to_string(new_record.size()));
     }
     m_records.push_back(new_record);
 }
@@ -114,3 +117,25 @@ std::string Table::insert_query(const std::string table_name,
     return ss.str();
 }
 
+std::string Table::get_field(const std::string field_name,
+                             const size_t row_index) {
+    size_t col = 0;
+    bool found = false;
+    for ( size_t i = 0; i < m_headers.size(); ++i ) {
+        std::string header = m_headers[i];
+        if ( header == field_name ) {
+            found = true;
+            col = i;
+            break;
+        }
+    }
+    if ( !found ) {
+        throw TableNoSuchField(field_name);
+    }
+
+    if ( row_index >= m_records.size() ) {
+        throw TableNoSuchRecord(std::to_string(row_index));
+    }
+    return m_records[row_index][col];
+}
+ 

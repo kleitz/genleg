@@ -13,6 +13,7 @@
 # Files
 database_program := gl_db
 report_program	 := gl_report
+user_program	 := gl_user
 unittest_program := unittests
 sources      	 := $(wildcard *.cpp)
 libraries    	 :=
@@ -20,6 +21,7 @@ objects       	  = $(subst .cpp,.o,$(sources))
 depends       	  = $(subst .cpp,.d,$(sources))
 database_objects :=
 report_objects   :=
+user_objects     :=
 unittest_objects :=
 
 # Compile options
@@ -36,7 +38,8 @@ BOOSTLIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
 
 # Clean files and globs
 CLNGLOB=$(objects) $(libraries) $(depends)
-CLNGLOB+=$(database_program) $(report_program) $(unittest_program)
+CLNGLOB+=$(database_program) $(report_program) $(user_program)
+CLNGLOB+=$(unittest_program)
 CLNGLOB+=*~ *.o *.gcov *.out *.gcda *.gcno
 
 
@@ -82,7 +85,7 @@ tags:
 
 # Main executable
 .PHONY: all
-all: $(database_program) $(report_program) $(unittest_program)
+all: $(database_program) $(report_program) $(user_program) $(unittest_program)
 
 include lib/gldb/module.mk
 include lib/dbsql/module.mk
@@ -93,6 +96,7 @@ include lib/stringhelp/module.mk
 
 include progs/gl_db/module.mk
 include progs/gl_report/module.mk
+include progs/gl_user/module.mk
 include progs/unittests/module.mk
 
 $(database_program): $(database_objects) $(libraries)
@@ -102,6 +106,11 @@ $(database_program): $(database_objects) $(libraries)
 
 $(report_program): $(report_objects) $(libraries)
 	@echo "Building gl_report..."
+	$(CXX) -o $@ $^ $(LDFLAGS)
+	@echo "Done."
+
+$(user_program): $(user_objects) $(libraries)
+	@echo "Building gl_user..."
 	$(CXX) -o $@ $^ $(LDFLAGS)
 	@echo "Done."
 

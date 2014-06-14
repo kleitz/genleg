@@ -93,4 +93,15 @@ std::string& pgstring::join(std::vector<std::string>& vec,
     s = ss.str();
     return s; 
 }
+ 
+bool pgstring::replace(std::string& str,
+                       const std::string& from,
+                       const std::string& to) {
+    const size_t start_pos = str.find(from);
+    if ( start_pos == std::string::npos ) {
+        return false;
+    }
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
 

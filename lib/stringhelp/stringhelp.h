@@ -102,6 +102,15 @@ split_lines(std::vector<std::vector<std::string>>& vec,
 std::string& join(std::vector<std::string>& vec,
         std::string& s, const char delim);
 
+/*!
+ * \brief               Replaces a substring with another string.
+ * \param str           The string containing the substring to replace.
+ * \param from          The substring to replace.
+ * \param to            The string with which to replace the substring.
+ * \returns             `true` if a replacement was made, `false` otherwise.
+ */
+bool replace(std::string& str, const std::string& from, const std::string& to);
+
 }           //  namespace pgstring
 
 #endif      //  PG_STRINGHELP_STRINGHELP_H

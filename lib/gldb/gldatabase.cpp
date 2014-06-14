@@ -8,11 +8,12 @@
 
 #include <sstream>
 #include "gldatabase.h"
+#include "glexception.h"
 #include "database_imp/database_imp.h"
 
 using namespace genleg;
 
-gl_database::gl_database(const std::string database,
+GLDatabase::GLDatabase(const std::string database,
                          const std::string hostname,
                          const std::string username,
                          const std::string password) try :
@@ -26,10 +27,10 @@ catch ( const gldb::DBConnException& e ) {
     throw GLDBException(e.what());
 }
 
-gl_database::~gl_database() {
+GLDatabase::~GLDatabase() {
 }
 
-void gl_database::create_structure() try {
+void GLDatabase::create_structure() try {
     for ( const auto& table_name : m_tables ) {
         m_dbc.query(m_sql->create_table(table_name));
     }
@@ -42,7 +43,7 @@ catch ( const gldb::DBConnException& e ) {
     throw GLDBException(e.what());
 }
 
-void gl_database::destroy_structure() try {
+void GLDatabase::destroy_structure() try {
     for ( auto itr = m_views.rbegin(); itr != m_views.rend(); ++itr ) {
         m_dbc.query(m_sql->drop_view(*itr));
     }
@@ -55,7 +56,7 @@ catch ( const gldb::DBConnException& e ) {
     throw GLDBException(e.what());
 }
 
-void gl_database::load_sample_data(const std::string& dir) try {
+void GLDatabase::load_sample_data(const std::string& dir) try {
     for ( const auto& tname : m_tables ) {
         std::string filename = dir + "/" + tname;
         gldb::Table table = gldb::Table::create_from_file(filename, ':');
@@ -78,7 +79,63 @@ catch ( const gldb::TableBadInputFile& e ) {
     throw GLDBException(ss.str());
 }
 
-std::string gl_database::backend() {
+std::string GLDatabase::backend() {
     return gldb::get_database_type();
+}
+
+GLUser GLDatabase::get_user_by_id(const std::string& user_id) {
+    std::string query = m_sql->user_by_id(user_id);
+    gldb::Table table = m_dbc.select(query);
+
+    bool enabled;
+    if ( table.get_field("enabled", 0) == "1" ||
+         table.get_field("enabled", 0) == "TRUE" ) {
+        enabled = true;
+    }
+    else if ( table.get_field("enabled", 0) == "0" ||
+              table.get_field("enabled", 0) == "FALSE" ) {
+        enabled = false;
+    }
+    else {
+        throw GLDBException("Bad value for user enabled");
+    }
+
+    GLUser new_user(table.get_field("id", 0),
+                    table.get_field("user_name", 0),
+                    table.get_field("first_name", 0),
+                    table.get_field("last_name", 0),
+                    enabled);
+    return new_user;
+}
+
+GLUser GLDatabase::get_user_by_username(const std::string& user_name) {
+    std::string query = m_sql->user_by_username(user_name);
+    gldb::Table table = m_dbc.select(query);
+    if ( table.num_records() == 0 ) {
+        throw GLDBException("Couldn't find user");
+    }
+    else if ( table.num_records() > 1 ) {
+        throw GLDBException("Duplicate user found!");
+    }
+
+    bool enabled;
+    if ( table.get_field("enabled", 0) == "1" ||
+         table.get_field("enabled", 0) == "TRUE" ) {
+        enabled = true;
+    }
+    else if ( table.get_field("enabled", 0) == "0" ||
+              table.get_field("enabled", 0) == "FALSE" ) {
+        enabled = false;
+    }
+    else {
+        throw GLDBException("Bad value for user enabled");
+    }
+
+    GLUser new_user(table.get_field("id", 0),
+                    table.get_field("user_name", 0),
+                    table.get_field("first_name", 0),
+                    table.get_field("last_name", 0),
+                    enabled);
+    return new_user;
 }
 

@@ -1,6 +1,6 @@
 /*!
- * \file            gl_db_main.cpp
- * \brief           Main functionality for gl_db program.
+ * \file            gl_user_main.cpp
+ * \brief           Main functionality for gl_user program.
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
@@ -15,13 +15,13 @@ using namespace genleg;
 
 /*!
  * \brief           Static variable for program name.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  */
-static const char * progname = "gl_db";
+static const char * progname = "gl_user";
 
 /*!
  * \brief           Sets program configuration options.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  * \param config    Reference to a Config object.
  * \param argc      \c argc passed to \c main().
  * \param argv      \c argv passed to \c main().
@@ -30,7 +30,7 @@ static void set_configuration(Config& config, int argc, char *argv[]);
 
 /*!
  * \brief           Prints help or version messages if requested.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  * \param config    Reference to a Config object.
  * \returns         `true` if the help or version message was requested,
  * `false` otherwise.
@@ -39,7 +39,7 @@ static bool check_help_and_version(const Config& config);
 
 /*!
  * \brief           Checks if database, hostname and username were provided.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  * \param config    Reference to a Config object.
  * \returns         `true` if the information was provided, `false` otherwise.
  */
@@ -47,25 +47,25 @@ static bool check_db_parameters(const Config& config);
 
 /*!
  * \brief           Prints a program usage message.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  */
 static void print_usage_message();
 
 /*!
  * \brief           Prints a program version message.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  */
 static void print_version_message();
 
 /*!
  * \brief           Prints a program help message.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  */
 static void print_help_message();
 
 /*!
  * \brief           Gets a password from the terminal.
- * \ingroup         gl_db
+ * \ingroup         gl_user
  * \returns         The password.
  */
 static std::string login(void);
@@ -73,7 +73,7 @@ static std::string login(void);
 
 /*!
  * \brief           Main function
- * \ingroup         gl_db
+ * \ingroup         gl_user
  * \param argc      Number of command line arguments.
  * \param argv      Command line arguments.
  * \returns         Exit status code.
@@ -99,20 +99,29 @@ int main(int argc, char *argv[]) try {
     GLDatabase gdb(config["database"], config["hostname"],
                     config["username"], passwd);
 
-    if ( config.is_set("create") ) {
-        std::cout << "Creating database structure..." << std::endl;
-        gdb.create_structure();
-        std::cout << "...success." << std::endl;
-    }
-    else if ( config.is_set("delete") ) {
-        std::cout << "Destroying database structure..." << std::endl;
-        gdb.destroy_structure();
-        std::cout << "...success." << std::endl;
-    }
-    else if ( config.is_set("loadsample") ) {
-        std::cout << "Loading sample data..." << std::endl;
-        gdb.load_sample_data(config["loadsample"]);
-        std::cout << "...success." << std::endl;
+    if ( config.is_set("show") ) {
+        if ( config.is_set("id") ) {
+            GLUser user = gdb.get_user_by_id(config["id"]);
+            std::cout << "ID         : " << user.id() << std::endl;
+            std::cout << "Username   : " << user.username() << std::endl;
+            std::cout << "First Name : " << user.firstname() << std::endl;
+            std::cout << "Last Name  : " << user.lastname() << std::endl;
+            std::cout << "Enabled    : "
+                      << (user.enabled() ? "Yes" : "No") << std::endl;
+        }
+        if ( config.is_set("name") ) {
+            GLUser user = gdb.get_user_by_username(config["name"]);
+            std::cout << "ID         : " << user.id() << std::endl;
+            std::cout << "Username   : " << user.username() << std::endl;
+            std::cout << "First Name : " << user.firstname() << std::endl;
+            std::cout << "Last Name  : " << user.lastname() << std::endl;
+            std::cout << "Enabled    : "
+                      << (user.enabled() ? "Yes" : "No") << std::endl;
+        }
+        else {
+            std::cerr << progname << ": you must specify a user ID or name."
+                      << std::endl;
+        }
     }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
@@ -152,10 +161,10 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("hostname", Argument::REQ_ARG);
     config.add_cmdline_option("username", Argument::REQ_ARG);
     config.add_cmdline_option("password", Argument::REQ_ARG);
-    config.add_cmdline_option("create", Argument::NO_ARG);
-    config.add_cmdline_option("delete", Argument::NO_ARG);
-    config.add_cmdline_option("loadsample", Argument::REQ_ARG);
-    config.populate_from_file("conf_files/gl_db_conf.conf");
+    config.add_cmdline_option("show", Argument::NO_ARG);
+    config.add_cmdline_option("id", Argument::REQ_ARG);
+    config.add_cmdline_option("name", Argument::REQ_ARG);
+    config.populate_from_file("conf_files/gl_user_conf.conf");
     config.populate_from_cmdline(argc, argv);
 }
 
@@ -202,10 +211,9 @@ static void print_help_message() {
         << "  --help                Display this information\n"
         << "  --version             Display version information\n"
         << "\nDatabase options:\n"
-        << "  --create              Create database structure\n"
-        << "  --delete              Delete database structure\n"
-        << "  --loadsample=<dir>    Load database with sample data\n"
-        << "                                     from directory <dir>\n";
+        << "  --show                Show details of a user\n"
+        << "  --id=<id>             Specify a user by ID\n"
+        << "  --name=<name>         Specify a user by username\n";
 }
 
 static void print_version_message() {

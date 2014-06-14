@@ -32,6 +32,48 @@ class TableException : public std::runtime_error {
 };
 
 /*!
+ * \brief       No such field exception class
+ * \ingroup     database
+ */
+class TableNoSuchField : public TableException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit TableNoSuchField(const std::string& msg) :
+            TableException(msg) {};
+};
+
+/*!
+ * \brief       No such record exception class
+ * \ingroup     database
+ */
+class TableNoSuchRecord : public TableException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit TableNoSuchRecord(const std::string& msg) :
+            TableException(msg) {};
+};
+
+/*!
+ * \brief       Mismatched record length exception class
+ * \ingroup     database
+ */
+class TableMismatchedRecordLength : public TableException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit TableMismatchedRecordLength(const std::string& msg) :
+            TableException(msg) {};
+};
+
+/*!
  * \brief       Could not connect to database exception class.
  * \ingroup     database
  */
@@ -131,6 +173,19 @@ class Table {
          */
         std::string insert_query(const std::string table_name,
                                  const size_t idx);
+
+        /*!
+         * \brief               Gets a field from a record by field name.
+         * \param field_name    The name of the field.
+         * \param row_index     The index of the row.
+         * \returns             The contents ofthe field.
+         * \throws              TableNoSuchField if `field_name` is not a
+         * valid field name.
+         * \throws              TableNoSuchRecord if there is no record
+         * at index `row_index`.
+         */
+        std::string get_field(const std::string field_name,
+                              const size_t row_index);
 
     private:
         /*!  The names of the fields  */

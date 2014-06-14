@@ -181,3 +181,15 @@ std::string DBSQLStatements::drop_view(const std::string view_name) const {
     return ss.str();
 }
 
+std::string DBSQLStatements::user_by_id(const std::string user_id) const {
+    std::ostringstream ss;
+    ss << "SELECT * FROM users WHERE id = " << user_id;
+    return ss.str();
+}
+
+std::string DBSQLStatements::user_by_username(const std::string user_name) const {
+    std::ostringstream ss;
+    ss << "SELECT * FROM users WHERE user_name = '" << user_name << "'";
+    return ss.str();
+}
+

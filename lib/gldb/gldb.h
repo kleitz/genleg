@@ -9,6 +9,7 @@
 #ifndef PG_GENERAL_LEDGER_GLDB_H
 #define PG_GENERAL_LEDGER_GLDB_H
 
+#include "glexception.h"
 #include "gldatabase.h"
 
 #endif          //  PG_GENERAL_LEDGER_GLDB_H

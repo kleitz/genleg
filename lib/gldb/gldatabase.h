@@ -11,31 +11,17 @@
 
 #include <vector>
 #include <string>
-#include <memory>
 #include "database/database.h"
 #include "dbsql/dbsql.h"
+#include "gluser.h"
 
 namespace genleg {
-
-/*!
- * \brief       Base general ledger database exceptionc class.
- * \ingroup     gldatabase
- */
-class GLDBException : public std::runtime_error {
-    public:
-        /*!
-         * \brief           Constructor
-         * \param msg       Database error message
-         */
-        explicit GLDBException(const std::string& msg) :
-            std::runtime_error(msg) {};
-};
 
 /*!
  * \brief       General ledger database class
  * \ingroup     gldatabase
  */
-class gl_database {
+class GLDatabase {
     public:
         /*!
          * \brief           Constructor.
@@ -45,13 +31,13 @@ class gl_database {
          * \param password  Password to log into database.
          * \throws          GLDBException on error.
          */
-        gl_database (const std::string database,
+        GLDatabase (const std::string database,
                      const std::string hostname,
                      const std::string username,
                      const std::string password);
         
         /*!  Destructor  */
-        ~gl_database ();
+        ~GLDatabase ();
 
         /*!
          * \brief           Creates the database structure.
@@ -82,6 +68,22 @@ class gl_database {
          */
         static std::string backend();
 
+        /*!
+         * \brief           Returns a user from an ID.
+         * \param user_id   The user ID.
+         * \returns         The user.
+         * \throws          GLDBException if the user cannot be found.
+         */
+        GLUser get_user_by_id(const std::string& user_id);
+
+        /*!
+         * \brief           Returns a user from a user name.
+         * \param user_name The user name.
+         * \returns         The user.
+         * \throws          GLDBException if the user cannot be found.
+         */
+        GLUser get_user_by_username(const std::string& user_name);
+
     private:
         /*!  Database connection  */
         gldb::DBConn m_dbc;
@@ -95,7 +97,7 @@ class gl_database {
         /*!  Vector containing database view names  */
         const std::vector<std::string> m_views;
         
-};              //  class gl_database
+};              //  class GLDatabase
 
 }               //  namespace genleg
 
