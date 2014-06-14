@@ -11,6 +11,7 @@
 #define PG_DATABASE_DATASTRUCT_TABLE_H
 
 #include <vector>
+#include <stdexcept>
 
 #include "tablerow.h"
 
@@ -20,19 +21,43 @@ namespace gldb {
  * \brief       Base database connection exception class
  * \ingroup     database
  */
-class TableException : public std::exception {};
+class TableException : public std::runtime_error {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit TableException(const std::string& msg) :
+            std::runtime_error(msg) {};
+};
 
 /*!
  * \brief       Could not connect to database exception class.
  * \ingroup     database
  */
-class TableBadInputFile : public TableException {};
+class TableBadInputFile : public TableException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit TableBadInputFile(const std::string& msg) :
+            TableException(msg) {};
+};
 
 /*!
  * \brief       Could not connect to database exception class.
  * \ingroup     database
  */
-class TableCouldNotOpenInputFile : public TableException {};
+class TableCouldNotOpenInputFile : public TableException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit TableCouldNotOpenInputFile(const std::string& msg) :
+            TableException(msg) {};
+};
 
 /*!
  * \brief       Database table class

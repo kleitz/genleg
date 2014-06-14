@@ -32,7 +32,7 @@ bool Config::is_set(const std::string option) const {
 
 const std::string& Config::operator[](const std::string& option) const {
     if ( !is_set(option) ) {
-        throw ConfigOptionNotSet();
+        throw ConfigOptionNotSet(option);
     }
     return (m_opts_set.find(option))->second;
 }
@@ -61,7 +61,7 @@ void Config::populate_from_file(const std::string filename) {
                 /*  Badly formed line if not
                  *  exactly one delimiter character  */
 
-                throw ConfigBadConfigFile();
+                throw ConfigBadConfigFile(filename);
             }
 
             /*  Store key and value  */
@@ -74,7 +74,7 @@ void Config::populate_from_file(const std::string filename) {
         ifs.close();
     }
     else {
-        throw ConfigCouldNotOpenFile();
+        throw ConfigCouldNotOpenFile(filename);
     }
 }
 

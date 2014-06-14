@@ -63,8 +63,8 @@ void Config::populate_from_cmdline(const int argc, char * const * argv) {
 
     int c, opt_ind = 0;
     while ( (c = getopt_long(argc, argv, "", opts.get(), &opt_ind)) != -1 ) {
-        const char * option_name = opts.get()[opt_ind].name;
-        const char * option_arg = optarg ? optarg : "";
+        std::string option_name = opts.get()[opt_ind].name;
+        std::string option_arg = optarg ? optarg : "";
 
         switch ( c ) {
             case 0:
@@ -72,7 +72,7 @@ void Config::populate_from_cmdline(const int argc, char * const * argv) {
                 break;
 
             case '?':
-                throw ConfigBadOption();
+                throw ConfigBadOption("");
                 break;
         }
     }

@@ -7,6 +7,11 @@ ledger system. The project is in the early stages of development.
 */
 
 /**
+ * \defgroup gldatabase General Ledger database module.
+ * \details Module for interacting with the general ledger database model.
+ */
+
+/**
  * \defgroup database Database interaction module
  * \details Module for interacting with the database.
  */

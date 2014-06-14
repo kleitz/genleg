@@ -84,6 +84,7 @@ tags:
 .PHONY: all
 all: $(database_program) $(report_program) $(unittest_program)
 
+include lib/gldb/module.mk
 include lib/dbsql/module.mk
 include lib/database_imp/$(database)/module.mk
 include lib/database/module.mk

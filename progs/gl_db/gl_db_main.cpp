@@ -7,11 +7,8 @@
  */
 
 #include <iostream>
-#include <memory>
 
-#include "database/database.h"
-#include "database_imp/database_imp.h"
-#include "dbsql/dbsql.h"
+#include "gldb/gldb.h"
 #include "config/config.h"
 
 using namespace genleg;
@@ -30,6 +27,23 @@ static const char * progname = "gl_db";
  * \param argv      \c argv passed to \c main().
  */
 static void set_configuration(Config& config, int argc, char *argv[]);
+
+/*!
+ * \brief           Prints help or version messages if requested.
+ * \ingroup         gl_db
+ * \param config    Reference to a Config object.
+ * \returns         `true` if the help or version message was requested,
+ * `false` otherwise.
+ */
+static bool check_help_and_version(const Config& config);
+
+/*!
+ * \brief           Checks if database, hostname and username were provided.
+ * \ingroup         gl_db
+ * \param config    Reference to a Config object.
+ * \returns         `true` if the information was provided, `false` otherwise.
+ */
+static bool check_db_parameters(const Config& config);
 
 /*!
  * \brief           Prints a program usage message.
@@ -64,37 +78,15 @@ static std::string login(void);
  * \param argv      Command line arguments.
  * \returns         Exit status code.
  */
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) try {
     Config config;
-    try {
-        set_configuration(config, argc, argv);
-    }
-    catch (...) {
-        std::cerr << progname << ": bad command line options" << std::endl;
-        return 1;
+    set_configuration(config, argc, argv);
+
+    if ( check_help_and_version(config) ) {
+        return 0;
     }
 
-    if ( config.is_set("help") ) {
-        print_help_message();
-        return 0;
-    }
-    else if ( config.is_set("version") ) {
-        print_version_message();
-        return 0;
-    }
-    else if ( !config.is_set("database") ) {
-        print_usage_message();
-        std::cerr << progname << ": database name not provided" << std::endl;
-        return 1;
-    }
-    else if ( !config.is_set("hostname") ) {
-        print_usage_message();
-        std::cerr << progname << ": hostname not provided" << std::endl;
-        return 1;
-    }
-    else if ( !config.is_set("username") ) {
-        print_usage_message();
-        std::cerr << progname << ": hostname not provided" << std::endl;
+    if ( !check_db_parameters(config) ) {
         return 1;
     }
 
@@ -102,173 +94,55 @@ int main(int argc, char *argv[]) {
     if ( config.is_set("password") ) {
         passwd = config["password"];
     }
-    else {
-        try {
-            passwd = login();
-        }
-        catch (...) {
-            std::cerr << std::endl << progname
-                      << ": error getting password." << std::endl;
-            return 1;
-        }
-    }
+    passwd = login();
+
+    gl_database gdb(config["database"], config["hostname"],
+                    config["username"], passwd);
 
     if ( config.is_set("create") ) {
-        const std::shared_ptr<DBSQLStatements> stmt = get_sql_object();
-        
-        const std::vector<std::string> tables = {
-            "standing_data",
-            "users",
-            "entities",
-            "jesrcs",
-            "nomaccts",
-            "jes",
-            "jelines",
-        };
-
-        const std::vector<std::string> views = {
-            "current_trial_balance",
-            "check_total",
-            "all_jes"
-        };
-
-        try {
-            gldb::DBConn dbc(gldb::get_connection(config["database"],
-                        config["hostname"], config["username"], passwd));
-
-            for ( const auto& table_name : tables ) {
-                const std::string query = stmt->create_table(table_name);
-                std::cout << "Creating table '" << table_name
-                          << "'...";
-                try {
-                    dbc.query(query);
-                    std::cout << "success." << std::endl;
-                }
-                catch ( gldb::DBConnException& e ) {
-                    std::cerr << "error: " << e.what() << std::endl;
-                }
-            }
-
-            for ( const auto& view_name : views ) {
-                const std::string query = stmt->create_view(view_name);
-                std::cout << "Creating view '" << view_name
-                          << "'...";
-                try {
-                    dbc.query(query);
-                    std::cout << "success." << std::endl;
-                }
-                catch ( gldb::DBConnException& e ) {
-                    std::cerr << "error: " << e.what() << std::endl;
-                }
-            }
-        }
-        catch ( gldb::DBConnCouldNotConnect& e ) {
-            std::cerr << progname << ": couldn't connect to database: "
-                      << e.what() << std::endl;
-            return 1;
-        }
+        std::cout << "Creating database structure..." << std::endl;
+        gdb.create_structure();
+        std::cout << "...success." << std::endl;
     }
     else if ( config.is_set("delete") ) {
-        const std::shared_ptr<DBSQLStatements> stmt = get_sql_object();
-        
-        const std::vector<std::string> tables = {
-            "jelines",
-            "jes",
-            "nomaccts",
-            "jesrcs",
-            "entities",
-            "users",
-            "standing_data",
-        };
-
-        const std::vector<std::string> views = {
-            "all_jes",
-            "check_total",
-            "current_trial_balance",
-        };
-
-        try {
-            gldb::DBConn dbc(gldb::get_connection(config["database"],
-                        config["hostname"], config["username"], passwd));
-
-            for ( const auto& view_name : views ) {
-                const std::string query = stmt->drop_view(view_name);
-                std::cout << "Dropping view '" << view_name
-                          << "'...";
-                try {
-                    dbc.query(query);
-                    std::cout << "success." << std::endl;
-                }
-                catch ( gldb::DBConnException& e ) {
-                    std::cerr << "error: " << e.what() << std::endl;
-                }
-            }
-
-            for ( const auto& table_name : tables ) {
-                const std::string query = stmt->drop_table(table_name);
-                std::cout << "Dropping table '" << table_name
-                          << "'...";
-                try {
-                    dbc.query(query);
-                    std::cout << "success." << std::endl;
-                }
-                catch ( gldb::DBConnException& e ) {
-                    std::cerr << "error: " << e.what() << std::endl;
-                }
-            }
-        }
-        catch ( gldb::DBConnCouldNotConnect& e ) {
-            std::cerr << progname << ": couldn't connect to database: "
-                      << e.what() << std::endl;
-            return 1;
-        }
+        std::cout << "Destroying database structure..." << std::endl;
+        gdb.destroy_structure();
+        std::cout << "...success." << std::endl;
     }
     else if ( config.is_set("loadsample") ) {
-        const std::vector<std::string> tables = {
-            "standing_data",
-            "users",
-            "entities",
-            "jesrcs",
-            "nomaccts",
-            "jes",
-            "jelines",
-        };
-
-        try {
-            gldb::DBConn dbc(gldb::get_connection(config["database"],
-                        config["hostname"], config["username"], passwd));
-            for ( auto& data : tables ) {
-                std::string filename = "sample_data/" + data;
-                std::cout << "Attempting to open " << filename << "...\n";
-                gldb::Table table = gldb::Table::create_from_file(filename,
-                                                                  ':');
-                for ( size_t i = 0; i < table.num_records(); ++i ) {
-                    try {
-                        std::cout << "Loading sample data into '"
-                                  << data << "'...";
-                        std::string query = table.insert_query(data, i);
-                        dbc.query(query);
-                        std::cout << "success." << std::endl;
-                    }
-                    catch (gldb::DBConnCouldNotQuery& e) {
-                        std::cerr << "couldn't query database: "
-                                  << e.what() << std::endl;
-                    }
-                }
-            }
-
-        }
-        catch ( gldb::DBConnCouldNotConnect& e ) {
-            std::cerr << progname << ": couldn't connect to database: "
-                      << e.what() << std::endl;
-            return 1;
-        }
+        std::cout << "Loading sample data..." << std::endl;
+        gdb.load_sample_data(config["loadsample"]);
+        std::cout << "...success." << std::endl;
     }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
 
     return 0;
+}
+catch ( const ConfigBadOption& e ) {
+    std::cerr << progname << ": Invalid command line options" << std::endl;
+}
+catch ( const ConfigOptionNotSet& e ) {
+    std::cerr << progname << ": Request for value of missing option '"
+              << e.what() << "'" << std::endl;
+}
+catch ( const ConfigCouldNotOpenFile& e ) {
+    std::cerr << progname << ": could not open configuration file '"
+              << e.what() << "'" << std::endl;
+}
+catch ( const ConfigBadConfigFile& e ) {
+    std::cerr << progname << ": configuration file '" << e.what()
+              << "' is badly formed." << std::endl;
+}
+catch (const GLDBException& e) {
+    std::cerr << progname << ": database error - " << e.what() << std::endl;
+}
+catch (const std::runtime_error& e) {
+    std::cerr << progname << ": error - " << e.what() << std::endl;
+}
+catch (...) {
+    std::cerr << progname << ": unknown error" << std::endl;
 }
 
 static void set_configuration(Config& config, int argc, char *argv[]) {
@@ -280,9 +154,42 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("password", Argument::REQ_ARG);
     config.add_cmdline_option("create", Argument::NO_ARG);
     config.add_cmdline_option("delete", Argument::NO_ARG);
-    config.add_cmdline_option("loadsample", Argument::NO_ARG);
-    config.populate_from_cmdline(argc, argv);
+    config.add_cmdline_option("loadsample", Argument::REQ_ARG);
     config.populate_from_file("conf_files/gl_db_conf.conf");
+    config.populate_from_cmdline(argc, argv);
+}
+
+static bool check_help_and_version(const Config& config) {
+    if ( config.is_set("help") ) {
+        print_help_message();
+        return true;
+    }
+    else if ( config.is_set("version") ) {
+        print_version_message();
+        return true;
+    }
+    return false;
+}
+
+static bool check_db_parameters(const Config& config) {
+    if ( !config.is_set("database") ) {
+        print_usage_message();
+        std::cerr << progname << ": database name not provided" << std::endl;
+        return false;
+    }
+    else if ( !config.is_set("hostname") ) {
+        print_usage_message();
+        std::cerr << progname << ": hostname not provided" << std::endl;
+        return false;
+    }
+    else if ( !config.is_set("username") ) {
+        print_usage_message();
+        std::cerr << progname << ": username not provided" << std::endl;
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 static void print_usage_message() {
@@ -297,13 +204,14 @@ static void print_help_message() {
         << "\nDatabase options:\n"
         << "  --create              Create database structure\n"
         << "  --delete              Delete database structure\n"
-        << "  --loadsample          Load database with sample data\n";
+        << "  --loadsample=<dir>    Load database with sample data\n"
+        << "                                     from directory <dir>\n";
 }
 
 static void print_version_message() {
     std::cout << progname << " v0.1 (experimental)\n"
               << "Copyright (C) 2014 Paul Griffiths\n"
-              << "Compiled with " << gldb::get_database_type()
+              << "Compiled with " << gl_database::backend()
               << " database support.\n"
               << "This is free software; see the source for copying"
               << " conditions. There is NO\n"
@@ -316,7 +224,8 @@ static std::string login(void) {
     std::string passwd;
 
     if ( !std::getline(std::cin, passwd) ) {
-        throw "Couldn't get password";
+        std::cout << std::endl;
+        throw std::runtime_error("Couldn't get password");
     }
 
     return passwd;

@@ -12,6 +12,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <stdexcept>
 
 namespace genleg {
 
@@ -29,31 +30,71 @@ enum class Argument {
  * \brief       Configuration module exception base class
  * \ingroup     config
  */
-class ConfigException : public std::exception {};
+class ConfigException : public std::runtime_error {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit ConfigException(const std::string& msg) :
+            std::runtime_error(msg) {};
+};
 
 /*!
  * \brief       Exception class for option not set
  * \ingroup     config
  */
-class ConfigOptionNotSet : public ConfigException {};
+class ConfigOptionNotSet : public ConfigException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit ConfigOptionNotSet(const std::string& msg) :
+            ConfigException(msg) {};
+};
 
 /*!
  * \brief       Exception class for bad provided option
  * \ingroup     config
  */
-class ConfigBadOption : public ConfigException {};
+class ConfigBadOption : public ConfigException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit ConfigBadOption(const std::string& msg) :
+            ConfigException(msg) {};
+};
 
 /*!
  * \brief       Exception class for when conf file cannot be opened
  * \ingroup     config
  */
-class ConfigCouldNotOpenFile : public ConfigException {};
+class ConfigCouldNotOpenFile : public ConfigException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit ConfigCouldNotOpenFile(const std::string& msg) :
+            ConfigException(msg) {};
+};
 
 /*!
  * \brief       Exception class for badly formed configuration file
  * \ingroup     config
  */
-class ConfigBadConfigFile : public ConfigException {};
+class ConfigBadConfigFile : public ConfigException {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit ConfigBadConfigFile(const std::string& msg) :
+            ConfigException(msg) {};
+};
 
 /*!
  * \brief       Configuration options class

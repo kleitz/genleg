@@ -35,10 +35,10 @@ size_t Table::num_records() const {
 }
 
 void Table::set_quoted(std::vector<bool>& vec) {
-    assert(vec.size() == m_quoted.size());
-    for ( size_t i = 0; i < m_quoted.size(); ++i ) {
-        m_quoted[i] = vec[i];
+    if (vec.size() != m_quoted.size()) {
+        throw "Quoted vectors are not the same size.";
     }
+    m_quoted = vec;
 }
 
 const TableRow& Table::get_headers() const {
@@ -64,14 +64,14 @@ Table Table::create_from_file(const std::string filename, const char delim) {
         std::vector<std::vector<std::string>> vec;
         pgstring::split_lines(vec, ifs, delim);
         if ( vec.size() < 3 ) {
-            throw TableBadInputFile();
+            throw TableBadInputFile(filename);
         }
 
         TableRow headers(vec[0]);
         Table table(headers);
 
         if ( vec[1].size() != headers.size() ) {
-            throw TableBadInputFile();
+            throw TableBadInputFile(filename);
         }
 
         std::vector<bool> quotes(headers.size());
@@ -83,14 +83,14 @@ Table Table::create_from_file(const std::string filename, const char delim) {
                 quotes[i] = true;
             }
             else {
-                throw TableBadInputFile();
+                throw TableBadInputFile(filename);
             }
         }
         table.set_quoted(quotes);
 
         for ( size_t i = 2; i < vec.size(); ++i ) {
             if ( vec[i].size() != headers.size() ) {
-                throw TableBadInputFile();
+                throw TableBadInputFile(filename);
             }
 
             TableRow record(vec[i]);
@@ -101,9 +101,8 @@ Table Table::create_from_file(const std::string filename, const char delim) {
         return table;
     }
     else {
-        throw TableCouldNotOpenInputFile();
+        throw TableCouldNotOpenInputFile(filename);
     }
-
 }
 
 std::string Table::insert_query(const std::string table_name,
@@ -112,7 +111,6 @@ std::string Table::insert_query(const std::string table_name,
     ss << "INSERT INTO " << table_name << " "
        << "(" << m_headers.record_string() << ") "
        << "VALUES (" << m_records[idx].record_string(m_quoted) << ")";
-
     return ss.str();
 }
 
