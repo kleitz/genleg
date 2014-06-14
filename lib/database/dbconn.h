@@ -78,6 +78,13 @@ class DBConn {
         ~DBConn ();
 
         /*!
+         * \brief           Runs an SQL query.
+         * \param sql_query The query.
+         * \returns         A Table object containing the results.
+         */
+        void query(std::string sql_query);
+
+        /*!
          * \brief           Runs an SQL SELECT query.
          * \param query     The query.
          * \returns         A Table object containing the results.

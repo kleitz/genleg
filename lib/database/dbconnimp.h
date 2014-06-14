@@ -29,6 +29,12 @@ class DBConnImp {
         virtual ~DBConnImp () {};
 
         /*!
+         * \brief           Runs an SQL query.
+         * \param sql_query The query.
+         */
+        virtual void query(std::string sql_query) = 0;
+
+        /*!
          * \brief           Runs an SQL SELECT query.
          * \param query     The query.
          * \returns         A Table object containing the results.

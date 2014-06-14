@@ -12,6 +12,11 @@ ledger system. The project is in the early stages of development.
  */
 
 /**
+ * \defgroup sql SQL statements module
+ * \details Module for producing SQL statements used by program.
+ */
+
+/**
  * \defgroup config Program configuration module
  * \details Module for getting options from the command line and configuration
  * files.
@@ -25,5 +30,10 @@ ledger system. The project is in the early stages of development.
 /**
  * \defgroup gl_report Reporting program.
  * \details Administrative reporting program.
+ */
+
+/**
+ * \defgroup gl_db Database program.
+ * \details Administrative database management program.
  */
 

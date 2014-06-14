@@ -48,13 +48,21 @@ class DBConnMySQL : public DBConnImp {
         DBConnMySQL& operator= (const DBConnMySQL&) = delete;
 
         /*!
+         * \brief           Runs an SQL query.
+         * \param sql_query The query.
+         * \throws          DBConnCouldNotQuery If could not successfully
+         * execute query.
+         */
+        virtual void query(std::string sql_query);
+
+        /*!
          * \brief           Runs an SQL SELECT query.
          * \param query     The query.
          * \returns         A Table object containing the results.
          * \throws          DBConnCouldNotQuery If could not successfully
          * execute query.
          */
-        Table select(std::string query);
+        virtual Table select(std::string query);
 
     private:
         /*!  The initialized MySQL handle.  */

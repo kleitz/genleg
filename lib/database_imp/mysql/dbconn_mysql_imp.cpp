@@ -38,6 +38,13 @@ DBConnMySQL::~DBConnMySQL() {
     mysql_library_end();
 }
 
+void DBConnMySQL::query(std::string sql_query) {
+    if ( mysql_query(m_conn, sql_query.c_str()) ) {
+        std::string msg = mysql_error(m_conn);
+        throw DBConnCouldNotQuery(msg);
+    }
+}
+
 Table DBConnMySQL::select(std::string query) {
     if ( mysql_query(m_conn, query.c_str()) ) {
         std::string msg = mysql_error(m_conn);

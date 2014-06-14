@@ -1,7 +1,9 @@
 # Executables
 gl_report
+gl_db
 unittests
 !progs/gl_report
+!progs/gl_db
 !progs/unittests
 .DS_Store
 ._.DS_Store
