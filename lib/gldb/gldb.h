@@ -11,6 +11,7 @@
 
 #include "glexception.h"
 #include "gldatabase.h"
+#include "gluser.h"
 
 #endif          //  PG_GENERAL_LEDGER_GLDB_H
 

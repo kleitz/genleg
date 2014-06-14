@@ -48,3 +48,19 @@ bool GLUser::enabled() const {
     return m_enabled;
 }
 
+void GLUser::set_username(const std::string& new_username) {
+    m_username = new_username;
+}
+
+void GLUser::set_firstname(const std::string& new_firstname) {
+    m_firstname = new_firstname;
+}
+
+void GLUser::set_lastname(const std::string& new_lastname) {
+    m_lastname = new_lastname;
+}
+
+void GLUser::set_enabled(const bool new_enabled) {
+    m_enabled = new_enabled;
+}
+

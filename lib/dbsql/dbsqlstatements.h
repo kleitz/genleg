@@ -10,6 +10,7 @@
 #define PG_GENERAL_LEDGER_DATABASE_SQL_STATEMENTS_H
 
 #include <string>
+#include "gldb/gluser.h"
 
 namespace genleg {
 
@@ -67,6 +68,14 @@ class DBSQLStatements {
          * \returns             The SQL statement.
          */
         virtual std::string user_by_username(const std::string user_name) const;
+
+        /*!
+         * \brief               Returns a SQL UPDATE statement to update a
+         * user.
+         * \param user          A user object.
+         * \returns             The SQL statement.
+         */
+        virtual std::string update_user(const GLUser& user) const;
 
 };              //  class DBSQLStatements
 

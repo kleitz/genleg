@@ -139,3 +139,8 @@ GLUser GLDatabase::get_user_by_username(const std::string& user_name) {
     return new_user;
 }
 
+void GLDatabase::update_user(const GLUser& user) {
+    std::string query = m_sql->update_user(user);
+    m_dbc.query(query);
+}
+

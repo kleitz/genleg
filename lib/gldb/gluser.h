@@ -68,6 +68,30 @@ class GLUser {
          */
         bool enabled() const;
 
+        /*!
+         * \brief               Sets a user's username.
+         * \param new_username  The user's new username.
+         */
+        void set_username(const std::string& new_username);
+
+        /*!
+         * \brief               Sets a user's first name.
+         * \param new_firstname The user's new first name.
+         */
+        void set_firstname(const std::string& new_firstname);
+
+        /*!
+         * \brief               Sets a user's last name.
+         * \param new_lastname  The user's new last name.
+         */
+        void set_lastname(const std::string& new_lastname);
+
+        /*!
+         * \brief               Sets a user's enabled status.
+         * \param new_enabled   The user's new enabled status.
+         */
+        void set_enabled(const bool new_enabled);
+
     private:
         /*!  User ID  */
         std::string m_id;

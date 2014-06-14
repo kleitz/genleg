@@ -84,6 +84,12 @@ class GLDatabase {
          */
         GLUser get_user_by_username(const std::string& user_name);
 
+        /*!
+         * \brief           Updates a user's details.
+         * \param user      The user object.
+         */
+        void update_user(const GLUser& user);
+
     private:
         /*!  Database connection  */
         gldb::DBConn m_dbc;

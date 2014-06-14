@@ -193,3 +193,14 @@ std::string DBSQLStatements::user_by_username(const std::string user_name) const
     return ss.str();
 }
 
+std::string DBSQLStatements::update_user(const GLUser& user) const {
+    std::ostringstream ss;
+    std::string enabled = (user.enabled() ? "TRUE" : "FALSE");
+    ss << "UPDATE users SET user_name = '" << user.username()
+       << "', first_name = '" << user.firstname()
+       << "', last_name = '" << user.lastname()
+       << "', enabled = " << enabled
+       << " WHERE id = " << user.id();
+    return ss.str();
+}
+
