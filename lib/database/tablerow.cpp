@@ -6,7 +6,9 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
+#include <sstream>
 #include "tablerow.h"
+#include "stringhelp/stringhelp.h"
 
 using namespace gldb;
 
@@ -14,6 +16,12 @@ TableRow::TableRow() : m_fields() {
 }
 
 TableRow::TableRow(const size_t size) : m_fields(size) {
+}
+
+TableRow::TableRow(std::vector<std::string>& vec) : m_fields(vec.size()) {
+    for ( size_t i = 0; i < vec.size(); ++i ) {
+        m_fields[i] = vec[i];
+    }
 }
 
 TableRow::~TableRow() {
@@ -50,5 +58,28 @@ void TableRow::print(std::ostream& stream) const {
         stream << "[" << field << "] ";
     }
     stream << std::endl;
+}
+
+std::string TableRow::record_string(const std::vector<bool>& quoted) {
+    std::vector<std::string> vec;
+    for ( size_t i = 0; i < m_fields.size(); ++i ) {
+        std::ostringstream field;
+        std::string q = quoted[i] ? "'" : "";
+        field << q << m_fields[i] << q;
+        vec.push_back(field.str());
+    }
+    std::string result;
+    pgstring::join(vec, result, ',');
+    return result;
+}
+
+std::string TableRow::record_string() {
+    std::vector<std::string> vec;
+    for ( size_t i = 0; i < m_fields.size(); ++i ) {
+        vec.push_back(m_fields[i]);
+    }
+    std::string result;
+    pgstring::join(vec, result, ',');
+    return result;
 }
 

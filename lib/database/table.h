@@ -17,6 +17,24 @@
 namespace gldb {
 
 /*!
+ * \brief       Base database connection exception class
+ * \ingroup     database
+ */
+class TableException : public std::exception {};
+
+/*!
+ * \brief       Could not connect to database exception class.
+ * \ingroup     database
+ */
+class TableBadInputFile : public TableException {};
+
+/*!
+ * \brief       Could not connect to database exception class.
+ * \ingroup     database
+ */
+class TableCouldNotOpenInputFile : public TableException {};
+
+/*!
  * \brief       Database table class
  * \ingroup     database
  */
@@ -44,6 +62,13 @@ class Table {
         size_t num_records() const;
 
         /*!
+         * \brief           Sets the quote flags for the records
+         * \param vec       A vector of bools. The size must match the
+         * size of the records.
+         */
+        void set_quoted(std::vector<bool>& vec);
+
+        /*!
          * \brief           Returns the field names.
          * \returns         The field names.
          */
@@ -62,12 +87,35 @@ class Table {
          */
         void append_record(const TableRow& new_record);
 
+        /*!
+         * \brief               Creates a table from an input file.
+         * \param filename      The name of the input file.
+         * \param delim         The delimiting character.
+         * \returns             The table.
+         * \throws              TableBadInputFile on badly formed input file.
+         * \throws              TableCouldNotOpenInputFile on bad filename.
+         */
+        static Table create_from_file(const std::string filename,
+                                      const char delim);
+
+        /*!
+         * \brief               Creates an SQL INSERT query from a table record.
+         * \param table_name    The name of the table into which to INSERT.
+         * \param idx           The index of the record.
+         * \returns             A string containing the query.
+         */
+        std::string insert_query(const std::string table_name,
+                                 const size_t idx);
+
     private:
         /*!  The names of the fields  */
         TableRow m_headers;
 
         /*!  A vector of the records  */
         std::vector<TableRow> m_records;
+
+        /*!  A vector to show if fields should be quoted for INSERT  */
+        std::vector<bool> m_quoted;
 
 };              //  class Table
 

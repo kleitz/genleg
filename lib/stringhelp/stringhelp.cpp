@@ -34,14 +34,63 @@ std::string& pgstring::trim(std::string& s) {
 
 std::vector<std::string> pgstring::split(const std::string& s,
                                          const char delim) {
+    std::vector<std::string> vec;
+    return split(vec, s, delim);
+}
+
+std::vector<std::string>& pgstring::split(std::vector<std::string>& vec,
+        const std::string& s, const char delim) {
     std::stringstream ss(s);
     std::string token;
-    std::vector<std::string> tokens;
 
     while ( std::getline(ss, token, delim) ) {
-        tokens.push_back(token);
+        vec.push_back(token);
     }
 
-    return tokens;
+    return vec;
+}
+
+bool pgstring::next_content_line(std::istream& ifs,
+        std::string& s) {
+    while ( std::getline(ifs, s) ) {
+        trim(s);
+        if ( s != "" && s[0] != '#' ) {
+            break;
+        }
+    }
+    return ifs;
+}
+
+std::vector<std::string>&
+pgstring::content_lines(std::vector<std::string>& vec,std::istream& ifs) {
+    std::string s;
+    while ( next_content_line(ifs, s) ) {
+        vec.push_back(s);
+    }
+    return vec;
+}
+
+std::vector<std::vector<std::string>>&
+pgstring::split_lines(std::vector<std::vector<std::string>>& vec,
+        std::istream& ifs, const char delim) {
+    std::string s;
+    while ( next_content_line(ifs, s) ) {
+        std::vector<std::string> tokens;
+        vec.push_back(split(tokens, s, delim));
+    }
+    return vec;
+}
+
+std::string& pgstring::join(std::vector<std::string>& vec,
+        std::string& s, const char delim) {
+    std::ostringstream ss;
+    for ( size_t i = 0; i < vec.size(); ++i ) {
+        if ( i != 0 ) {
+            ss << delim;
+        }
+        ss << vec[i];
+    }
+    s = ss.str();
+    return s; 
 }
 

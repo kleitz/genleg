@@ -223,6 +223,47 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     }
+    else if ( config.is_set("loadsample") ) {
+        const std::vector<std::string> tables = {
+            "standing_data",
+            "users",
+            "entities",
+            "jesrcs",
+            "nomaccts",
+            "jes",
+            "jelines",
+        };
+
+        try {
+            gldb::DBConn dbc(gldb::get_connection(config["database"],
+                        config["hostname"], config["username"], passwd));
+            for ( auto& data : tables ) {
+                std::string filename = "sample_data/" + data;
+                std::cout << "Attempting to open " << filename << "...\n";
+                gldb::Table table = gldb::Table::create_from_file(filename,
+                                                                  ':');
+                for ( size_t i = 0; i < table.num_records(); ++i ) {
+                    try {
+                        std::cout << "Loading sample data into '"
+                                  << data << "'...";
+                        std::string query = table.insert_query(data, i);
+                        dbc.query(query);
+                        std::cout << "success." << std::endl;
+                    }
+                    catch (gldb::DBConnCouldNotQuery& e) {
+                        std::cerr << "couldn't query database: "
+                                  << e.what() << std::endl;
+                    }
+                }
+            }
+
+        }
+        catch ( gldb::DBConnCouldNotConnect& e ) {
+            std::cerr << progname << ": couldn't connect to database: "
+                      << e.what() << std::endl;
+            return 1;
+        }
+    }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
@@ -239,6 +280,7 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("password", Argument::REQ_ARG);
     config.add_cmdline_option("create", Argument::NO_ARG);
     config.add_cmdline_option("delete", Argument::NO_ARG);
+    config.add_cmdline_option("loadsample", Argument::NO_ARG);
     config.populate_from_cmdline(argc, argv);
     config.populate_from_file("conf_files/gl_db_conf.conf");
 }
@@ -254,7 +296,8 @@ static void print_help_message() {
         << "  --version             Display version information\n"
         << "\nDatabase options:\n"
         << "  --create              Create database structure\n"
-        << "  --delete              Delete database structure\n";
+        << "  --delete              Delete database structure\n"
+        << "  --loadsample          Load database with sample data\n";
 }
 
 static void print_version_message() {

@@ -33,6 +33,12 @@ class TableRow {
          */
         explicit TableRow (const size_t size);
 
+        /*!
+         * \brief           Constructor with string vector.
+         * \param vec       The vector.
+         */
+        explicit TableRow (std::vector<std::string>& vec);
+
         /*!  Destructor  */
         ~TableRow ();
 
@@ -80,6 +86,22 @@ class TableRow {
          * \param stream    The ostream to which to print.
          */
         void print(std::ostream& stream) const;
+
+        /*!
+         * \brief           Creates a comma separated string of fields.
+         * \param quoted    A vector of \c bool, for each field `true` means
+         * that field will be enclosed in single quotes in the comma separated
+         * string, `false` means it will not be.
+         * \returns         The comma separated string.
+         */
+        std::string record_string(const std::vector<bool>& quoted);
+
+        /*!
+         * \brief           Creates an unquoted comma separated string of
+         * fields.
+         * \returns         The unquoted comma separated string.
+         */
+        std::string record_string();
 
     private:
         /*!  A vector of fields  */
