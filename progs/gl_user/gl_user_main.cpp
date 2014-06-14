@@ -46,6 +46,23 @@ static bool check_help_and_version(const Config& config);
 static bool check_db_parameters(const Config& config);
 
 /*!
+ * \brief           Outputs details for a user.
+ * \ingroup         gl_user
+ * \param user      Reference to user.
+ */
+static void show_user_details(const GLUser& user);
+
+/*!
+ * \brief           Enables or disables a user.
+ * \ingroup         gl_user
+ * \param user      Reference to user.
+ * \param config    Reference to program configuration.
+ * \param gdb       Reference to database object.
+ */
+static void enable_user(GLUser& user, Config& config,
+                        GLDatabase& gdb);
+
+/*!
  * \brief           Prints a program usage message.
  * \ingroup         gl_user
  */
@@ -101,22 +118,10 @@ int main(int argc, char *argv[]) try {
 
     if ( config.is_set("show") ) {
         if ( config.is_set("id") ) {
-            GLUser user = gdb.get_user_by_id(config["id"]);
-            std::cout << "ID         : " << user.id() << std::endl;
-            std::cout << "Username   : " << user.username() << std::endl;
-            std::cout << "First Name : " << user.firstname() << std::endl;
-            std::cout << "Last Name  : " << user.lastname() << std::endl;
-            std::cout << "Enabled    : "
-                      << (user.enabled() ? "Yes" : "No") << std::endl;
+            show_user_details(gdb.get_user_by_id(config["id"]));
         }
         else if ( config.is_set("name") ) {
-            GLUser user = gdb.get_user_by_username(config["name"]);
-            std::cout << "ID         : " << user.id() << std::endl;
-            std::cout << "Username   : " << user.username() << std::endl;
-            std::cout << "First Name : " << user.firstname() << std::endl;
-            std::cout << "Last Name  : " << user.lastname() << std::endl;
-            std::cout << "Enabled    : "
-                      << (user.enabled() ? "Yes" : "No") << std::endl;
+            show_user_details(gdb.get_user_by_username(config["name"]));
         }
         else {
             std::cerr << progname << ": you must specify a user ID or name."
@@ -126,43 +131,11 @@ int main(int argc, char *argv[]) try {
     else if ( config.is_set("enable") ) {
         if ( config.is_set("id") ) {
             GLUser user = gdb.get_user_by_id(config["id"]);
-            if ( !user.enabled() && config["enable"] == "yes" ) {
-                user.set_enabled(true);
-                std::cout << "Enabling user '" << user.username() << "'..."
-                          << std::endl;
-                gdb.update_user(user);
-                std::cout << "...success." << std::endl;
-            }
-            else if ( user.enabled() && config["enable"] == "no" ) {
-                user.set_enabled(false);
-                std::cout << "Disabling user '" << user.username() << "'..."
-                          << std::endl;
-                gdb.update_user(user);
-                std::cout << "...success." << std::endl;
-            }
-            else {
-                std::cout << "No action needed." << std::endl;
-            }
+            enable_user(user, config, gdb);
         }
         else if ( config.is_set("name") ) {
             GLUser user = gdb.get_user_by_username(config["name"]);
-            if ( !user.enabled() && config["enable"] == "yes" ) {
-                user.set_enabled(true);
-                std::cout << "Enabling user '" << user.username() << "'..."
-                          << std::endl;
-                gdb.update_user(user);
-                std::cout << "...success." << std::endl;
-            }
-            else if ( user.enabled() && config["enable"] == "no" ) {
-                user.set_enabled(false);
-                std::cout << "Disabling user '" << user.username() << "'..."
-                          << std::endl;
-                gdb.update_user(user);
-                std::cout << "...success." << std::endl;
-            }
-            else {
-                std::cout << "No action needed." << std::endl;
-            }
+            enable_user(user, config, gdb);
         }
         else {
             std::cerr << progname << ": you must specify a user ID or name."
@@ -245,6 +218,41 @@ static bool check_db_parameters(const Config& config) {
     }
     else {
         return true;
+    }
+}
+
+static void show_user_details(const GLUser& user) {
+    std::cout << "ID         : " << user.id() << std::endl;
+    std::cout << "Username   : " << user.username() << std::endl;
+    std::cout << "First Name : " << user.firstname() << std::endl;
+    std::cout << "Last Name  : " << user.lastname() << std::endl;
+    std::cout << "Enabled    : "
+              << (user.enabled() ? "Yes" : "No") << std::endl;
+}
+
+static void enable_user(GLUser& user, Config& config,
+                        GLDatabase& gdb) {
+    if ( config["enable"] != "yes" && config["enable"] != "no" ) {
+        throw ConfigBadOption("enable");
+    }
+
+    if ( !user.enabled() && config["enable"] == "yes" ) {
+        std::cout << "Enabling user '" << user.username() << "'..."
+                  << std::endl;
+        user.set_enabled(true);
+        gdb.update_user(user);
+        std::cout << "...success." << std::endl;
+    }
+    else if ( user.enabled() && config["enable"] == "no" ) {
+        std::cout << "Disabling user '" << user.username() << "'..."
+                  << std::endl;
+        user.set_enabled(false);
+        gdb.update_user(user);
+        std::cout << "...success." << std::endl;
+    }
+    else {
+        std::cout << "No action needed for user '"
+                  << user.username() << "'" << std::endl;
     }
 }
 
