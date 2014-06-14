@@ -70,22 +70,34 @@ Table Table::create_from_file(const std::string filename, const char delim) {
         TableRow headers(vec[0]);
         Table table(headers);
 
+        if ( vec[1].size() != headers.size() ) {
+            throw TableBadInputFile();
+        }
+
         std::vector<bool> quotes(headers.size());
         for ( size_t i = 0; i < quotes.size(); ++i ) {
             if ( vec[1][i] == "unquoted" ) {
                 quotes[i] = false;
             }
-            else {
+            else if ( vec[1][i] == "quoted" ) {
                 quotes[i] = true;
+            }
+            else {
+                throw TableBadInputFile();
             }
         }
         table.set_quoted(quotes);
 
         for ( size_t i = 2; i < vec.size(); ++i ) {
+            if ( vec[i].size() != headers.size() ) {
+                throw TableBadInputFile();
+            }
+
             TableRow record(vec[i]);
             table.append_record(record);
         }
 
+        ifs.close();
         return table;
     }
     else {
