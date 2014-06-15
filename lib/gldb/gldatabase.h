@@ -23,6 +23,7 @@ namespace genleg {
  */
 class GLDatabase {
     public:
+
         /*!
          * \brief           Constructor.
          * \param database  Database name.
@@ -31,13 +32,13 @@ class GLDatabase {
          * \param password  Password to log into database.
          * \throws          GLDBException on error.
          */
-        GLDatabase (const std::string database,
-                     const std::string hostname,
-                     const std::string username,
-                     const std::string password);
+        GLDatabase(const std::string& database,
+                   const std::string& hostname,
+                   const std::string& username,
+                   const std::string& password);
         
         /*!  Destructor  */
-        ~GLDatabase ();
+        ~GLDatabase();
 
         /*!
          * \brief           Creates the database structure.
@@ -109,7 +110,7 @@ class GLDatabase {
         gldb::DBConn m_dbc;
 
         /*!  SQL statements object  */
-        std::shared_ptr<DBSQLStatements> m_sql;
+        const std::shared_ptr<const DBSQLStatements> m_sql;
 
         /*!  Vector containing database table names  */
         const std::vector<std::string> m_tables;

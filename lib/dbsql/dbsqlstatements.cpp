@@ -1,7 +1,6 @@
 /*!
  * \file            dbsqlstatements.cpp
  * \brief           Implementation of SQL statement class
- * \details         Implementation of SQL statement class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
@@ -18,7 +17,7 @@ DBSQLStatements::DBSQLStatements() {
 DBSQLStatements::~DBSQLStatements() {
 }
 
-std::string DBSQLStatements::create_table(const std::string table_name) const {
+std::string DBSQLStatements::create_table(const std::string& table_name) const {
     std::string query;
 
     if ( table_name == "standing_data" ) {
@@ -152,13 +151,13 @@ std::string DBSQLStatements::create_table(const std::string table_name) const {
     return query;
 }
 
-std::string DBSQLStatements::drop_table(const std::string table_name) const {
+std::string DBSQLStatements::drop_table(const std::string& table_name) const {
     std::ostringstream ss;
     ss << "DROP TABLE " << table_name;
     return ss.str();
 }
 
-std::string DBSQLStatements::create_view(const std::string view_name) const {
+std::string DBSQLStatements::create_view(const std::string& view_name) const {
     std::string query;
 
     if ( view_name == "current_trial_balance" ) {
@@ -204,19 +203,19 @@ std::string DBSQLStatements::create_view(const std::string view_name) const {
     return query;
 }
 
-std::string DBSQLStatements::drop_view(const std::string view_name) const {
+std::string DBSQLStatements::drop_view(const std::string& view_name) const {
     std::ostringstream ss;
     ss << "DROP VIEW " << view_name;
     return ss.str();
 }
 
-std::string DBSQLStatements::user_by_id(const std::string user_id) const {
+std::string DBSQLStatements::user_by_id(const std::string& user_id) const {
     std::ostringstream ss;
     ss << "SELECT * FROM users WHERE id = " << user_id;
     return ss.str();
 }
 
-std::string DBSQLStatements::user_by_username(const std::string user_name) const {
+std::string DBSQLStatements::user_by_username(const std::string& user_name) const {
     std::ostringstream ss;
     ss << "SELECT * FROM users WHERE user_name = '" << user_name << "'";
     return ss.str();
@@ -235,31 +234,33 @@ std::string DBSQLStatements::update_user(const GLUser& user) const {
     return ss.str();
 }
 
-std::string DBSQLStatements::get_perms(const GLUser& user) {
+std::string DBSQLStatements::get_perms(const std::string& user_id) const {
     std::ostringstream ss;
     ss << "SELECT p.name AS Permission FROM perms AS p "
        << "INNER JOIN user_perms AS u ON u.permid = p.id "
-       << "WHERE u.userid = " << user.id() << " "
+       << "WHERE u.userid = " << user_id << " "
        << "ORDER BY name ASC";
     return ss.str();
 }
 
-std::string DBSQLStatements::grant(const GLUser& user, const std::string perm) {
+std::string DBSQLStatements::grant(const std::string& user_id,
+                                   const std::string& perm) const {
     std::ostringstream ss;
     ss << "INSERT INTO user_perms(userid, permid, addedby) "
        << "SELECT u.id, p.id, 1 "
        << "FROM users AS u "
        << "LEFT OUTER JOIN perms AS p "
        << "ON p.name = '" << perm << "' "
-       << "WHERE u.id = " << user.id();
+       << "WHERE u.id = " << user_id;
     return ss.str();
 }
 
-std::string DBSQLStatements::revoke(const GLUser& user, const std::string perm) {
+std::string DBSQLStatements::revoke(const std::string& user_id,
+                                    const std::string& perm) const {
     std::ostringstream ss;
     ss << "DELETE FROM user_perms "
        << "WHERE userid IN "
-       << "  (SELECT id FROM users WHERE id = " << user.id() << ")"
+       << "  (SELECT id FROM users WHERE id = " << user_id << ")"
        << "AND permid IN "
        << "  (SELECT id FROM perms WHERE name = '" << perm << "')";
     return ss.str();

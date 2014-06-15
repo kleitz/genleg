@@ -1,12 +1,10 @@
 /*!
  * \file            gluser.h
  * \brief           Interface to user class
- * \details         Interface to user class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
-
 
 #ifndef PG_GENERAL_LEDGER_GL_USER_H
 #define PG_GENERAL_LEDGER_GL_USER_H
@@ -22,6 +20,7 @@ namespace genleg {
  */
 class GLUser {
     public:
+
         /*!
          * \brief           Constructor.
          * \param id        User ID
@@ -30,14 +29,16 @@ class GLUser {
          * \param lastname  Last name
          * \param pass_hash The hashed password
          * \param pass_salt The salt for the hashed password
+         * \param perms     Vector of user permissions
          * \param enabled   `true` if user is enabled, `false` otherwise.
          */
-        GLUser (const std::string id,
-                const std::string username,
-                const std::string firstname,
-                const std::string lastname,
-                const std::string pass_hash,
-                const std::string pass_salt,
+        GLUser (const std::string& id,
+                const std::string& username,
+                const std::string& firstname,
+                const std::string& lastname,
+                const std::string& pass_hash,
+                const std::string& pass_salt,
+                std::vector<std::string>&& perms,
                 const bool enabled);
 
         /*!  Destructor  */
@@ -47,37 +48,44 @@ class GLUser {
          * \brief           Returns the user ID.
          * \returns         The user ID.
          */
-        std::string id() const;
+        const std::string& id() const;
 
         /*!
          * \brief           Returns the username.
          * \returns         The username.
          */
-        std::string username() const;
+        const std::string& username() const;
 
         /*!
          * \brief           Returns the user's first name.
          * \returns         The user's first name.
          */
-        std::string firstname() const;
+        const std::string& firstname() const;
 
         /*!
          * \brief           Returns the user's last name.
          * \returns         The user's last name.
          */
-        std::string lastname() const;
+        const std::string& lastname() const;
 
         /*!
          * \brief           Returns the user's hashed password.
          * \returns         The user's hashed password.
          */
-        std::string pass_hash() const;
+        const std::string& pass_hash() const;
 
         /*!
          * \brief           Returns the user's password salt.
          * \returns         The user's password salt.
          */
-        std::string pass_salt() const;
+        const std::string& pass_salt() const;
+
+        /*!
+         * \brief               Returns the permissions for a user.
+         * \returns             A vector of strings containing the names of
+         * the permissions held by the user.
+         */
+        const std::vector<std::string>& permissions() const;
 
         /*!
          * \brief           Returns the user's enabled status.
@@ -123,24 +131,10 @@ class GLUser {
          */
         bool check_password(const std::string& check_pass);
 
-        /*!
-         * \brief               Sets the permissions list for a user.
-         * \todo                Factor this into the constructor.
-         * \param perms         A vector of strings containing the permission
-         * names.
-         */
-        void set_permissions(std::vector<std::string>&& perms);
-
-        /*!
-         * \brief               Returns the permissions for a user.
-         * \returns             A vector of strings containing the names of
-         * the permissions held by the user.
-         */
-        const std::vector<std::string>& get_permissions() const;
-
     private:
+
         /*!  User ID  */
-        std::string m_id;
+        const std::string m_id;
 
         /*!  Username  */
         std::string m_username;
@@ -151,9 +145,6 @@ class GLUser {
         /*!  User's last name  */
         std::string m_lastname;
 
-        /*!  User's enabled status  */
-        bool m_enabled;
-
         /*!  User's hashed password  */
         std::string m_pass_hash;
 
@@ -161,10 +152,14 @@ class GLUser {
         std::string m_pass_salt;
 
         /*!  List of permissions  */
-        std::vector<std::string> m_perms;
+        const std::vector<std::string> m_perms;
+
+        /*!  User's enabled status  */
+        bool m_enabled;
 
 };              //  class GLUser
 
 }               //  namespace genleg
 
 #endif          //  PG_GENERAL_LEDGER_GL_USER_H
+

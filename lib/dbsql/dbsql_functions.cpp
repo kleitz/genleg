@@ -3,12 +3,12 @@
 
 using namespace genleg;
 
-std::shared_ptr<DBSQLStatements>
+std::shared_ptr<const DBSQLStatements>
 genleg::get_sql_object() {
-    const std::string type = gldb::get_database_type();
+    const std::string& type = gldb::get_database_type();
 
     if ( type == "MySQL" ) {
-        return std::shared_ptr<DBSQLStatements>(new DBSQLMySQL());
+        return std::shared_ptr<const DBSQLStatements>(new const DBSQLMySQL());
     }
 
     throw "Unrecognized type";

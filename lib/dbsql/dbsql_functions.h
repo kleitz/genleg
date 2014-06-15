@@ -8,7 +8,7 @@
 
 namespace genleg {
 
-std::shared_ptr<DBSQLStatements> get_sql_object();
+std::shared_ptr<const DBSQLStatements> get_sql_object();
 
 }           //  namespace genleg
 

@@ -31,35 +31,35 @@ class DBSQLStatements {
          * \param table_name    The table to create.
          * \returns             The SQL statement to create the table.
          */
-        virtual std::string create_table(const std::string table_name) const;
+        virtual std::string create_table(const std::string& table_name) const;
 
         /*!
          * \brief               Returns a SQL statement for dropping a table.
          * \param table_name    The table to drop.
          * \returns             The SQL statement to drop the table.
          */
-        virtual std::string drop_table(const std::string table_name) const;
+        virtual std::string drop_table(const std::string& table_name) const;
 
         /*!
          * \brief               Returns a SQL statement for creating a view.
          * \param view_name     The view to create.
          * \returns             The SQL statement to create the view.
          */
-        virtual std::string create_view(const std::string view_name) const;
+        virtual std::string create_view(const std::string& view_name) const;
 
         /*!
          * \brief               Returns a SQL statement for dropping a view.
          * \param view_name     The view to drop.
          * \returns             The SQL statement to drop the view.
          */
-        virtual std::string drop_view(const std::string view_name) const;
+        virtual std::string drop_view(const std::string& view_name) const;
         
         /*!
          * \brief               Returns a SQL statement to select a user by ID.
          * \param user_id       The user_id
          * \returns             The SQL statement.
          */
-        virtual std::string user_by_id(const std::string user_id) const;
+        virtual std::string user_by_id(const std::string& user_id) const;
         
         /*!
          * \brief               Returns a SQL statement to select a user by
@@ -67,7 +67,7 @@ class DBSQLStatements {
          * \param user_name     The username.
          * \returns             The SQL statement.
          */
-        virtual std::string user_by_username(const std::string user_name) const;
+        virtual std::string user_by_username(const std::string& user_name) const;
 
         /*!
          * \brief               Returns a SQL UPDATE statement to update a
@@ -88,7 +88,8 @@ class DBSQLStatements {
          * \param perm          A string containing the name of the permission.
          * \returns             The SQL statement.
          */
-        virtual std::string grant(const GLUser& user, const std::string perm);
+        virtual std::string grant(const std::string& user_id,
+                                  const std::string& perm) const;
 
         /*!
          * \brief               Returns a SQL UPDATE statement to revoke a
@@ -97,15 +98,16 @@ class DBSQLStatements {
          * \param perm          The permission to revoke.
          * \returns             The SQL statement.
          */
-        virtual std::string revoke(const GLUser& user, const std::string perm);
+        virtual std::string revoke(const std::string& user_id,
+                                   const std::string& perm) const;
 
         /*!
          * \brief               Returns a SQL UPDATE statement to list a
          * user's permissions.
-         * \param user          The user for which to list.
+         * \param user_id       The user ID for which to list.
          * \returns             The SQL statement.
          */
-        virtual std::string get_perms(const GLUser& user);
+        virtual std::string get_perms(const std::string& user_id) const;
 
 };              //  class DBSQLStatements
 
