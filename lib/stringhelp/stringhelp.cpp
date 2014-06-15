@@ -81,7 +81,7 @@ pgstring::split_lines(std::vector<std::vector<std::string>>& vec,
     return vec;
 }
 
-std::string& pgstring::join(std::vector<std::string>& vec,
+std::string& pgstring::join(const std::vector<std::string>& vec,
         std::string& s, const char delim) {
     std::ostringstream ss;
     for ( size_t i = 0; i < vec.size(); ++i ) {

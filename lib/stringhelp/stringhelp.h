@@ -99,7 +99,7 @@ split_lines(std::vector<std::vector<std::string>>& vec,
  * fields.
  * \returns             A reference to \c s.
  */
-std::string& join(std::vector<std::string>& vec,
+std::string& join(const std::vector<std::string>& vec,
         std::string& s, const char delim);
 
 /*!
