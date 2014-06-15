@@ -1,10 +1,17 @@
+/*!
+ * \file            dbsqlstatements.h
+ * \brief           Interface to SQL module standalone functions.
+ * \author          Paul Griffiths
+ * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
+ * of the GNU General Public License. <http://www.gnu.org/licenses/>
+ */
+
 #ifndef PG_GENERAL_LEDGER_DATABASE_DBSQL_FUNCTIONS_H
 #define PG_GENERAL_LEDGER_DATABASE_DBSQL_FUNCTIONS_H
 
-#include <string>
 #include <memory>
 
-#include "dbsql_implementations.h"
+#include "dbsqlstatements.h"
 
 namespace genleg {
 

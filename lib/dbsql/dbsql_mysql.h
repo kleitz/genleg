@@ -1,15 +1,13 @@
 /*!
  * \file            dbsql_mysql.h
  * \brief           Interface to MySQL SQL statement class
- * \details         Interface to MySQL SQL statement class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
-#ifndef PG_GENERAL_LEDGER_DATABASE_MYSQL_SQL_H
-#define PG_GENERAL_LEDGER_DATABASE_MYSQL_SQL_H
+#ifndef PG_GENERAL_LEDGER_DATABASE_DBSQL_MYSQL_H
+#define PG_GENERAL_LEDGER_DATABASE_DBSQL_MYSQL_H
 
 #include "dbsqlstatements.h"
 
@@ -24,4 +22,5 @@ class DBSQLMySQL : public DBSQLStatements {
 
 }               //  namespace genleg
 
-#endif          //  PG_GENERAL_LEDGER_DATABASE_MYSQL_SQL_H
+#endif          //  PG_GENERAL_LEDGER_DATABASE_DBSQL_MYSQL_H
+

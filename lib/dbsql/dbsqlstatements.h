@@ -1,13 +1,13 @@
 /*!
  * \file            dbsqlstatements.h
- * \brief           Interface to SQL statement class
+ * \brief           Interface to SQL statements class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-#ifndef PG_GENERAL_LEDGER_DATABASE_SQL_STATEMENTS_H
-#define PG_GENERAL_LEDGER_DATABASE_SQL_STATEMENTS_H
+#ifndef PG_GENERAL_LEDGER_DATABASE_DBSQL_STATEMENTS_H
+#define PG_GENERAL_LEDGER_DATABASE_DBSQL_STATEMENTS_H
 
 #include <string>
 #include "gldb/gluser.h"
@@ -20,6 +20,7 @@ namespace genleg {
  */
 class DBSQLStatements {
     public:
+
         /*!  Constructor  */
         DBSQLStatements ();
 
@@ -67,7 +68,8 @@ class DBSQLStatements {
          * \param user_name     The username.
          * \returns             The SQL statement.
          */
-        virtual std::string user_by_username(const std::string& user_name) const;
+        virtual std::string
+            user_by_username(const std::string& user_name) const;
 
         /*!
          * \brief               Returns a SQL UPDATE statement to update a
@@ -84,7 +86,7 @@ class DBSQLStatements {
          * the permission to user 1. This will need to be updated to support
          * the recording of which user has granted the permission, when
          * support for others to be able to do so is implemented.
-         * \param user          The user for which to grant the permission.
+         * \param user_id       The user ID for which to grant the permission.
          * \param perm          A string containing the name of the permission.
          * \returns             The SQL statement.
          */
@@ -94,7 +96,7 @@ class DBSQLStatements {
         /*!
          * \brief               Returns a SQL UPDATE statement to revoke a
          * permission from a user.
-         * \param user          The user from which to revoke.
+         * \param user_id       The user ID from which to revoke.
          * \param perm          The permission to revoke.
          * \returns             The SQL statement.
          */
@@ -113,5 +115,5 @@ class DBSQLStatements {
 
 }               //  namespace genleg
 
-#endif          //  PG_GENERAL_LEDGER_DATABASE_SQL_STATEMENTS_H
+#endif          //  PG_GENERAL_LEDGER_DATABASE_DBSQL_STATEMENTS_H
 
