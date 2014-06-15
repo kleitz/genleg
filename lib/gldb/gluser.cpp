@@ -7,7 +7,6 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
 #include "gluser.h"
 
 using namespace genleg;
@@ -21,7 +20,9 @@ GLUser::GLUser(const std::string id,
     m_username(username),
     m_firstname(firstname),
     m_lastname(lastname),
-    m_enabled(enabled)
+    m_enabled(enabled),
+    m_pass_hash(""),
+    m_pass_salt("")
 {
 }
 
@@ -46,6 +47,14 @@ std::string GLUser::lastname() const {
 
 bool GLUser::enabled() const {
     return m_enabled;
+}
+
+std::string GLUser::pass_hash() const {
+    return m_pass_hash;
+}
+
+std::string GLUser::pass_salt() const {
+    return m_pass_salt;
 }
 
 void GLUser::set_username(const std::string& new_username) {

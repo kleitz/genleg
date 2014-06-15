@@ -96,6 +96,28 @@ static std::string login(void);
  * \returns         Exit status code.
  */
 int main(int argc, char *argv[]) try {
+    GLUser user("", "", "", "", false);
+    user.set_password("hunkydory");
+    std::cout << "Hashed password: " << user.pass_hash() << std::endl;
+    std::cout << "Salt: " << user.pass_salt() << std::endl;
+
+    if ( user.check_password("hunkydory") ) {
+        std::cout << "Password 'hunkydory' matches." << std::endl;
+    }
+    else {
+        std::cout << "Password 'hunkydory' does not match." << std::endl;
+    }
+
+    if ( user.check_password("falafelize") ) {
+        std::cout << "Password 'falafelize' matches." << std::endl;
+    }
+    else {
+        std::cout << "Password 'falafelize' does not match." << std::endl;
+    }
+
+
+    return 0;
+
     Config config;
     set_configuration(config, argc, argv);
 

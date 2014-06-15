@@ -63,6 +63,18 @@ class GLUser {
         std::string lastname() const;
 
         /*!
+         * \brief           Returns the user's hashed password.
+         * \returns         The user's hashed password.
+         */
+        std::string pass_hash() const;
+
+        /*!
+         * \brief           Returns the user's password salt.
+         * \returns         The user's password salt.
+         */
+        std::string pass_salt() const;
+
+        /*!
          * \brief           Returns the user's enabled status.
          * \returns         The user's enabled status.
          */
@@ -92,6 +104,20 @@ class GLUser {
          */
         void set_enabled(const bool new_enabled);
 
+        /*!
+         * \brief               Sets a user's password hash and salt.
+         * \param new_pass      The new password, must be > 8 characters.
+         */
+        void set_password(const std::string& new_pass);
+
+        /*!
+         * \brief               Checks a password against the user's hash.
+         * \param check_pass    The password to check, must be > 8 characters.
+         * \returns             `true` is the password matches, `false`
+         * otherwise.
+         */
+        bool check_password(const std::string& check_pass);
+
     private:
         /*!  User ID  */
         std::string m_id;
@@ -107,6 +133,12 @@ class GLUser {
 
         /*!  User's enabled status  */
         bool m_enabled;
+
+        /*!  User's hashed password  */
+        std::string m_pass_hash;
+
+        /*!  User's password salt  */
+        std::string m_pass_salt;
 
 };              //  class GLUser
 
