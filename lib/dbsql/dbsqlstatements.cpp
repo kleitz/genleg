@@ -37,8 +37,9 @@ std::string DBSQLStatements::create_table(const std::string table_name) const {
         "    user_name  VARCHAR(30) NOT NULL UNIQUE,"
         "    first_name VARCHAR(30) NOT NULL,"
         "    last_name  VARCHAR(30) NOT NULL,"
-        "    password   VARCHAR(30)          DEFAULT NULL,"
-        "    enabled    BOOLEAN              DEFAULT FALSE,"
+        "    pass_hash  VARCHAR(30) NOT NULL DEFAULT 'Not set',"
+        "    pass_salt  VARCHAR(30) NOT NULL DEFAULT 'XX',"
+        "    enabled    BOOLEAN     NOT NULL DEFAULT FALSE,"
         "    created    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,"
         "  CONSTRAINT users_pk"
         "    PRIMARY KEY (id)"
@@ -199,6 +200,8 @@ std::string DBSQLStatements::update_user(const GLUser& user) const {
     ss << "UPDATE users SET user_name = '" << user.username()
        << "', first_name = '" << user.firstname()
        << "', last_name = '" << user.lastname()
+       << "', pass_hash = '" << user.pass_hash()
+       << "', pass_salt = '" << user.pass_salt()
        << "', enabled = " << enabled
        << " WHERE id = " << user.id();
     return ss.str();

@@ -104,6 +104,8 @@ GLUser GLDatabase::get_user_by_id(const std::string& user_id) {
                     table.get_field("user_name", 0),
                     table.get_field("first_name", 0),
                     table.get_field("last_name", 0),
+                    table.get_field("pass_hash", 0),
+                    table.get_field("pass_salt", 0),
                     enabled);
     return new_user;
 }
@@ -135,6 +137,8 @@ GLUser GLDatabase::get_user_by_username(const std::string& user_name) {
                     table.get_field("user_name", 0),
                     table.get_field("first_name", 0),
                     table.get_field("last_name", 0),
+                    table.get_field("pass_hash", 0),
+                    table.get_field("pass_salt", 0),
                     enabled);
     return new_user;
 }

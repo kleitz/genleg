@@ -21,14 +21,14 @@ using namespace genleg;
 BOOST_AUTO_TEST_SUITE(user_password_suite)
 
 BOOST_AUTO_TEST_CASE(user_password_check_good) {
-    GLUser user("", "", "", "", true);
+    GLUser user("", "", "", "", "", "", true);
     std::string passwd("filigree");
     user.set_password(passwd);
     BOOST_CHECK(user.check_password(passwd));
 }
 
 BOOST_AUTO_TEST_CASE(user_password_check_bad) {
-    GLUser user("", "", "", "", true);
+    GLUser user("", "", "", "", "", "", true);
     std::string passwd("filigree");
     user.set_password(passwd);
     std::string badpass("enormity");

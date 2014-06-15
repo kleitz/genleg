@@ -63,6 +63,24 @@ static void enable_user(GLUser& user, Config& config,
                         GLDatabase& gdb);
 
 /*!
+ * \brief           Sets a user's password.
+ * \ingroup         gl_user
+ * \param user      Reference to user.
+ * \param config    Reference to program configuration.
+ * \param gdb       Reference to database object.
+ */
+static void set_user_password(GLUser& user, Config& config,
+                              GLDatabase& gdb);
+
+/*!
+ * \brief           Checks a user's password.
+ * \ingroup         gl_user
+ * \param user      Reference to user.
+ * \param config    Reference to program configuration options.
+ */
+static void check_user_password(GLUser& user, Config& config);
+
+/*!
  * \brief           Prints a program usage message.
  * \ingroup         gl_user
  */
@@ -96,28 +114,6 @@ static std::string login(void);
  * \returns         Exit status code.
  */
 int main(int argc, char *argv[]) try {
-    GLUser user("", "", "", "", false);
-    user.set_password("hunkydory");
-    std::cout << "Hashed password: " << user.pass_hash() << std::endl;
-    std::cout << "Salt: " << user.pass_salt() << std::endl;
-
-    if ( user.check_password("hunkydory") ) {
-        std::cout << "Password 'hunkydory' matches." << std::endl;
-    }
-    else {
-        std::cout << "Password 'hunkydory' does not match." << std::endl;
-    }
-
-    if ( user.check_password("falafelize") ) {
-        std::cout << "Password 'falafelize' matches." << std::endl;
-    }
-    else {
-        std::cout << "Password 'falafelize' does not match." << std::endl;
-    }
-
-
-    return 0;
-
     Config config;
     set_configuration(config, argc, argv);
 
@@ -164,6 +160,44 @@ int main(int argc, char *argv[]) try {
                       << std::endl;
         }
     }
+    else if ( config.is_set("setpass") ) {
+        if ( config["setpass"].length() < 8 ) {
+            std::cerr << progname
+                      << ": password must be at least 8 characters."
+                      << std::endl;
+        }
+        else if ( config.is_set("id") ) {
+            GLUser user = gdb.get_user_by_id(config["id"]);
+            set_user_password(user, config, gdb);
+        }
+        else if ( config.is_set("name") ) {
+            GLUser user = gdb.get_user_by_username(config["name"]);
+            set_user_password(user, config, gdb);
+        }
+        else {
+            std::cerr << progname << ": you must specify a user ID or name."
+                      << std::endl;
+        }
+    }
+    else if ( config.is_set("checkpass") ) {
+        if ( config["checkpass"].length() < 8 ) {
+            std::cerr << progname
+                      << ": password must be at least 8 characters."
+                      << std::endl;
+        }
+        else if ( config.is_set("id") ) {
+            GLUser user = gdb.get_user_by_id(config["id"]);
+            check_user_password(user, config);
+        }
+        else if ( config.is_set("name") ) {
+            GLUser user = gdb.get_user_by_username(config["name"]);
+            check_user_password(user, config);
+        }
+        else {
+            std::cerr << progname << ": you must specify a user ID or name."
+                      << std::endl;
+        }
+    }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
@@ -204,6 +238,8 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("password", Argument::REQ_ARG);
     config.add_cmdline_option("show", Argument::NO_ARG);
     config.add_cmdline_option("enable", Argument::REQ_ARG);
+    config.add_cmdline_option("setpass", Argument::REQ_ARG);
+    config.add_cmdline_option("checkpass", Argument::REQ_ARG);
     config.add_cmdline_option("id", Argument::REQ_ARG);
     config.add_cmdline_option("name", Argument::REQ_ARG);
     config.populate_from_file("conf_files/gl_user_conf.conf");
@@ -250,6 +286,8 @@ static void show_user_details(const GLUser& user) {
     std::cout << "Last Name  : " << user.lastname() << std::endl;
     std::cout << "Enabled    : "
               << (user.enabled() ? "Yes" : "No") << std::endl;
+    std::cout << "Pass hash  : " << user.pass_hash() << std::endl;
+    std::cout << "Pass salt  : " << user.pass_salt() << std::endl;
 }
 
 static void enable_user(GLUser& user, Config& config,
@@ -278,6 +316,26 @@ static void enable_user(GLUser& user, Config& config,
     }
 }
 
+static void set_user_password(GLUser& user, Config& config,
+                              GLDatabase& gdb) {
+    std::cout << "Setting password for user '"
+              << user.username() << "'..." << std::endl;
+    user.set_password(config["setpass"]);
+    gdb.update_user(user);
+    std::cout << "...success." << std::endl;
+}
+
+static void check_user_password(GLUser& user, Config& config) {
+    std::cout << "Checking password for user '"
+              << user.username() << "'..." << std::endl;
+    if ( user.check_password(config["checkpass"]) ) {
+        std::cout << "Password is correct." << std::endl;
+    }
+    else {
+        std::cout << "Password is not correct." << std::endl;
+    }
+}
+
 static void print_usage_message() {
     std::cout << "Usage: " << progname << " [options]\n";
 }
@@ -290,6 +348,8 @@ static void print_help_message() {
         << "\nDatabase options:\n"
         << "  --show                Show details of a user\n"
         << "  --enable=<yes|no>     Enabled or disable a user\n"
+        << "  --checkpass=<passwd>  Check a password against the user's\n"
+        << "  --setpass=<passwd>    Set a user's password\n"
         << "  --id=<id>             Specify a user by ID\n"
         << "  --name=<name>         Specify a user by username\n";
 }

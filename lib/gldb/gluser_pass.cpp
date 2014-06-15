@@ -1,7 +1,9 @@
 /*!
  * \file            gluser_pass.cpp
  * \brief           Implementation of password functions for user class
- * \todo            Implement a better form of password encryption.
+ * \todo            Implement a better form of password encryption. In
+ * particular, these functions are not re-entrant, and only use the first
+ * 8 characters of the password.
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>

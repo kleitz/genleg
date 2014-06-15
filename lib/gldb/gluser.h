@@ -27,12 +27,16 @@ class GLUser {
          * \param username  Username
          * \param firstname First name
          * \param lastname  Last name
+         * \param pass_hash The hashed password
+         * \param pass_salt The salt for the hashed password
          * \param enabled   `true` if user is enabled, `false` otherwise.
          */
         GLUser (const std::string id,
                 const std::string username,
                 const std::string firstname,
                 const std::string lastname,
+                const std::string pass_hash,
+                const std::string pass_salt,
                 const bool enabled);
 
         /*!  Destructor  */

@@ -15,14 +15,16 @@ GLUser::GLUser(const std::string id,
                const std::string username,
                const std::string firstname,
                const std::string lastname,
+               const std::string pass_hash,
+               const std::string pass_salt,
                const bool enabled) :
     m_id(id),
     m_username(username),
     m_firstname(firstname),
     m_lastname(lastname),
     m_enabled(enabled),
-    m_pass_hash(""),
-    m_pass_salt("")
+    m_pass_hash(pass_hash),
+    m_pass_salt(pass_salt)
 {
 }
 
