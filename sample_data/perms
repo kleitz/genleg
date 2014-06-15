@@ -1,0 +1,16 @@
+name:description
+quoted:quoted
+BASICRPTS:Run basic reports
+FINRPTS:Run all financial reports
+ADMINRPTS:Run administrative reports
+ALLREPTS:Run all reports
+CREATE:Create journal entries
+POST:Post journal entries (except ones you created)
+CREATEPOST:Create and post journal entries (including ones you created)
+ADDUSER:Add a new user
+ENABLEUSER:Enable and disable user accounts
+CHANGEPASS:Change (reset) another user\'s password
+BASICPERMS:Set or change basic permissions for another user
+ALLPERMS:Set or change all permissions (including administrative) for another user
+CLOSEPRD:Close a financial period
+CLOSEYEAR:Close a financial year

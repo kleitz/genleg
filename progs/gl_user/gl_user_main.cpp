@@ -46,6 +46,14 @@ static bool check_help_and_version(const Config& config);
 static bool check_db_parameters(const Config& config);
 
 /*!
+ * \brief           Returns a user from either an ID or a name.
+ * \param config    Program configurations object.
+ * \param gdb       Database object.
+ * \returns         The user.
+ */
+GLUser get_user(Config& config, GLDatabase& gdb);
+
+/*!
  * \brief           Outputs details for a user.
  * \ingroup         gl_user
  * \param user      Reference to user.
@@ -135,30 +143,11 @@ int main(int argc, char *argv[]) try {
                     config["username"], passwd);
 
     if ( config.is_set("show") ) {
-        if ( config.is_set("id") ) {
-            show_user_details(gdb.get_user_by_id(config["id"]));
-        }
-        else if ( config.is_set("name") ) {
-            show_user_details(gdb.get_user_by_username(config["name"]));
-        }
-        else {
-            std::cerr << progname << ": you must specify a user ID or name."
-                      << std::endl;
-        }
+        show_user_details(get_user(config, gdb));
     }
     else if ( config.is_set("enable") ) {
-        if ( config.is_set("id") ) {
-            GLUser user = gdb.get_user_by_id(config["id"]);
-            enable_user(user, config, gdb);
-        }
-        else if ( config.is_set("name") ) {
-            GLUser user = gdb.get_user_by_username(config["name"]);
-            enable_user(user, config, gdb);
-        }
-        else {
-            std::cerr << progname << ": you must specify a user ID or name."
-                      << std::endl;
-        }
+        GLUser user = get_user(config, gdb);
+        enable_user(user, config, gdb);
     }
     else if ( config.is_set("setpass") ) {
         if ( config["setpass"].length() < 8 ) {
@@ -166,17 +155,9 @@ int main(int argc, char *argv[]) try {
                       << ": password must be at least 8 characters."
                       << std::endl;
         }
-        else if ( config.is_set("id") ) {
-            GLUser user = gdb.get_user_by_id(config["id"]);
-            set_user_password(user, config, gdb);
-        }
-        else if ( config.is_set("name") ) {
-            GLUser user = gdb.get_user_by_username(config["name"]);
-            set_user_password(user, config, gdb);
-        }
         else {
-            std::cerr << progname << ": you must specify a user ID or name."
-                      << std::endl;
+            GLUser user = get_user(config, gdb);
+            set_user_password(user, config, gdb);
         }
     }
     else if ( config.is_set("checkpass") ) {
@@ -185,18 +166,26 @@ int main(int argc, char *argv[]) try {
                       << ": password must be at least 8 characters."
                       << std::endl;
         }
-        else if ( config.is_set("id") ) {
-            GLUser user = gdb.get_user_by_id(config["id"]);
-            check_user_password(user, config);
-        }
-        else if ( config.is_set("name") ) {
-            GLUser user = gdb.get_user_by_username(config["name"]);
-            check_user_password(user, config);
-        }
         else {
-            std::cerr << progname << ": you must specify a user ID or name."
-                      << std::endl;
+            GLUser user = get_user(config, gdb);
+            check_user_password(user, config);
         }
+    }
+    else if ( config.is_set("grant") ) {
+        GLUser user = get_user(config, gdb);
+        std::cout << "Attempting to grant permission '"
+                  << config["grant"] << "' to user "
+                  << user.username() << "..." << std::endl;
+        gdb.grant(user, config["grant"]);
+        std::cout << "...success." << std::endl;
+    }
+    else if ( config.is_set("revoke") ) {
+        GLUser user = get_user(config, gdb);
+        std::cout << "Attempting to revoke permission '"
+                  << config["revoke"] << "' from user "
+                  << user.username() << "..." << std::endl;
+        gdb.revoke(user, config["revoke"]);
+        std::cout << "...success." << std::endl;
     }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
@@ -240,6 +229,8 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("enable", Argument::REQ_ARG);
     config.add_cmdline_option("setpass", Argument::REQ_ARG);
     config.add_cmdline_option("checkpass", Argument::REQ_ARG);
+    config.add_cmdline_option("grant", Argument::REQ_ARG);
+    config.add_cmdline_option("revoke", Argument::REQ_ARG);
     config.add_cmdline_option("id", Argument::REQ_ARG);
     config.add_cmdline_option("name", Argument::REQ_ARG);
     config.populate_from_file("conf_files/gl_user_conf.conf");
@@ -279,6 +270,18 @@ static bool check_db_parameters(const Config& config) {
     }
 }
 
+GLUser get_user(Config& config, GLDatabase& gdb) {
+    if ( config.is_set("id") ) {
+        return gdb.get_user_by_id(config["id"]);
+    }
+    else if ( config.is_set("name") ) {
+        return gdb.get_user_by_username(config["name"]);
+    }
+    else {
+        throw std::runtime_error("You must select a user ID or name");
+    }
+}
+
 static void show_user_details(const GLUser& user) {
     std::cout << "ID         : " << user.id() << std::endl;
     std::cout << "Username   : " << user.username() << std::endl;
@@ -288,6 +291,12 @@ static void show_user_details(const GLUser& user) {
               << (user.enabled() ? "Yes" : "No") << std::endl;
     std::cout << "Pass hash  : " << user.pass_hash() << std::endl;
     std::cout << "Pass salt  : " << user.pass_salt() << std::endl;
+    std::cout << "\nPermissions:" << std::endl;
+
+    const std::vector<std::string>& perms = user.get_permissions();
+    for ( const auto& s : perms ) {
+        std::cout << "  " << s << std::endl;
+    }
 }
 
 static void enable_user(GLUser& user, Config& config,
@@ -350,6 +359,8 @@ static void print_help_message() {
         << "  --enable=<yes|no>     Enabled or disable a user\n"
         << "  --checkpass=<passwd>  Check a password against the user's\n"
         << "  --setpass=<passwd>    Set a user's password\n"
+        << "  --grant=<perm>        Grant a permission to a user\n"
+        << "  --revoke=<perm>       Revoke a permission from a user\n"
         << "  --id=<id>             Specify a user by ID\n"
         << "  --name=<name>         Specify a user by username\n";
 }

@@ -11,6 +11,7 @@
 #ifndef PG_GENERAL_LEDGER_GL_USER_H
 #define PG_GENERAL_LEDGER_GL_USER_H
 
+#include <vector>
 #include <string>
 
 namespace genleg {
@@ -122,6 +123,21 @@ class GLUser {
          */
         bool check_password(const std::string& check_pass);
 
+        /*!
+         * \brief               Sets the permissions list for a user.
+         * \todo                Factor this into the constructor.
+         * \param perms         A vector of strings containing the permission
+         * names.
+         */
+        void set_permissions(std::vector<std::string>&& perms);
+
+        /*!
+         * \brief               Returns the permissions for a user.
+         * \returns             A vector of strings containing the names of
+         * the permissions held by the user.
+         */
+        const std::vector<std::string>& get_permissions() const;
+
     private:
         /*!  User ID  */
         std::string m_id;
@@ -143,6 +159,9 @@ class GLUser {
 
         /*!  User's password salt  */
         std::string m_pass_salt;
+
+        /*!  List of permissions  */
+        std::vector<std::string> m_perms;
 
 };              //  class GLUser
 

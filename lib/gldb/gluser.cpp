@@ -24,7 +24,8 @@ GLUser::GLUser(const std::string id,
     m_lastname(lastname),
     m_enabled(enabled),
     m_pass_hash(pass_hash),
-    m_pass_salt(pass_salt)
+    m_pass_salt(pass_salt),
+    m_perms()
 {
 }
 
@@ -73,5 +74,13 @@ void GLUser::set_lastname(const std::string& new_lastname) {
 
 void GLUser::set_enabled(const bool new_enabled) {
     m_enabled = new_enabled;
+}
+
+void GLUser::set_permissions(std::vector<std::string>&& perms) {
+    m_perms = perms;
+}
+
+const std::vector<std::string>& GLUser::get_permissions() const {
+    return m_perms;
 }
 

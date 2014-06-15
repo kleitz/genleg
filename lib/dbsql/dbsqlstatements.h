@@ -77,6 +77,36 @@ class DBSQLStatements {
          */
         virtual std::string update_user(const GLUser& user) const;
 
+        /*!
+         * \brief               Returns a SQL statement to grant a user a
+         * permission.
+         * \attention           This function always sets the user granting
+         * the permission to user 1. This will need to be updated to support
+         * the recording of which user has granted the permission, when
+         * support for others to be able to do so is implemented.
+         * \param user          The user for which to grant the permission.
+         * \param perm          A string containing the name of the permission.
+         * \returns             The SQL statement.
+         */
+        virtual std::string grant(const GLUser& user, const std::string perm);
+
+        /*!
+         * \brief               Returns a SQL UPDATE statement to revoke a
+         * permission from a user.
+         * \param user          The user from which to revoke.
+         * \param perm          The permission to revoke.
+         * \returns             The SQL statement.
+         */
+        virtual std::string revoke(const GLUser& user, const std::string perm);
+
+        /*!
+         * \brief               Returns a SQL UPDATE statement to list a
+         * user's permissions.
+         * \param user          The user for which to list.
+         * \returns             The SQL statement.
+         */
+        virtual std::string get_perms(const GLUser& user);
+
 };              //  class DBSQLStatements
 
 }               //  namespace genleg

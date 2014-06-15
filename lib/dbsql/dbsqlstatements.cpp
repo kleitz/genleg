@@ -45,6 +45,34 @@ std::string DBSQLStatements::create_table(const std::string table_name) const {
         "    PRIMARY KEY (id)"
         ");";
     }
+    else if ( table_name == "perms" ) {
+        query = "CREATE TABLE perms ("
+        "    id             INTEGER         NOT NULL AUTO_INCREMENT,"
+        "    name           VARCHAR(10)     NOT NULL UNIQUE,"
+        "    description    VARCHAR(100)    NOT NULL,"
+        "  CONSTRAINT perms_pk"
+        "    PRIMARY KEY (id)"
+        ");";
+    }
+    else if ( table_name == "user_perms" ) {
+        query = "CREATE TABLE user_perms ("
+        "    userid         INTEGER         NOT NULL,"
+        "    permid         INTEGER         NOT NULL,"
+        "    addedby        INTEGER         NOT NULL,"
+        "    created        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+        "  CONSTRAINT user_perms_pk"
+        "    PRIMARY KEY (userid, permid),"
+        "  CONSTRAINT user_perms_userid_fk"
+        "    FOREIGN KEY (userid)"
+        "    REFERENCES users(id),"
+        "  CONSTRAINT user_perms_permid_fk"
+        "    FOREIGN KEY (permid)"
+        "    REFERENCES perms(id),"
+        "  CONSTRAINT user_perms_addedby_fk"
+        "    FOREIGN KEY (addedby)"
+        "    REFERENCES users(id)"
+        ");";
+    }
     else if ( table_name == "entities" ) {
         query = "CREATE TABLE entities ("
         "    id         INTEGER         NOT NULL AUTO_INCREMENT,"
@@ -204,6 +232,36 @@ std::string DBSQLStatements::update_user(const GLUser& user) const {
        << "', pass_salt = '" << user.pass_salt()
        << "', enabled = " << enabled
        << " WHERE id = " << user.id();
+    return ss.str();
+}
+
+std::string DBSQLStatements::get_perms(const GLUser& user) {
+    std::ostringstream ss;
+    ss << "SELECT p.name AS Permission FROM perms AS p "
+       << "INNER JOIN user_perms AS u ON u.permid = p.id "
+       << "WHERE u.userid = " << user.id() << " "
+       << "ORDER BY name ASC";
+    return ss.str();
+}
+
+std::string DBSQLStatements::grant(const GLUser& user, const std::string perm) {
+    std::ostringstream ss;
+    ss << "INSERT INTO user_perms(userid, permid, addedby) "
+       << "SELECT u.id, p.id, 1 "
+       << "FROM users AS u "
+       << "LEFT OUTER JOIN perms AS p "
+       << "ON p.name = '" << perm << "' "
+       << "WHERE u.id = " << user.id();
+    return ss.str();
+}
+
+std::string DBSQLStatements::revoke(const GLUser& user, const std::string perm) {
+    std::ostringstream ss;
+    ss << "DELETE FROM user_perms "
+       << "WHERE userid IN "
+       << "  (SELECT id FROM users WHERE id = " << user.id() << ")"
+       << "AND permid IN "
+       << "  (SELECT id FROM perms WHERE name = '" << perm << "')";
     return ss.str();
 }
 

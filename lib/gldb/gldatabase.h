@@ -90,6 +90,20 @@ class GLDatabase {
          */
         void update_user(const GLUser& user);
 
+        /*!
+         * \brief           Grants a user a permission.
+         * \param user      The user for which to grant.
+         * \param perm      A string containing the permission to grant.
+         */
+        void grant(const GLUser& user, const std::string& perm);
+
+        /*!
+         * \brief           Revokes a permission from a user.
+         * \param user      The user for which to revoke.
+         * \param perm      A string containing the permission to revoke.
+         */
+        void revoke(const GLUser& user, const std::string& perm);
+
     private:
         /*!  Database connection  */
         gldb::DBConn m_dbc;
@@ -103,6 +117,16 @@ class GLDatabase {
         /*!  Vector containing database view names  */
         const std::vector<std::string> m_views;
         
+        /*!
+         * \brief           Creates a user from a query table.
+         * \details         Provided because the public functions can
+         * get a user either from an ID or a name, this function contains
+         * the common functionality.
+         * \param table     A table from the appropriate query.
+         * \returns         The new user.
+         */
+        GLUser create_user(gldb::Table& table);
+
 };              //  class GLDatabase
 
 }               //  namespace genleg
