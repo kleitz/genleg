@@ -29,32 +29,33 @@ static std::string generate_salt();
 void GLUser::set_password(const std::string& new_pass) {
     m_pass_salt = generate_salt();
     if ( new_pass.length() < 8 ) {
-        std::string msg("Password too short");
-        throw std::runtime_error(msg);
+        throw std::runtime_error("Password too short");
     }
     m_pass_hash = crypt(new_pass.c_str(), m_pass_salt.c_str());
 }
 
 bool GLUser::check_password(const std::string& check_pass) {
     if ( check_pass.length() < 8 ) {
-        std::string msg("Password too short");
-        throw std::runtime_error(msg);
+        throw std::runtime_error("Password too short");
     }
-    std::string check_hash = crypt(check_pass.c_str(), m_pass_salt.c_str());
+    const std::string check_hash = crypt(check_pass.c_str(),
+                                         m_pass_salt.c_str());
     return check_hash == m_pass_hash;
 }
 
 static std::string generate_salt() {
-    static const char * c = "abcdefghijklmnopqrstuvwxyz"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
+    static const char c[] = "abcdefghijklmnopqrstuvwxyz"
+                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            "0123456789./";
+
     std::default_random_engine re(std::random_device{}());
-    std::uniform_int_distribution<int> ud{0, 63};
+    std::uniform_int_distribution<int> ud{0, sizeof c - 2};
+    static_assert((sizeof c - 2) == 63, "Range upper bound incorrect");
     auto gen = std::bind(ud, re);
                     
     std::string salt;
     salt += c[gen()];
     salt += c[gen()];
-
     return salt;
 }
 
