@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) try {
         }
     }
     else if ( config.is_set("grant") ) {
-        GLUser user = get_user(config, gdb);
+        GLUser user{get_user(config, gdb)};
         std::cout << "Attempting to grant permission '"
                   << config["grant"] << "' to user "
                   << user.username() << "..." << std::endl;
@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) try {
         std::cout << "...success." << std::endl;
     }
     else if ( config.is_set("revoke") ) {
-        GLUser user{std::move(get_user(config, gdb))};
+        GLUser user{get_user(config, gdb)};
         std::cout << "Attempting to revoke permission '"
                   << config["revoke"] << "' from user "
                   << user.username() << "..." << std::endl;
