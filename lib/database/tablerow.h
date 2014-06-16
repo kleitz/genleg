@@ -49,7 +49,7 @@ class TableRow {
          * \brief           Copy constructor.
          * \param row       The row to copy.
          */
-        explicit TableRow (const TableRow& row);
+        TableRow (const TableRow& row);
 
         /*!
          * \brief           Move constructor.
