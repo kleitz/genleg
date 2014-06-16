@@ -55,10 +55,10 @@ bool pgstring::next_content_line(std::istream& ifs,
     while ( std::getline(ifs, s) ) {
         trim(s);
         if ( s != "" && s[0] != '#' ) {
-            break;
+            return true;
         }
     }
-    return ifs;
+    return false;
 }
 
 std::vector<std::string>&

@@ -33,7 +33,7 @@ CXX_DEBUG_FLAGS   := -ggdb -DDEBUG -DDEBUG_ALL
 CXX_RELEASE_FLAGS := -O3 -DNDEBUG
 
 # Linker flags
-LDFLAGS := -lcrypt
+LDFLAGS := -lcrypto
 BOOSTLIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
 
 # Clean files and globs
