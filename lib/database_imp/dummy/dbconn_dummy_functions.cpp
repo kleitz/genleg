@@ -5,9 +5,10 @@
 
 using namespace gldb;
 
-DBConnImp * gldb::get_connection(const std::string database,
-        const std::string hostname, const std::string username,
-        const std::string password) {
+DBConnImp * gldb::get_connection(const std::string& database,
+                                 const std::string& hostname,
+                                 const std::string& username,
+                                 const std::string& password) {
     return new DBConnDummy(database, hostname, username, password);
 }
 

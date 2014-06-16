@@ -107,11 +107,46 @@ class TableCouldNotOpenInputFile : public TableException {
  */
 class Table {
     public:
+
         /*!
          * \brief           Constructor.
          * \param headers   Table row containing field names.
          */
         explicit Table (const TableRow& headers);
+
+        /*!
+         * \brief           Constructor with move semantics.
+         * \param headers   Table row containing field names.
+         */
+        explicit Table (TableRow&& headers);
+
+        /*!
+         * \brief           Copy constructor.
+         * \bug             `explicit` removed from here after failure to
+         * compile at end of MySQL query function.
+         * \param table     Table to copy.
+         */
+        Table (const Table& table);
+
+        /*!
+         * \brief           Move constructor.
+         * \param table     Table to move.
+         */
+        explicit Table (Table&& table);
+
+        /*!
+         * \brief           Copy assignment operator.
+         * \param table     Table to copy.
+         * \returns         Reference to the assigned-to table.
+         */
+        Table& operator=(const Table& table);
+
+        /*!
+         * \brief           Move assignment operator.
+         * \param table     Table to move.
+         * \returns         Reference to the assigned-to table.
+         */
+        Table& operator=(Table&& table);
 
         /*!  Destructor  */
         ~Table ();
@@ -133,7 +168,15 @@ class Table {
          * \param vec       A vector of bools. The size must match the
          * size of the records.
          */
-        void set_quoted(std::vector<bool>& vec);
+        void set_quoted(const std::vector<bool>& vec);
+
+        /*!
+         * \brief           Sets the quote flags for the records with move
+         * semantics.
+         * \param vec       A vector of bools. The size must match the
+         * size of the records.
+         */
+        void set_quoted(std::vector<bool>&& vec);
 
         /*!
          * \brief           Returns the field names.
@@ -155,6 +198,13 @@ class Table {
         void append_record(const TableRow& new_record);
 
         /*!
+         * \brief               Appends a record to the table with move
+         * semantics.
+         * \param new_record    The record to append.
+         */
+        void append_record(TableRow&& new_record);
+
+        /*!
          * \brief               Creates a table from an input file.
          * \param filename      The name of the input file.
          * \param delim         The delimiting character.
@@ -162,7 +212,7 @@ class Table {
          * \throws              TableBadInputFile on badly formed input file.
          * \throws              TableCouldNotOpenInputFile on bad filename.
          */
-        static Table create_from_file(const std::string filename,
+        static Table create_from_file(const std::string& filename,
                                       const char delim);
 
         /*!
@@ -171,7 +221,7 @@ class Table {
          * \param idx           The index of the record.
          * \returns             A string containing the query.
          */
-        std::string insert_query(const std::string table_name,
+        std::string insert_query(const std::string& table_name,
                                  const size_t idx);
 
         /*!
@@ -184,7 +234,7 @@ class Table {
          * \throws              TableNoSuchRecord if there is no record
          * at index `row_index`.
          */
-        std::string get_field(const std::string field_name,
+        std::string get_field(const std::string& field_name,
                               const size_t row_index);
 
     private:

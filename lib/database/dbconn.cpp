@@ -17,11 +17,11 @@ DBConn::~DBConn() {
     delete m_imp;
 }
 
-void DBConn::query(std::string sql_query) {
+void DBConn::query(const std::string& sql_query) {
     m_imp->query(sql_query);
 }
 
-Table DBConn::select(std::string query) {
+Table DBConn::select(const std::string& query) {
     return m_imp->select(query);
 }
 

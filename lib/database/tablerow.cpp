@@ -18,13 +18,33 @@ TableRow::TableRow() : m_fields() {
 TableRow::TableRow(const size_t size) : m_fields(size) {
 }
 
-TableRow::TableRow(std::vector<std::string>& vec) : m_fields(vec.size()) {
+TableRow::TableRow(const std::vector<std::string>& vec) : m_fields(vec.size()) {
     for ( size_t i = 0; i < vec.size(); ++i ) {
         m_fields[i] = vec[i];
     }
 }
 
+TableRow::TableRow(std::vector<std::string>&& vec) : m_fields(vec.size()) {
+    for ( size_t i = 0; i < vec.size(); ++i ) {
+        m_fields[i] = std::move(vec[i]);
+    }
+}
+
+TableRow::TableRow(const TableRow& row) : m_fields(row.m_fields) {}
+
+TableRow::TableRow(TableRow&& row) : m_fields(std::move(row.m_fields)) {}
+
 TableRow::~TableRow() {
+}
+
+TableRow& TableRow::operator=(const TableRow& row) {
+    m_fields = row.m_fields;
+    return *this;
+}
+
+TableRow& TableRow::operator=(TableRow&& row) {
+    m_fields = std::move(row.m_fields);
+    return *this;
 }
 
 size_t TableRow::size() const {
@@ -49,7 +69,16 @@ void TableRow::append_field(const std::string& new_field) {
     m_fields.push_back(nf);
 }
 
+void TableRow::append_field(std::string&& new_field) {
+    TableField nf(std::move(new_field));
+    m_fields.push_back(nf);
+}
+
 void TableRow::append_field(const TableField& new_field) {
+    m_fields.push_back(new_field);
+}
+
+void TableRow::append_field(TableField&& new_field) {
     m_fields.push_back(new_field);
 }
 
@@ -60,7 +89,7 @@ void TableRow::print(std::ostream& stream) const {
     stream << std::endl;
 }
 
-std::string TableRow::record_string(const std::vector<bool>& quoted) {
+std::string TableRow::record_string(const std::vector<bool>& quoted) const {
     std::vector<std::string> vec;
     for ( size_t i = 0; i < m_fields.size(); ++i ) {
         std::ostringstream field;
@@ -73,7 +102,7 @@ std::string TableRow::record_string(const std::vector<bool>& quoted) {
     return result;
 }
 
-std::string TableRow::record_string() {
+std::string TableRow::record_string() const {
     std::vector<std::string> vec;
     for ( size_t i = 0; i < m_fields.size(); ++i ) {
         vec.push_back(m_fields[i]);

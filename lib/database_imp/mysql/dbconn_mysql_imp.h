@@ -25,6 +25,7 @@ namespace gldb {
  */
 class DBConnMySQL : public DBConnImp {
     public:
+
         /*!
          * \brief           Constructor.
          * \param database  The name of the MySQL database.
@@ -34,12 +35,16 @@ class DBConnMySQL : public DBConnImp {
          * \throws          DBConnCouldNotConnect If could not connect
          * to database.
          */
-        DBConnMySQL (const std::string database,
-                const std::string hostname, const std::string username,
-                const std::string password);
+        DBConnMySQL (const std::string& database,
+                     const std::string& hostname,
+                     const std::string& username,
+                     const std::string& password);
 
         /*!  Deleted copy constructor  */
         DBConnMySQL (const DBConnMySQL&) = delete;
+
+        /*!  Delete move constructor  */
+        DBConnMySQL (const DBConnMySQL&&) = delete;
 
         /*!  Destructor  */
         virtual ~DBConnMySQL ();
@@ -47,13 +52,16 @@ class DBConnMySQL : public DBConnImp {
         /*!  Deleted assignment operator  */
         DBConnMySQL& operator= (const DBConnMySQL&) = delete;
 
+        /*!  Deleted move assignment operator  */
+        DBConnMySQL& operator= (const DBConnMySQL&&) = delete;
+
         /*!
          * \brief           Runs an SQL query.
          * \param sql_query The query.
          * \throws          DBConnCouldNotQuery If could not successfully
          * execute query.
          */
-        virtual void query(std::string sql_query);
+        virtual void query(const std::string& sql_query);
 
         /*!
          * \brief           Runs an SQL SELECT query.
@@ -62,9 +70,10 @@ class DBConnMySQL : public DBConnImp {
          * \throws          DBConnCouldNotQuery If could not successfully
          * execute query.
          */
-        virtual Table select(std::string query);
+        virtual Table select(const std::string& query);
 
     private:
+
         /*!  The initialized MySQL handle.  */
         MYSQL * m_conn;
 
@@ -73,3 +82,4 @@ class DBConnMySQL : public DBConnImp {
 }               //  namespace gldb
 
 #endif          //  PG_GENERAL_LEDGER_DATABASE_DBCONNMYSQLIMP_H
+

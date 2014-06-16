@@ -37,7 +37,39 @@ class TableRow {
          * \brief           Constructor with string vector.
          * \param vec       The vector.
          */
-        explicit TableRow (std::vector<std::string>& vec);
+        explicit TableRow (const std::vector<std::string>& vec);
+
+        /*!
+         * \brief           Constructor with string vector and move semantics.
+         * \param vec       The vector.
+         */
+        explicit TableRow (std::vector<std::string>&& vec);
+
+        /*!
+         * \brief           Copy constructor.
+         * \param row       The row to copy.
+         */
+        explicit TableRow (const TableRow& row);
+
+        /*!
+         * \brief           Move constructor.
+         * \param row       The row to move.
+         */
+        explicit TableRow (TableRow&& row);
+
+        /*!
+         * \brief           Copy assignment operator.
+         * \param row       The row to copy.
+         * \returns         A reference to the assigned-to row.
+         */
+        TableRow& operator=(const TableRow& row);
+
+        /*!
+         * \brief           Move assignment operator.
+         * \param row       The row to move.
+         * \returns         A reference to the assigned-to row.
+         */
+        TableRow& operator=(TableRow&& row);
 
         /*!  Destructor  */
         ~TableRow ();
@@ -76,10 +108,22 @@ class TableRow {
         void append_field(const std::string& new_field);
 
         /*!
+         * \brief           Appends a field to the row with move semantics.
+         * \param new_field The contents of the new field.
+         */
+        void append_field(std::string&& new_field);
+
+        /*!
          * \brief           Appends a field to the row.
          * \param new_field A field from which to copy.
          */
         void append_field(const TableField& new_field);
+
+        /*!
+         * \brief           Appends a field to the row with move semantics.
+         * \param new_field A field from which to copy.
+         */
+        void append_field(TableField&& new_field);
 
         /*!
          * \brief           Prints a row.
@@ -94,16 +138,17 @@ class TableRow {
          * string, `false` means it will not be.
          * \returns         The comma separated string.
          */
-        std::string record_string(const std::vector<bool>& quoted);
+        std::string record_string(const std::vector<bool>& quoted) const;
 
         /*!
          * \brief           Creates an unquoted comma separated string of
          * fields.
          * \returns         The unquoted comma separated string.
          */
-        std::string record_string();
+        std::string record_string() const;
 
     private:
+
         /*!  A vector of fields  */
         std::vector<TableField> m_fields;
 

@@ -82,22 +82,29 @@ class DBConn {
          * \param sql_query The query.
          * \returns         A Table object containing the results.
          */
-        void query(std::string sql_query);
+        void query(const std::string& sql_query);
 
         /*!
          * \brief           Runs an SQL SELECT query.
          * \param query     The query.
          * \returns         A Table object containing the results.
          */
-        Table select(std::string query);
+        Table select(const std::string& query);
 
         /*!  Deleted copy constructor  */
         DBConn (const DBConn&) = delete;
 
-        /*!  Deleted assignment operator  */
+        /*!  Deleted move constructor  */
+        DBConn (const DBConn&&) = delete;
+
+        /*!  Deleted copy assignment operator  */
         DBConn& operator= (const DBConn&) = delete;
 
+        /*!  Deleted move assignment operator  */
+        DBConn& operator= (const DBConn&&) = delete;
+
     private:
+
         /*!  Pointer to database implementation object.  */
         DBConnImp * m_imp;
 

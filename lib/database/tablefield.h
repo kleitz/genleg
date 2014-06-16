@@ -21,6 +21,7 @@ namespace gldb {
  */
 class TableField {
     public:
+
         /*  Default constructor  */
         TableField ();
 
@@ -35,6 +36,25 @@ class TableField {
          * \param data      The initial contents of the field.
          */
         explicit TableField (const std::string& data);
+
+        /*!
+         * \brief           Constructor accepting `std:string` data with move
+         * semantics.
+         * \param data      The initial contents of the field.
+         */
+        explicit TableField (std::string&& data);
+
+        /*!
+         * \brief           Copy constructor.
+         * \param field     The field from which to copy.
+         */
+        TableField (const TableField& field);
+
+        /*!
+         * \brief           Move constructor.
+         * \param field     The field from which to move.
+         */
+        TableField (TableField&& field);
 
         /*!  Destructor  */
         ~TableField ();
@@ -66,6 +86,28 @@ class TableField {
         TableField& operator=(const std::string& data);
 
         /*!
+         * \brief           Overridden assignment operator for `std::string`
+         * with move semantics.
+         * \param data      The new contents of the field.
+         * \returns         A reference to the same field.
+         */
+        TableField& operator=(std::string&& data);
+
+        /*!
+         * \brief           Overridden copy assignment operator.
+         * \param field     The field to copy.
+         * \returns         A reference to the same field.
+         */
+        TableField& operator=(const TableField& field);
+
+        /*!
+         * \brief           Overridden move assignment operator.
+         * \param field     The field to move.
+         * \returns         A reference to the same field.
+         */
+        TableField& operator=(TableField&& field);
+
+        /*!
          * \brief           Overridden index operator.
          * \param idx       The desired index.
          * \returns         A reference to the character at the specified
@@ -86,7 +128,7 @@ class TableField {
          * \param c         The character to append to the field.
          * \returns         A reference to the same field.
          */
-        TableField& operator+=(const char& c);
+        TableField& operator+=(const char c);
 
         /*!
          * \brief           Overridden compound assignment operator.
@@ -99,6 +141,7 @@ class TableField {
                 const TableField& field);
 
     private:
+
         /*!  The field contents  */
         std::string m_data;
 

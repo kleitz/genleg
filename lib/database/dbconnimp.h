@@ -6,7 +6,6 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
 #ifndef PG_DATABASE_DBCONNIMP_H
 #define PG_DATABASE_DBCONNIMP_H
 
@@ -32,14 +31,14 @@ class DBConnImp {
          * \brief           Runs an SQL query.
          * \param sql_query The query.
          */
-        virtual void query(std::string sql_query) = 0;
+        virtual void query(const std::string& sql_query) = 0;
 
         /*!
          * \brief           Runs an SQL SELECT query.
          * \param query     The query.
          * \returns         A Table object containing the results.
          */
-        virtual Table select(std::string query) = 0;
+        virtual Table select(const std::string& query) = 0;
 
 };              //  class DBConnImp
 

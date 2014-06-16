@@ -11,9 +11,10 @@
 
 using namespace gldb;
 
-DBConnMySQL::DBConnMySQL(const std::string database,
-        const std::string hostname, const std::string username,
-        const std::string password) :
+DBConnMySQL::DBConnMySQL(const std::string& database,
+                         const std::string& hostname,
+                         const std::string& username,
+                         const std::string& password) :
     m_conn(nullptr) {
     m_conn = mysql_init(nullptr);
     if ( !m_conn ) {
@@ -38,14 +39,14 @@ DBConnMySQL::~DBConnMySQL() {
     mysql_library_end();
 }
 
-void DBConnMySQL::query(std::string sql_query) {
+void DBConnMySQL::query(const std::string& sql_query) {
     if ( mysql_query(m_conn, sql_query.c_str()) ) {
         std::string msg = mysql_error(m_conn);
         throw DBConnCouldNotQuery(msg);
     }
 }
 
-Table DBConnMySQL::select(std::string query) {
+Table DBConnMySQL::select(const std::string& query) {
     if ( mysql_query(m_conn, query.c_str()) ) {
         std::string msg = mysql_error(m_conn);
         throw DBConnCouldNotQuery(msg);
@@ -65,7 +66,7 @@ Table DBConnMySQL::select(std::string query) {
         field_names[i] = fields[i].name;
     }
 
-    Table table(field_names);
+    Table table{std::move(field_names)};
 
     MYSQL_ROW row;
     while ( (row = mysql_fetch_row(result)) ) {
@@ -74,16 +75,17 @@ Table DBConnMySQL::select(std::string query) {
         unsigned long * lengths = mysql_fetch_lengths(result);
 
         for ( size_t i = 0; i < num_fields; ++i ) {
-            TableField new_field;
+            std::string new_field;
             if ( lengths[i] ) {
+                new_field.resize(lengths[i]);
                 for ( size_t j = 0; j < lengths[i]; ++j ) {
-                    new_field += row[i][j];
+                    new_field[j] = row[i][j];
                 }
             }
-            record[i] = new_field;
+            record[i] = TableField(std::move(new_field));
         }
 
-        table.append_record(record);
+        table.append_record(std::move(record));
     }
 
     mysql_free_result(result);

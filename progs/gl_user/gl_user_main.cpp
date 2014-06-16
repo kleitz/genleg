@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "gldb/gldb.h"
+#include "database/database.h"
 #include "config/config.h"
 
 using namespace genleg;
@@ -122,6 +123,26 @@ static std::string login(void);
  * \returns         Exit status code.
  */
 int main(int argc, char *argv[]) try {
+    gldb::TableField field1("Hi there");
+    field1[2] = 'b';
+    std::cout << "First field: " << field1 << std::endl;
+    return 0;
+    std::cout << "First field: " << field1 << std::endl;
+    gldb::TableField field2(std::move(field1));
+    std::cout << "Second field: " << field2 << std::endl;
+    field2[2] = 'b';
+    return 0;
+    std::cout << "Second field now: " << field2 << std::endl;
+    std::cout << "First field now: " << field1 << std::endl;
+/*
+    std::string str1("First string");
+    std::cout << "First string: " << str1 << std::endl;
+    std::string str2(std::move(str1));
+    std::cout << "Second string: " << str2 << std::endl;
+    std::cout << "First string now: " << str1 << std::endl;
+    */
+    return 0;
+
     Config config;
     set_configuration(config, argc, argv);
 

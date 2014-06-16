@@ -33,9 +33,10 @@ namespace gldb {
  * \param password  The password with which to log into the database.
  * \returns         A pointer to the database implementation.
  */
-DBConnImp * get_connection(const std::string database,
-        const std::string hostname, const std::string username,
-        const std::string password);
+DBConnImp * get_connection(const std::string& database,
+                           const std::string& hostname,
+                           const std::string& username,
+                           const std::string& password);
 
 /*!
  * \brief           Returns the name of the compiled-in database type.

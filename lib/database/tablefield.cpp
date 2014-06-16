@@ -15,14 +15,18 @@ std::ostream& gldb::operator<< (std::ostream& out, const TableField& field) {
     return out;
 }
 
-TableField::TableField() : m_data("") {
-}
+TableField::TableField() : m_data("") {} 
 
-TableField::TableField(const char * data) : m_data (data) {
-}
+TableField::TableField(const char * data) : m_data (data) {}
 
-TableField::TableField(const std::string& data) : m_data (data) {
-}
+TableField::TableField(const std::string& data) : m_data (data) {}
+
+TableField::TableField(std::string&& data) : m_data (std::move(data)) {}
+
+TableField::TableField(const TableField& field) : m_data (field.m_data) {}
+
+TableField::TableField(TableField&& field)
+    : m_data (std::move(field.m_data)) {}
 
 TableField::~TableField() {
 }
@@ -41,6 +45,21 @@ TableField& TableField::operator=(const std::string& data) {
     return *this;
 }
 
+TableField& TableField::operator=(std::string&& data) {
+    m_data = std::move(data);
+    return *this;
+}
+
+TableField& TableField::operator=(const TableField& field) {
+    m_data = field.m_data;
+    return *this;
+}
+
+TableField& TableField::operator=(TableField&& field) {
+    m_data = std::move(field.m_data);
+    return *this;
+}
+
 char& TableField::operator[](const size_t idx) {
     return m_data[idx];
 }
@@ -49,7 +68,7 @@ const char& TableField::operator[](const size_t idx) const {
     return m_data[idx];
 }
 
-TableField& TableField::operator+=(const char& c) {
+TableField& TableField::operator+=(const char c) {
     m_data += c;
     return *this;
 }

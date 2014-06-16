@@ -68,7 +68,7 @@ catch ( const gldb::DBConnException& e ) {
 void GLDatabase::load_sample_data(const std::string& dir) try {
     for ( const auto& tname : m_tables ) {
         std::string filename = dir + "/" + tname;
-        gldb::Table table = gldb::Table::create_from_file(filename, ':');
+        gldb::Table table{gldb::Table::create_from_file(filename, ':')};
         for ( size_t i = 0; i < table.num_records(); ++i ) {
             m_dbc.query(table.insert_query(tname, i));
         }
@@ -94,11 +94,10 @@ std::string GLDatabase::backend() {
 
 GLUser GLDatabase::create_user(gldb::Table& table) {
     const std::string permquery = m_sql->get_perms(table.get_field("id", 0));
-    gldb::Table permtable = m_dbc.select(permquery);
+    gldb::Table permtable{m_dbc.select(permquery)};
     std::vector<std::string> perms;
     for ( size_t i = 0; i < permtable.num_records(); ++i ) {
-        gldb::TableRow record = permtable[i];
-        perms.push_back(record[0]);
+        perms.push_back(permtable[i][0]);
     }
 
     const bool enabled = boolstring_to_bool(table.get_field("enabled", 0));
@@ -115,12 +114,12 @@ GLUser GLDatabase::create_user(gldb::Table& table) {
 }
 
 GLUser GLDatabase::get_user_by_id(const std::string& user_id) {
-    gldb::Table table = m_dbc.select(m_sql->user_by_id(user_id));
+    gldb::Table table{m_dbc.select(m_sql->user_by_id(user_id))};
     return create_user(table);
 }
 
 GLUser GLDatabase::get_user_by_username(const std::string& user_name) {
-    gldb::Table table = m_dbc.select(m_sql->user_by_username(user_name));
+    gldb::Table table{m_dbc.select(m_sql->user_by_username(user_name))};
     return create_user(table);
 }
 
