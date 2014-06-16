@@ -8,6 +8,7 @@
  */
 
 #include "dbconn_mysql_imp.h"
+#include "dbconn_mysql_result.h"
 
 using namespace gldb;
 
@@ -15,50 +16,35 @@ using namespace gldb;
  * \brief               Gets field names from a MySQL result structure.
  * \ingroup database
  * \param result        The MySQL result structure.
- * \param num_fields    The number of fields in the result structure.
  * \returns             A TableRow containing the field names.
  */
 static TableRow
-get_field_names(MYSQL_RES * result, const unsigned int num_fields);
+get_field_names(MySQLResult& result);
 
 /*!
  * \brief               Creates a TableRow from a MySQL result row.
  * \ingroup database
  * \param result        The MySQL result structure.
  * \param row           The MySQL row structure.
- * \param num_fields    The number of fields in the result structure.
  * \returns             A TableRow containing the row data.
  */
 static TableRow
-get_row(MYSQL_RES * result, MYSQL_ROW row, const unsigned int num_fields);
-
-/*!
- * \brief               Creates a TableField from a MySQL result row.
- * \ingroup database
- * \param row           The MySQL row structure.
- * \param field_idx     The zero-based index of the requested field.
- * \param length        The length of the requested field.
- * \returns             A TableField containing the requested field data.
- */
-static TableField
-get_field(MYSQL_ROW row, const size_t field_idx, const unsigned long length);
+get_row(MySQLResult& result, MYSQL_ROW row);
 
 DBConnMySQL::DBConnMySQL(const std::string& database,
                          const std::string& hostname,
                          const std::string& username,
                          const std::string& password) :
-    m_conn(nullptr)
+    m_conn{mysql_init(nullptr)}
 {
-    m_conn = mysql_init(nullptr);
     if ( !m_conn ) {
-        std::string msg = "Could not initialize connection";
-        throw DBConnCouldNotConnect(msg);
+        throw DBConnCouldNotConnect("Could not initialize connection");
     }
 
     if ( !mysql_real_connect(m_conn, hostname.c_str(),
             username.c_str(), password.c_str(),
             database.c_str(), 0, nullptr, 0) ) {
-        std::string msg = mysql_error(m_conn);
+        const std::string msg = mysql_error(m_conn);
         mysql_close(m_conn);
         mysql_library_end();
         throw DBConnCouldNotConnect(msg);
@@ -76,77 +62,30 @@ DBConnMySQL::~DBConnMySQL()
 void DBConnMySQL::query(const std::string& sql_query)
 {
     if ( mysql_query(m_conn, sql_query.c_str()) ) {
-        std::string msg = mysql_error(m_conn);
-        throw DBConnCouldNotQuery(msg);
+        throw DBConnCouldNotQuery(mysql_error(m_conn));
     }
 }
 
 Table DBConnMySQL::select(const std::string& sql_query)
 {
     query(sql_query);
-    /*
-    if ( mysql_query(m_conn, query.c_str()) ) {
-        std::string msg = mysql_error(m_conn);
-        throw DBConnCouldNotQuery(msg);
-    }
-    */
+    MySQLResult result(m_conn);
+    Table table{get_field_names(result)};
 
-    MYSQL_RES * result = mysql_store_result(m_conn);
-    if ( !result ) {
-        std::string msg = mysql_error(m_conn);
-        throw DBConnCouldNotQuery(msg);
+    for ( MYSQL_ROW row; (row = mysql_fetch_row(result.result())); ) {
+        table.append_record(get_row(result, row));
     }
 
-    const unsigned int num_fields = mysql_num_fields(result);
-
-    /*
-    const MYSQL_FIELD * fields = mysql_fetch_fields(result);
-
-    TableRow field_names(num_fields);
-    for ( size_t i = 0; i < num_fields; ++i ) {
-        field_names[i] = fields[i].name;
-    }
-
-    Table table{std::move(field_names)};
-    */
-
-    Table table{get_field_names(result, num_fields)};
-
-    MYSQL_ROW row;
-    while ( (row = mysql_fetch_row(result)) ) {
-        table.append_record(get_row(result, row, num_fields));
-
-        /*
-        TableRow record(num_fields);
-
-        unsigned long * lengths = mysql_fetch_lengths(result);
-
-        for ( size_t i = 0; i < num_fields; ++i ) {
-            std::string new_field;
-            if ( lengths[i] ) {
-                new_field.resize(lengths[i]);
-                for ( size_t j = 0; j < lengths[i]; ++j ) {
-                    new_field[j] = row[i][j];
-                }
-            }
-            record[i] = TableField(std::move(new_field));
-        }
-
-        table.append_record(std::move(record));
-        */
-    }
-
-    mysql_free_result(result);
     return table;
 }
 
 static TableRow
-get_field_names(MYSQL_RES * result, const unsigned int num_fields)
+get_field_names(MySQLResult& result)
 {
-    MYSQL_FIELD * fields = mysql_fetch_fields(result);
-    TableRow field_names{num_fields};
+    MYSQL_FIELD * fields = mysql_fetch_fields(result.result());
+    TableRow field_names{result.num_fields()};
 
-    for ( size_t i = 0; i < num_fields; ++i ) {
+    for ( size_t i = 0; i < result.num_fields(); ++i ) {
         field_names[i] = fields[i].name;
     }
 
@@ -154,30 +93,15 @@ get_field_names(MYSQL_RES * result, const unsigned int num_fields)
 }
 
 static TableRow
-get_row(MYSQL_RES * result, MYSQL_ROW row, const unsigned int num_fields)
+get_row(MySQLResult& result, MYSQL_ROW row)
 {
-    TableRow record{num_fields};
-    unsigned long * lengths = mysql_fetch_lengths(result);
+    TableRow record{result.num_fields()};
+    unsigned long * lengths = mysql_fetch_lengths(result.result());
 
-    for ( size_t f = 0; f < num_fields; ++f ) {
-        record[f] = get_field(row, f, lengths[f]);
+    for ( size_t f = 0; f < result.num_fields(); ++f ) {
+        record[f] = std::string{row[f], lengths[f]};
     }
 
     return record;
-}
-
-static TableField
-get_field(MYSQL_ROW row, const size_t field_idx, const unsigned long length)
-{
-    std::string s;
-
-    if ( length ) {
-        s.resize(length);
-        for ( size_t p = 0; p < length; ++p ) {
-            new_field[p] = row[field_idx][p];
-        }
-    }
-
-    return TableField{std::move(s)};
 }
 
