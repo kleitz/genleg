@@ -18,8 +18,8 @@ using namespace gldb;
  * \param num_fields    The number of fields in the result structure.
  * \returns             A TableRow containing the field names.
  */
-static TableRow get_field_names(MYSQL_RES * result,
-                                const unsigned int num_fields);
+static TableRow
+get_field_names(MYSQL_RES * result, const unsigned int num_fields);
 
 /*!
  * \brief               Creates a TableRow from a MySQL result row.
