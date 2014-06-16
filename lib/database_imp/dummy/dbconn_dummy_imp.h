@@ -42,11 +42,19 @@ class DBConnDummy : public DBConnImp {
         DBConnDummy& operator= (const DBConnDummy&) = delete;
 
         /*!
+         * \brief           Runs an SQL query.
+         * \param sql_query The query.
+         * \throws          DBConnCouldNotQuery If could not successfully
+         * execute query.
+         */
+        virtual void query(const std::string& sql_query);
+
+        /*!
          * \brief           Fakes running of an SQL SELECT query.
          * \param query     Any query.
          * \returns         A Table object containing dummy results.
          */
-        Table select(std::string query);
+        Table select(const std::string& query);
 
 };              //  class DBConnDummy
 

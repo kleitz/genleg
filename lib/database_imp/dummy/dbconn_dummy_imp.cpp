@@ -24,7 +24,11 @@ DBConnDummy::DBConnDummy(const std::string database,
 DBConnDummy::~DBConnDummy() {
 }
 
-Table DBConnDummy::select(std::string query) {
+void DBConnDummy::query(const std::string& sql_query) {
+    (void)sql_query;
+}
+
+Table DBConnDummy::select(const std::string& query) {
     const size_t num_fields = 4, num_records = 6;
 
     TableRow field_names(num_fields);
