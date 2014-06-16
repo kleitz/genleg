@@ -20,6 +20,9 @@ genleg::get_sql_object() {
     if ( type == "MySQL" ) {
         return std::shared_ptr<const DBSQLStatements>(new const DBSQLMySQL());
     }
+    else if ( type == "DUMMY" ) {
+        return std::shared_ptr<const DBSQLStatements>(new const DBSQLDummy());
+    }
     else {
         throw std::runtime_error("Unrecognized database implementation type");
     }

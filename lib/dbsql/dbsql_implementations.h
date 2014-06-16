@@ -11,6 +11,7 @@
 
 #include "dbsqlstatements.h"
 #include "dbsql_mysql.h"
+#include "dbsql_dummy.h"
 
 #endif      //  PG_GENERAL_LEDGER_DATABASE_DBSQL_IMPLEMENTATIONS_H
 
