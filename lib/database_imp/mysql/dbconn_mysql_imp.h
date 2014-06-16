@@ -57,7 +57,7 @@ class DBConnMySQL : public DBConnImp {
 
         /*!
          * \brief           Runs an SQL query.
-         * \param sql_query The query.
+         * \param sql_query The SQL query.
          * \throws          DBConnCouldNotQuery If could not successfully
          * execute query.
          */
@@ -65,12 +65,12 @@ class DBConnMySQL : public DBConnImp {
 
         /*!
          * \brief           Runs an SQL SELECT query.
-         * \param query     The query.
+         * \param sql_query The SQL query.
          * \returns         A Table object containing the results.
          * \throws          DBConnCouldNotQuery If could not successfully
          * execute query.
          */
-        virtual Table select(const std::string& query);
+        virtual Table select(const std::string& sql_query);
 
     private:
 
