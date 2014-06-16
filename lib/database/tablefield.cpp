@@ -31,10 +31,6 @@ TableField::TableField(TableField&& field)
 TableField::~TableField() {
 }
 
-TableField::operator std::string () const {
-    return m_data;
-}
-
 TableField& TableField::operator=(const char * data) {
     m_data = data;
     return *this;
@@ -60,14 +56,6 @@ TableField& TableField::operator=(TableField&& field) {
     return *this;
 }
 
-char& TableField::operator[](const size_t idx) {
-    return m_data[idx];
-}
-
-const char& TableField::operator[](const size_t idx) const {
-    return m_data[idx];
-}
-
 TableField& TableField::operator+=(const char c) {
     m_data += c;
     return *this;
@@ -76,9 +64,5 @@ TableField& TableField::operator+=(const char c) {
 TableField& TableField::operator+=(const std::string& data) {
     m_data += data;
     return *this;
-}
-
-size_t TableField::length() const {
-    return m_data.length();
 }
 

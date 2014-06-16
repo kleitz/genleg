@@ -63,13 +63,13 @@ class TableField {
          * \brief           Returns the length of the field.
          * \returns         The length of the field.
          */
-        size_t length() const;
+        size_t length() const { return m_data.length(); }
 
         /*!
          * \brief           Overridden conversion operator.
          * \details         Returns the field contents as a string.
          */
-        operator std::string () const;
+        operator std::string () const { return m_data; }
 
         /*!
          * \brief           Overridden assignment operator for `const char *`.
@@ -113,7 +113,7 @@ class TableField {
          * \returns         A reference to the character at the specified
          * index.
          */
-        char& operator[](const size_t idx);
+        char& operator[](const size_t idx) { return m_data[idx]; }
 
         /*!
          * \brief           Overridden index operator.
@@ -121,7 +121,7 @@ class TableField {
          * \returns         A const reference to the character at the specified
          * index.
          */
-        const char& operator[](const size_t idx) const;
+        const char& operator[](const size_t idx) const { return m_data[idx]; }
 
         /*!
          * \brief           Overridden compound assignment operator.
