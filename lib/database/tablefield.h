@@ -35,14 +35,14 @@ class TableField {
          * \brief           Constructor accepting `std:string` data.
          * \param data      The initial contents of the field.
          */
-        explicit TableField (const std::string& data);
+        TableField (const std::string& data);
 
         /*!
          * \brief           Constructor accepting `std:string` data with move
          * semantics.
          * \param data      The initial contents of the field.
          */
-        explicit TableField (std::string&& data);
+        TableField (std::string&& data);
 
         /*!
          * \brief           Copy constructor.

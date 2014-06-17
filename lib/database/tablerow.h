@@ -24,6 +24,7 @@ namespace gldb {
  */
 class TableRow {
     public:
+
         /*!  Default constructor  */
         TableRow ();
 
@@ -46,6 +47,12 @@ class TableRow {
         explicit TableRow (std::vector<std::string>&& vec);
 
         /*!
+         * \brief           Constructor with std::string initializer list.
+         * \param i         The initializer list.
+         */
+        explicit TableRow (std::initializer_list<std::string> i);
+
+        /*!
          * \brief           Copy constructor.
          * \param row       The row to copy.
          */
@@ -55,7 +62,7 @@ class TableRow {
          * \brief           Move constructor.
          * \param row       The row to move.
          */
-        explicit TableRow (TableRow&& row);
+        TableRow (TableRow&& row);
 
         /*!
          * \brief           Copy assignment operator.
@@ -78,14 +85,44 @@ class TableRow {
          * \brief           Returns the number of fields.
          * \returns         The number of fields.
          */
-        size_t size() const;
+        size_t size() const { return m_fields.size(); }
+
+        /*!  Type definition for iterator  */
+        using iterator = std::vector<TableField>::iterator;
+
+        /*!
+         * \brief           Returns iterator for beginning.
+         * \returns         Iterator for beginning.
+         */
+        iterator begin() { return m_fields.begin(); }
+
+        /*!
+         * \brief           Returns iterator for end plus one.
+         * \returns         Iterator for end plus one.
+         */
+        iterator end() { return m_fields.end(); }
+
+        /*!  Type definition for const iterator  */
+        using const_iterator = std::vector<TableField>::const_iterator;
+
+        /*!
+         * \brief           Returns const iterator for beginning.
+         * \returns         Const iterator for beginning.
+         */
+        const_iterator begin() const { return m_fields.begin(); }
+
+        /*!
+         * \brief           Returns const iterator for end plus one.
+         * \returns         Const iterator for end plus one.
+         */
+        const_iterator end() const { return m_fields.end(); }
 
         /*!
          * \brief           Overridden index operator.
          * \param idx       The zero-based index of the field.
          * \returns         A reference to the field at the specified index.
          */
-        TableField& operator[](const size_t idx);
+        TableField& operator[](const size_t idx) { return m_fields[idx]; }
 
         /*!
          * \brief           Overridden index operator.
@@ -93,7 +130,8 @@ class TableRow {
          * \returns         A const reference to the field at the
          * specified index.
          */
-        const TableField& operator[](const size_t idx) const;
+        const TableField& operator[](const size_t idx) const
+                                                { return m_fields[idx];}
 
         /*!
          * \brief           Appends a field to the row.
