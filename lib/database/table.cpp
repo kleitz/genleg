@@ -61,14 +61,6 @@ Table& Table::operator=(Table&& table) {
 Table::~Table() {
 }
 
-size_t Table::num_fields() const {
-    return m_headers.size();
-}
-
-size_t Table::num_records() const {
-    return m_records.size();
-}
-
 void Table::set_quoted(const std::vector<bool>& vec) {
     if (vec.size() != m_quoted.size()) {
         throw TableMismatchedRecordLength(std::to_string(vec.size()));
@@ -81,10 +73,6 @@ void Table::set_quoted(std::vector<bool>&& vec) {
         throw TableMismatchedRecordLength(std::to_string(vec.size()));
     }
     m_quoted = std::move(vec);
-}
-
-const TableRow& Table::get_headers() const {
-    return m_headers;
 }
 
 const TableRow& Table::operator[](const size_t idx) const {

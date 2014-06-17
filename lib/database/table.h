@@ -132,7 +132,7 @@ class Table {
          * \brief           Move constructor.
          * \param table     Table to move.
          */
-        explicit Table (Table&& table);
+        Table (Table&& table);
 
         /*!
          * \brief           Copy assignment operator.
@@ -155,13 +155,13 @@ class Table {
          * \brief           Returns the number of fields in each row.
          * \returns         The number of fields in each row.
          */
-        size_t num_fields() const;
+        size_t num_fields() const { return m_headers.size(); }
 
         /*!
          * \brief           Returns the number of record in the table.
          * \returns         The number of records in the table.
          */
-        size_t num_records() const;
+        size_t num_records() const { return m_records.size(); }
 
         /*!
          * \brief           Sets the quote flags for the records
@@ -182,7 +182,7 @@ class Table {
          * \brief           Returns the field names.
          * \returns         The field names.
          */
-        const TableRow& get_headers() const;
+        const TableRow& get_headers() const { return m_headers; }
 
         /*!
          * \brief           Overloaded index operator.
