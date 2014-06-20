@@ -92,7 +92,7 @@ include lib/dbsql/module.mk
 include lib/database_imp/$(database)/module.mk
 include lib/database/module.mk
 include lib/config/module.mk
-include lib/stringhelp/module.mk
+include lib/pgutils/module.mk
 
 include progs/gl_db/module.mk
 include progs/gl_report/module.mk

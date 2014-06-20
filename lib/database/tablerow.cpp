@@ -8,9 +8,10 @@
 
 #include <sstream>
 #include "tablerow.h"
-#include "stringhelp/stringhelp.h"
+#include "pgutils/pgutils.h"
 
 using namespace gldb;
+using namespace pgutils;
 
 TableRow::TableRow() : m_fields() {}
 
@@ -85,7 +86,7 @@ std::string TableRow::record_string(const std::vector<bool>& quoted) const {
         vec.push_back(field.str());
     }
     std::string result;
-    pgstring::join(vec, result, ',');
+    join(vec, result, ',');
     return result;
 }
 
@@ -95,7 +96,7 @@ std::string TableRow::record_string() const {
         vec.push_back(m_fields[i]);
     }
     std::string result;
-    pgstring::join(vec, result, ',');
+    join(vec, result, ',');
     return result;
 }
 

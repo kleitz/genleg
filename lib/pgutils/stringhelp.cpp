@@ -14,32 +14,37 @@
 
 #include "stringhelp.h"
 
-using namespace pgstring;
+using namespace pgutils;
 
-std::string& pgstring::trim_front(std::string& s) {
+std::string& pgutils::trim_front(std::string& s)
+{
     s.erase(s.begin(), std::find_if(s.begin(), s.end(),
         std::not1(std::ptr_fun<int, int>(std::isspace))));
     return s;
 }
 
-std::string& pgstring::trim_back(std::string& s) {
+std::string& pgutils::trim_back(std::string& s)
+{
     s.erase(std::find_if(s.rbegin(), s.rend(),
         std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
     return s;
 }
 
-std::string& pgstring::trim(std::string& s) {
+std::string& pgutils::trim(std::string& s)
+{
     return trim_front(trim_back(s));
 }
 
-std::vector<std::string> pgstring::split(const std::string& s,
-                                         const char delim) {
+std::vector<std::string> pgutils::split(const std::string& s,
+                                         const char delim)
+{
     std::vector<std::string> vec;
     return split(vec, s, delim);
 }
 
-std::vector<std::string>& pgstring::split(std::vector<std::string>& vec,
-        const std::string& s, const char delim) {
+std::vector<std::string>& pgutils::split(std::vector<std::string>& vec,
+        const std::string& s, const char delim)
+{
     std::stringstream ss(s);
     std::string token;
 
@@ -50,8 +55,9 @@ std::vector<std::string>& pgstring::split(std::vector<std::string>& vec,
     return vec;
 }
 
-bool pgstring::next_content_line(std::istream& ifs,
-        std::string& s) {
+bool pgutils::next_content_line(std::istream& ifs,
+        std::string& s)
+{
     while ( std::getline(ifs, s) ) {
         trim(s);
         if ( s != "" && s[0] != '#' ) {
@@ -62,7 +68,8 @@ bool pgstring::next_content_line(std::istream& ifs,
 }
 
 std::vector<std::string>&
-pgstring::content_lines(std::vector<std::string>& vec,std::istream& ifs) {
+pgutils::content_lines(std::vector<std::string>& vec,std::istream& ifs)
+{
     std::string s;
     while ( next_content_line(ifs, s) ) {
         vec.push_back(s);
@@ -71,8 +78,9 @@ pgstring::content_lines(std::vector<std::string>& vec,std::istream& ifs) {
 }
 
 std::vector<std::vector<std::string>>&
-pgstring::split_lines(std::vector<std::vector<std::string>>& vec,
-        std::istream& ifs, const char delim) {
+pgutils::split_lines(std::vector<std::vector<std::string>>& vec,
+        std::istream& ifs, const char delim)
+{
     std::string s;
     while ( next_content_line(ifs, s) ) {
         std::vector<std::string> tokens;
@@ -81,8 +89,9 @@ pgstring::split_lines(std::vector<std::vector<std::string>>& vec,
     return vec;
 }
 
-std::string& pgstring::join(const std::vector<std::string>& vec,
-        std::string& s, const char delim) {
+std::string& pgutils::join(const std::vector<std::string>& vec,
+        std::string& s, const char delim)
+{
     std::ostringstream ss;
     for ( size_t i = 0; i < vec.size(); ++i ) {
         if ( i != 0 ) {
@@ -94,9 +103,10 @@ std::string& pgstring::join(const std::vector<std::string>& vec,
     return s; 
 }
  
-bool pgstring::replace(std::string& str,
+bool pgutils::replace(std::string& str,
                        const std::string& from,
-                       const std::string& to) {
+                       const std::string& to)
+{
     const size_t start_pos = str.find(from);
     if ( start_pos == std::string::npos ) {
         return false;

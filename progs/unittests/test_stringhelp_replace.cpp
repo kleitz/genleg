@@ -14,9 +14,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "stringhelp/stringhelp.h"
+#include "pgutils/pgutils.h"
 
-using namespace pgstring;
+using namespace pgutils;
 
 BOOST_AUTO_TEST_SUITE(stringhelp_replace_suite)
 

@@ -11,10 +11,10 @@
 #include <sstream>
 #include <cassert>
 #include "table.h"
-#include "stringhelp/stringhelp.h"
+#include "pgutils/pgutils.h"
 
 using namespace gldb;
-using namespace pgstring;
+using namespace pgutils;
 
 Table::Table(const TableRow& headers) :
     m_headers(headers), m_records(), m_quoted(headers.size()) {
@@ -102,7 +102,7 @@ Table Table::create_from_file(const std::string& filename, const char delim) {
 
     if ( ifs.is_open() ) {
         std::vector<std::vector<std::string>> vec;
-        pgstring::split_lines(vec, ifs, delim);
+        split_lines(vec, ifs, delim);
         if ( vec.size() < 3 ) {
             throw TableBadInputFile(filename);
         }

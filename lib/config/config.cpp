@@ -9,10 +9,10 @@
 #include <fstream>
 
 #include "config.h"
-#include "stringhelp/stringhelp.h"
+#include "pgutils/pgutils.h"
 
 using namespace genleg;
-using namespace pgstring;
+using namespace pgutils;
 using ArgPair = std::pair<std::string, enum Argument>;
 
 Config::Config() : m_opts_set(), m_opts_supp() {

@@ -6,13 +6,13 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-#ifndef PG_STRINGHELP_STRINGHELP_H
-#define PG_STRINGHELP_STRINGHELP_H
+#ifndef PG_UTILS_STRINGHELP_STRINGHELP_H
+#define PG_UTILS_STRINGHELP_STRINGHELP_H
 
 #include <string>
 #include <vector>
 
-namespace pgstring {
+namespace pgutils {
 
 /*!
  * \brief               Trims leading whitespace from a string.
@@ -113,5 +113,5 @@ bool replace(std::string& str, const std::string& from, const std::string& to);
 
 }           //  namespace pgstring
 
-#endif      //  PG_STRINGHELP_STRINGHELP_H
+#endif      //  PG_UTILS_STRINGHELP_STRINGHELP_H
 

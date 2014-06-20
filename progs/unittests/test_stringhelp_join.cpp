@@ -14,9 +14,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "stringhelp/stringhelp.h"
+#include "pgutils/pgutils.h"
 
-using namespace pgstring;
+using namespace pgutils;
 
 BOOST_AUTO_TEST_SUITE(stringhelp_join_suite)
 
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(test_join_1) {
     std::vector<std::string> tokens = {"one", "two", "three"};
 
     std::string s;
-    pgstring::join(tokens, s, ':');
+    join(tokens, s, ':');
     BOOST_CHECK_EQUAL(s, "one:two:three");
 }
 
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(test_join_2) {
     std::vector<std::string> tokens = {"two", "big", "scary", "clowns"};
 
     std::string s;
-    pgstring::join(tokens, s, ',');
+    join(tokens, s, ',');
     BOOST_CHECK_EQUAL(s, "two,big,scary,clowns");
 }
 
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(test_join_no_data) {
     std::vector<std::string> tokens;
 
     std::string s;
-    pgstring::join(tokens, s, ',');
+    join(tokens, s, ',');
     BOOST_CHECK_EQUAL(s, "");
 }
 
