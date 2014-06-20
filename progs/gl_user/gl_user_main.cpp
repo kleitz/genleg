@@ -48,6 +48,7 @@ static bool check_db_parameters(const Config& config);
 
 /*!
  * \brief           Returns a user from either an ID or a name.
+ * \ingroup         gl_user
  * \param config    Program configurations object.
  * \param gdb       Database object.
  * \returns         The user.

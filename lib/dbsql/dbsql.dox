@@ -1,0 +1,5 @@
+/**
+ * \defgroup sql SQL statements module
+ * \details Module for producing SQL statements used by program.
+ */
+

@@ -6,8 +6,8 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-#ifndef PG_UTILS_STRINGHELP_STRINGHELP_H
-#define PG_UTILS_STRINGHELP_STRINGHELP_H
+#ifndef PG_UTILS_STRINGHELP_H
+#define PG_UTILS_STRINGHELP_H
 
 #include <string>
 #include <vector>
@@ -16,7 +16,7 @@ namespace pgutils {
 
 /*!
  * \brief               Trims leading whitespace from a string.
- * \ingroup             helpers
+ * \ingroup             utils
  * \param s             The string to trim.
  * \returns             The trimmed string.
  */
@@ -24,7 +24,7 @@ std::string& trim_front(std::string& s);
 
 /*!
  * \brief               Trims trailing whitespace from a string.
- * \ingroup             helpers
+ * \ingroup             utils
  * \param s             The string to trim.
  * \returns             The trimmed string.
  */
@@ -32,7 +32,7 @@ std::string& trim_back(std::string& s);
 
 /*!
  * \brief               Trims leading and trailing whitespace from a string.
- * \ingroup             helpers
+ * \ingroup             utils
  * \param s             The string to trim.
  * \returns             The trimmed string.
  */
@@ -40,7 +40,7 @@ std::string& trim(std::string& s);
 
 /*!
  * \brief               Splits a delimited string into tokens.
- * \ingroup             helpers
+ * \ingroup             utils
  * \param s             The string to split.
  * \param delim         The delimiter character on which to split.
  * \returns             A vector of tokens.
@@ -49,7 +49,7 @@ std::vector<std::string> split(const std::string& s, const char delim);
 
 /*!
  * \brief               Splits a delimited string into tokens.
- * \ingroup             helpers
+ * \ingroup             utils
  * \param vec           The vector into which to add the tokens.
  * \param s             The string to split.
  * \param delim         The delimiter character on which to split.
@@ -60,6 +60,7 @@ std::vector<std::string>& split(std::vector<std::string>& vec,
 
 /*!
  * \brief               Gets the next content line from a stream.
+ * \ingroup             utils
  * \details             A "content line" is defined as a line which,
  * after being trimmed of trailing and leading whitespace, is not empty,
  * and does not start with a '#' character (indicating a comment line).
@@ -72,6 +73,7 @@ bool next_content_line(std::istream& ifs, std::string& s);
 
 /*!
  * \brief               Populates a vector of content lines from a stream.
+ * \ingroup             utils
  * \param vec           The vector to populate.
  * \param ifs           The input stream.
  * \returns             A reference to \c vec.
@@ -81,6 +83,7 @@ content_lines(std::vector<std::string>& vec, std::istream& ifs);
 
 /*!
  * \brief               Populates a vector of vectors of fields from a stream.
+ * \ingroup             utils
  * \param vec           The vector to populate.
  * \param ifs           The input stream.
  * \param delim         The delimiter character to split each content line.
@@ -92,6 +95,7 @@ split_lines(std::vector<std::vector<std::string>>& vec,
 
 /*!
  * \brief               Joins a vector of strings into a delimited line.
+ * \ingroup             utils
  * \details             The function is the opposite of \c split.
  * \param vec           The vector containing the strings.
  * \param s             The string in which to store the line.
@@ -104,6 +108,7 @@ std::string& join(const std::vector<std::string>& vec,
 
 /*!
  * \brief               Replaces a substring with another string.
+ * \ingroup             utils
  * \param str           The string containing the substring to replace.
  * \param from          The substring to replace.
  * \param to            The string with which to replace the substring.
@@ -113,5 +118,5 @@ bool replace(std::string& str, const std::string& from, const std::string& to);
 
 }           //  namespace pgstring
 
-#endif      //  PG_UTILS_STRINGHELP_STRINGHELP_H
+#endif      //  PG_UTILS_STRINGHELP_H
 

@@ -1,0 +1,5 @@
+/**
+ * \defgroup gldatabase General Ledger database module.
+ * \details Module for interacting with the general ledger database model.
+ */
+

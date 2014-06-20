@@ -252,3 +252,4 @@ class Table {
 }               //  namespace gldb
 
 #endif          //  PG_DATABASE_DATASTRUCT_TABLE_H
+

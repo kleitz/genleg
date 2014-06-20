@@ -1,0 +1,5 @@
+/**
+ * \defgroup database Database interaction module
+ * \details Module for interacting with the database.
+ */
+

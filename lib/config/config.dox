@@ -1,0 +1,6 @@
+/**
+ * \defgroup config Program configuration module
+ * \details Module for getting options from the command line and configuration
+ * files.
+ */
+
