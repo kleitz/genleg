@@ -163,6 +163,36 @@ class Table {
          */
         size_t num_records() const { return m_records.size(); }
 
+        /*!  Type definition for iterator  */
+        using iterator = std::vector<TableRow>::iterator;
+
+        /*!
+         * \brief           Returns iterator for beginning.
+         * \returns         Iterator for beginning.
+         */
+        iterator begin() { return m_records.begin(); }
+
+        /*!
+         * \brief           Returns iterator for end plus one.
+         * \returns         Iterator for end plus one.
+         */
+        iterator end() { return m_records.end(); }
+
+        /*!  Type definition for const iterator  */
+        using const_iterator = std::vector<TableRow>::const_iterator;
+
+        /*!
+         * \brief           Returns const iterator for beginning.
+         * \returns         Const iterator for beginning.
+         */
+        const_iterator begin() const { return m_records.begin(); }
+
+        /*!
+         * \brief           Returns const iterator for end plus one.
+         * \returns         Const iterator for end plus one.
+         */
+        const_iterator end() const { return m_records.end(); }
+
         /*!
          * \brief           Sets the quote flags for the records
          * \param vec       A vector of bools. The size must match the

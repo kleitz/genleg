@@ -11,6 +11,7 @@
 #include "database/database.h"
 #include "database_imp/database_imp.h"
 #include "config/config.h"
+#include "gldb/gldb.h"
 
 /*!
  * \brief           Static variable for program name.
@@ -124,13 +125,7 @@ int main(int argc, char *argv[]) {
                         config["hostname"], config["username"], passwd));
 
             const gldb::Table table = dbc.select(query);
-
-            table.get_headers().print(std::cout);
-            for ( size_t i = 0; i < table.num_records(); ++i ) {
-                table[i].print(std::cout);
-            }
-            std::cout << "Number of records: [" << table.num_records()
-                      << "]" << std::endl;
+            std::cout << genleg::decorated_report_from_table(table);
         }
         catch ( gldb::DBConnCouldNotConnect& e ) {
             std::cerr << progname << ": couldn't connect to database: "
