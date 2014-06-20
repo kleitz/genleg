@@ -266,3 +266,14 @@ std::string DBSQLStatements::revoke(const std::string& user_id,
     return ss.str();
 }
 
+std::string DBSQLStatements::currenttb() const {
+    return "SELECT * FROM current_trial_balance";
+}
+
+std::string DBSQLStatements::currenttb_by_entity(
+        const std::string& entity) const
+{
+    return std::string{"SELECT * FROM current_trial_balance WHERE Entity = "} +
+           entity;
+}
+

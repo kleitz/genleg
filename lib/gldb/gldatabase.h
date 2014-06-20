@@ -14,6 +14,7 @@
 #include "database/database.h"
 #include "dbsql/dbsql.h"
 #include "gluser.h"
+#include "glreport.h"
 
 namespace genleg {
 
@@ -105,6 +106,15 @@ class GLDatabase {
          */
         void revoke(const GLUser& user, const std::string& perm);
 
+        /*!
+         * \brief               Runs a report
+         * \param report_name   The name of the report.
+         * \param arg           An optional argument.
+         * \returns             A report object.
+         */
+        GLReport report(const std::string& report_name,
+                        const std::string& arg = "");
+
     private:
         /*!  Database connection  */
         gldb::DBConn m_dbc;
@@ -127,6 +137,14 @@ class GLDatabase {
          * \returns         The new user.
          */
         GLUser create_user(gldb::Table& table);
+
+        /*!
+         * \brief           Returns a current trial balance report.
+         * \param entity    The entity for which to run the report, or
+         * an empty string for all entities.
+         * \returns         A GLReport object with the report.
+         */
+        GLReport current_trial_balance_report(const std::string& entity);
 
 };              //  class GLDatabase
 

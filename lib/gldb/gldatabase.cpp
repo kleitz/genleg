@@ -12,6 +12,7 @@
 #include "database_imp/database_imp.h"
 
 using namespace genleg;
+using namespace gldb;
 
 /*!
  * \brief           Converts a string representation of a bool to a bool.
@@ -26,13 +27,13 @@ GLDatabase::GLDatabase(const std::string& database,
                        const std::string& hostname,
                        const std::string& username,
                        const std::string& password) try :
-    m_dbc(gldb::get_connection(database, hostname, username, password)),
+    m_dbc(get_connection(database, hostname, username, password)),
     m_sql(get_sql_object()),
     m_tables({"standing_data", "users", "perms", "user_perms", "entities",
               "jesrcs", "nomaccts", "jes", "jelines"}),
     m_views({"current_trial_balance", "check_total", "all_jes"})
 { }
-catch ( const gldb::DBConnException& e ) {
+catch ( const DBConnException& e ) {
     throw GLDBException(e.what());
 }
 
@@ -48,7 +49,7 @@ void GLDatabase::create_structure() try {
         m_dbc.query(m_sql->create_view(view_name));
     }
 }
-catch ( const gldb::DBConnException& e ) {
+catch ( const DBConnException& e ) {
     throw GLDBException(e.what());
 }
 
@@ -61,40 +62,40 @@ void GLDatabase::destroy_structure() try {
         m_dbc.query(m_sql->drop_table(*itr));
     }
 }
-catch ( const gldb::DBConnException& e ) {
+catch ( const DBConnException& e ) {
     throw GLDBException(e.what());
 }
 
 void GLDatabase::load_sample_data(const std::string& dir) try {
     for ( const auto& tname : m_tables ) {
         std::string filename = dir + "/" + tname;
-        gldb::Table table{gldb::Table::create_from_file(filename, ':')};
+        Table table{Table::create_from_file(filename, ':')};
         for ( size_t i = 0; i < table.num_records(); ++i ) {
             m_dbc.query(table.insert_query(tname, i));
         }
     }
 }
-catch ( const gldb::DBConnException& e ) {
+catch ( const DBConnException& e ) {
     throw GLDBException(e.what());
 }
-catch ( const gldb::TableCouldNotOpenInputFile& e ) {
+catch ( const TableCouldNotOpenInputFile& e ) {
     std::ostringstream ss;
     ss << "Couldn't open input file '" << e.what() << "'.";
     throw GLDBException(ss.str());
 }
-catch ( const gldb::TableBadInputFile& e ) {
+catch ( const TableBadInputFile& e ) {
     std::ostringstream ss;
     ss << "Malformed input file '" << e.what() << "'.";
     throw GLDBException(ss.str());
 }
 
 std::string GLDatabase::backend() {
-    return gldb::get_database_type();
+    return get_database_type();
 }
 
-GLUser GLDatabase::create_user(gldb::Table& table) {
+GLUser GLDatabase::create_user(Table& table) {
     const std::string permquery = m_sql->get_perms(table.get_field("id", 0));
-    gldb::Table permtable{m_dbc.select(permquery)};
+    Table permtable{m_dbc.select(permquery)};
     std::vector<std::string> perms;
     for ( size_t i = 0; i < permtable.num_records(); ++i ) {
         perms.push_back(permtable[i][0]);
@@ -114,12 +115,12 @@ GLUser GLDatabase::create_user(gldb::Table& table) {
 }
 
 GLUser GLDatabase::get_user_by_id(const std::string& user_id) {
-    gldb::Table table{m_dbc.select(m_sql->user_by_id(user_id))};
+    Table table{m_dbc.select(m_sql->user_by_id(user_id))};
     return create_user(table);
 }
 
 GLUser GLDatabase::get_user_by_username(const std::string& user_name) {
-    gldb::Table table{m_dbc.select(m_sql->user_by_username(user_name))};
+    Table table{m_dbc.select(m_sql->user_by_username(user_name))};
     return create_user(table);
 }
 
@@ -133,6 +134,30 @@ void GLDatabase::grant(const GLUser& user, const std::string& perm) {
 
 void GLDatabase::revoke(const GLUser& user, const std::string& perm) {
     m_dbc.query(m_sql->revoke(user.id(), perm));
+}
+
+GLReport GLDatabase::report(const std::string& report_name,
+                            const std::string& arg)
+{
+    if ( report_name == "currenttb" ) {
+        return current_trial_balance_report(arg);
+    }
+    else {
+        throw GLDBException{"Unrecognized report"};
+    }
+}
+
+GLReport GLDatabase::current_trial_balance_report(const std::string& entity)
+{
+    std::string query;
+    if ( !entity.empty() ) {
+        query = m_sql->currenttb_by_entity(entity);
+    }
+    else {
+        query = m_sql->currenttb();
+    }
+
+    return GLReport{decorated_report_from_table(m_dbc.select(query))};
 }
 
 static bool boolstring_to_bool(const std::string& bs) {

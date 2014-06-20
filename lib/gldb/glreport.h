@@ -1,7 +1,6 @@
 /*!
  * \file            glreport.h
  * \brief           Interface to report class
- * \details         Interface to report class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
@@ -24,12 +23,19 @@ class GLReport {
     public:
 
         /*!  Constructor  */
-        GLReport () {}
+        GLReport (const std::string& report) :
+            m_report_text(report) {}
 
         /*!  Destructor  */
         ~GLReport () {}
 
+        friend std::ostream& operator<< (std::ostream& out,
+                const GLReport& report);
+
     private:
+
+        /*!  The main report text  */
+        const std::string m_report_text;
 
 };              //  class GLReport
 
@@ -51,6 +57,14 @@ std::string plain_report_from_table(const gldb::Table& table);
  * \returns         A string containing the report.
  */
 std::string decorated_report_from_table(const gldb::Table& table);
+
+/*!
+ * \brief           Overridden << operator for printing a report.
+ * \param out       The ostream to which to print.
+ * \param report    A reference to the report.
+ * \returns         A reference to `out`.
+ */
+std::ostream& operator<< (std::ostream& out, const GLReport& report);
 
 }               //  namespace genleg
 

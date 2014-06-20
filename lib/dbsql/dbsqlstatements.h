@@ -111,6 +111,22 @@ class DBSQLStatements {
          */
         virtual std::string get_perms(const std::string& user_id) const;
 
+        /*!
+         * \brief               Returns a SQL statement to run the current
+         * trial balance report.
+         * \returns             The SQL statement.
+         */
+        virtual std::string currenttb() const;
+
+        /*!
+         * \brief               Returns a SQL statement to run the current
+         * trial balance report by entity.
+         * \param entity        The entity number for which to run the report.
+         * \returns             The SQL statement.
+         */
+        virtual std::string currenttb_by_entity(
+                const std::string& entity) const;
+
 };              //  class DBSQLStatements
 
 }               //  namespace genleg

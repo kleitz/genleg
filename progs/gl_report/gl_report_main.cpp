@@ -8,10 +8,10 @@
 
 #include <iostream>
 
-#include "database/database.h"
-#include "database_imp/database_imp.h"
-#include "config/config.h"
 #include "gldb/gldb.h"
+#include "config/config.h"
+
+using namespace genleg;
 
 /*!
  * \brief           Static variable for program name.
@@ -26,7 +26,24 @@ static const char * progname = "gl_report";
  * \param argc      \c argc passed to \c main().
  * \param argv      \c argv passed to \c main().
  */
-static void set_configuration(genleg::Config& config, int argc, char *argv[]);
+static void set_configuration(Config& config, int argc, char *argv[]);
+
+/*!
+ * \brief           Prints help or version messages if requested.
+ * \ingroup         gl_report
+ * \param config    Reference to a Config object.
+ * \returns         `true` if the help or version message was requested,
+ * `false` otherwise.
+ */
+static bool check_help_and_version(const Config& config);
+
+/*!
+ * \brief           Checks if database, hostname and username were provided.
+ * \ingroup         gl_report
+ * \param config    Reference to a Config object.
+ * \returns         `true` if the information was provided, `false` otherwise.
+ */
+static bool check_db_parameters(const Config& config);
 
 /*!
  * \brief           Prints a program usage message.
@@ -61,37 +78,15 @@ static std::string login(void);
  * \param argv      Command line arguments.
  * \returns         Exit status code.
  */
-int main(int argc, char *argv[]) {
-    genleg::Config config;
-    try {
-        set_configuration(config, argc, argv);
-    }
-    catch (...) {
-        std::cerr << progname << ": bad command line options" << std::endl;
-        return 1;
+int main(int argc, char *argv[]) try {
+    Config config;
+    set_configuration(config, argc, argv);
+
+    if ( check_help_and_version(config) ) {
+        return 0;
     }
 
-    if ( config.is_set("help") ) {
-        print_help_message();
-        return 0;
-    }
-    else if ( config.is_set("version") ) {
-        print_version_message();
-        return 0;
-    }
-    else if ( !config.is_set("database") ) {
-        print_usage_message();
-        std::cerr << progname << ": database name not provided" << std::endl;
-        return 1;
-    }
-    else if ( !config.is_set("hostname") ) {
-        print_usage_message();
-        std::cerr << progname << ": hostname not provided" << std::endl;
-        return 1;
-    }
-    else if ( !config.is_set("username") ) {
-        print_usage_message();
-        std::cerr << progname << ": hostname not provided" << std::endl;
+    if ( !check_db_parameters(config) ) {
         return 1;
     }
 
@@ -99,49 +94,18 @@ int main(int argc, char *argv[]) {
     if ( config.is_set("password") ) {
         passwd = config["password"];
     }
-    else {
-        try {
-            passwd = login();
-        }
-        catch (...) {
-            std::cerr << std::endl << progname
-                      << ": error getting password." << std::endl;
-            return 1;
-        }
-    }
+    passwd = login();
+
+    GLDatabase gdb(config["database"], config["hostname"],
+                    config["username"], passwd);
 
     if ( config.is_set("currenttb") ) {
-        std::string query = "SELECT * FROM current_trial_balance";
         if ( config.is_set("entity") ) {
-            const std::string entity = config["entity"];
-            if ( !entity.empty() ) {
-                query += " WHERE Entity = ";
-                query += entity;
-            }
+            std::cout << gdb.report("currenttb", config["entity"]);
         }
-
-        try {
-            gldb::DBConn dbc(gldb::get_connection(config["database"],
-                        config["hostname"], config["username"], passwd));
-
-            const gldb::Table table = dbc.select(query);
-            std::cout << genleg::decorated_report_from_table(table);
+        else {
+            std::cout << gdb.report("currenttb");
         }
-        catch ( gldb::DBConnCouldNotConnect& e ) {
-            std::cerr << progname << ": couldn't connect to database: "
-                      << e.what() << std::endl;
-            return 1;
-        }
-        catch ( gldb::DBConnCouldNotQuery& e ) {
-            std::cerr << progname << ": couldn't query database: "
-                      << e.what() << std::endl;
-            return 1;
-        }
-        catch ( ... ) {
-            std::cerr << progname << ": unknown exception." << std::endl;
-            return 1;
-        }
-
     }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
@@ -149,8 +113,32 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+catch ( const ConfigBadOption& e ) {
+    std::cerr << progname << ": Invalid command line options" << std::endl;
+}
+catch ( const ConfigOptionNotSet& e ) {
+    std::cerr << progname << ": Request for value of missing option '"
+              << e.what() << "'" << std::endl;
+}
+catch ( const ConfigCouldNotOpenFile& e ) {
+    std::cerr << progname << ": could not open configuration file '"
+              << e.what() << "'" << std::endl;
+}
+catch ( const ConfigBadConfigFile& e ) {
+    std::cerr << progname << ": configuration file '" << e.what()
+              << "' is badly formed." << std::endl;
+}
+catch (const GLDBException& e) {
+    std::cerr << progname << ": database error - " << e.what() << std::endl;
+}
+catch (const std::runtime_error& e) {
+    std::cerr << progname << ": error - " << e.what() << std::endl;
+}
+catch (...) {
+    std::cerr << progname << ": unknown error" << std::endl;
+}
 
-static void set_configuration(genleg::Config& config, int argc, char *argv[]) {
+static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("help", genleg::Argument::NO_ARG);
     config.add_cmdline_option("version", genleg::Argument::NO_ARG);
     config.add_cmdline_option("database", genleg::Argument::REQ_ARG);
@@ -159,8 +147,41 @@ static void set_configuration(genleg::Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("password", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("currenttb", genleg::Argument::NO_ARG);
     config.add_cmdline_option("entity", genleg::Argument::OPT_ARG);
-    config.populate_from_cmdline(argc, argv);
     config.populate_from_file("conf_files/gl_report_conf.conf");
+    config.populate_from_cmdline(argc, argv);
+}
+
+static bool check_help_and_version(const Config& config) {
+    if ( config.is_set("help") ) {
+        print_help_message();
+        return true;
+    }
+    else if ( config.is_set("version") ) {
+        print_version_message();
+        return true;
+    }
+    return false;
+}
+
+static bool check_db_parameters(const Config& config) {
+    if ( !config.is_set("database") ) {
+        print_usage_message();
+        std::cerr << progname << ": database name not provided" << std::endl;
+        return false;
+    }
+    else if ( !config.is_set("hostname") ) {
+        print_usage_message();
+        std::cerr << progname << ": hostname not provided" << std::endl;
+        return false;
+    }
+    else if ( !config.is_set("username") ) {
+        print_usage_message();
+        std::cerr << progname << ": username not provided" << std::endl;
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 static void print_usage_message() {
@@ -197,7 +218,7 @@ static void print_help_message() {
 static void print_version_message() {
     std::cout << progname << " v0.1 (experimental)\n"
               << "Copyright (C) 2014 Paul Griffiths\n"
-              << "Compiled with " << gldb::get_database_type()
+              << "Compiled with " << GLDatabase::backend()
               << " database support.\n"
               << "This is free software; see the source for copying"
               << " conditions. There is NO\n"
@@ -210,7 +231,8 @@ static std::string login(void) {
     std::string passwd;
 
     if ( !std::getline(std::cin, passwd) ) {
-        throw "Couldn't get password";
+        std::cout << std::endl;
+        throw std::runtime_error("Couldn't get password");
     }
 
     return passwd;

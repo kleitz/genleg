@@ -1,7 +1,6 @@
 /*!
  * \file            glreport.cpp
  * \brief           Implementation of report class
- * \details         Implementation of report class
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
@@ -68,6 +67,11 @@ static std::string plain_row(const TableRow& row,
  */
 static std::string decorated_row(const TableRow& row,
                                  const std::vector<size_t>& widths);
+
+std::ostream& genleg::operator<< (std::ostream& out, const GLReport& report) {
+    out << report.m_report_text;
+    return out;
+}
 
 std::string genleg::plain_report_from_table(const gldb::Table& table)
 {
