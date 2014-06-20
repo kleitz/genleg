@@ -142,6 +142,9 @@ GLReport GLDatabase::report(const std::string& report_name,
     if ( report_name == "currenttb" ) {
         return current_trial_balance_report(arg);
     }
+    else if ( report_name == "listusers" ) {
+        return list_users_report();
+    }
     else {
         throw GLDBException{"Unrecognized report"};
     }
@@ -160,6 +163,11 @@ GLReport GLDatabase::current_trial_balance_report(const std::string& entity)
     return GLReport{decorated_report_from_table(m_dbc.select(query))};
 }
 
+GLReport GLDatabase::list_users_report()
+{
+    const std::string query = m_sql->listusers();
+    return GLReport{decorated_report_from_table(m_dbc.select(query))};
+}
 static bool boolstring_to_bool(const std::string& bs) {
     if ( bs == "1" || bs == "TRUE" ) {
         return true;

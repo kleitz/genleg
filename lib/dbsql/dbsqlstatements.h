@@ -127,6 +127,13 @@ class DBSQLStatements {
         virtual std::string currenttb_by_entity(
                 const std::string& entity) const;
 
+        /*!
+         * \brief               Returns a SQL statement to run the list users
+         * report.
+         * \returns             The SQL statement.
+         */
+        std::string listusers() const;
+
 };              //  class DBSQLStatements
 
 }               //  namespace genleg

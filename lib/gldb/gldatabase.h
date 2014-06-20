@@ -146,6 +146,12 @@ class GLDatabase {
          */
         GLReport current_trial_balance_report(const std::string& entity);
 
+        /*!
+         * \brief           Returns a list users report.
+         * \returns         A GLReport object with the report.
+         */
+        GLReport list_users_report();
+
 };              //  class GLDatabase
 
 }               //  namespace genleg

@@ -277,3 +277,24 @@ std::string DBSQLStatements::currenttb_by_entity(
            entity;
 }
 
+std::string DBSQLStatements::listusers() const {
+    std::ostringstream ss;
+    ss << "SELECT"
+       << "  id AS 'ID',"
+       << "  user_name AS 'Username',"
+       << "  first_name AS 'First Name',"
+       << "  last_name AS 'Last Name',"
+       << "  CASE enabled"
+       << "    WHEN TRUE"
+       << "      THEN 'Yes'"
+       << "    WHEN FALSE"
+       << "      THEN 'No'"
+       << "    ELSE 'Unknown'"
+       << "  END"
+       << "    AS 'Enabled?'"
+       << "  FROM users"
+       << "  ORDER BY id ASC";
+    return ss.str();
+}
+
+

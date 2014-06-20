@@ -107,6 +107,9 @@ int main(int argc, char *argv[]) try {
             std::cout << gdb.report("currenttb");
         }
     }
+    else if ( config.is_set("listusers") ) {
+        std::cout << gdb.report("listusers");
+    }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
@@ -146,7 +149,8 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("username", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("password", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("currenttb", genleg::Argument::NO_ARG);
-    config.add_cmdline_option("entity", genleg::Argument::OPT_ARG);
+    config.add_cmdline_option("listusers", genleg::Argument::NO_ARG);
+    config.add_cmdline_option("entity", genleg::Argument::REQ_ARG);
     config.populate_from_file("conf_files/gl_report_conf.conf");
     config.populate_from_cmdline(argc, argv);
 }
