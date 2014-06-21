@@ -10,58 +10,78 @@
 # Variables section
 # =================
 
-# Files
+# Programs
+SED := sed
+MV  := mv -f
+RM  := rm -f
+
+# Objects, sources and libraries variables
 database_program := gl_db
 report_program	 := gl_report
 user_program	 := gl_user
 unittest_program := unittests
+programs         := $(database_program) $(report_program)
+programs         += $(user_program) $(unittest_program)
+
 sources      	 := $(wildcard *.cpp)
-libraries    	 :=
 objects       	  = $(subst .cpp,.o,$(sources))
 depends       	  = $(subst .cpp,.d,$(sources))
+libraries    	 :=
+
 database_objects :=
 report_objects   :=
 user_objects     :=
 unittest_objects :=
 
 # Compile options
-database     := mysql
+database         := mysql
 
 # Compiler flags
-CXXFLAGS = -std=c++11 -pedantic -Wall -Wextra -Weffc++ -Ilib
+CXXFLAGS           = -std=c++11 -pedantic -Wall -Wextra -Weffc++ -Ilib
 CXX_DEBUG_FLAGS   := -ggdb -DDEBUG -DDEBUG_ALL
 CXX_RELEASE_FLAGS := -O3 -DNDEBUG
 
 # Linker flags
-LDFLAGS := -lcrypt
+LDFLAGS   := -lcrypt
 BOOSTLIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
 
 # Clean files and globs
-CLNGLOB=$(objects) $(libraries) $(depends)
-CLNGLOB+=$(database_program) $(report_program) $(user_program)
-CLNGLOB+=$(unittest_program)
-CLNGLOB+=*~ *.o *.gcov *.out *.gcda *.gcno
+CLNGLOB  = $(objects) $(libraries) $(depends) $(programs)
+CLNGLOB += *~ *.o *.gcov *.out *.gcda *.gcno
 
+# Default target
+default: debug
+
+# Included modules
+include lib/gldb/module.mk
+include lib/dbsql/module.mk
+include lib/database_imp/$(database)/module.mk
+include lib/database/module.mk
+include lib/config/module.mk
+include lib/pgutils/module.mk
+
+include progs/gl_db/module.mk
+include progs/gl_report/module.mk
+include progs/gl_user/module.mk
+include progs/unittests/module.mk
 
 # Build targets section
 # =====================
 
-default: debug
-
 # debug - builds objects with debugging info
 .PHONY: debug
-debug: CXXFLAGS+=$(CXX_DEBUG_FLAGS)
+debug: CXXFLAGS += $(CXX_DEBUG_FLAGS)
 debug: all
 
 # release - builds with optimizations and without debugging info
 .PHONY: release
-release: CXXFLAGS+=$(CXX_RELEASE_FLAGS)
+release: CXXFLAGS += $(CXX_RELEASE_FLAGS)
 release: all
 
 # clean - removes ancilliary files from working directory
 .PHONY: clean
 clean:
-	-@rm $(CLNGLOB) 2>/dev/null
+	-@$(RM) $(CLNGLOB) 2>/dev/null
 
 # docs - makes Doxygen documentation:
 .PHONY: docs
@@ -85,49 +105,33 @@ tags:
 
 # Main executable
 .PHONY: all
-all: $(database_program) $(report_program) $(user_program) $(unittest_program)
-
-include lib/gldb/module.mk
-include lib/dbsql/module.mk
-include lib/database_imp/$(database)/module.mk
-include lib/database/module.mk
-include lib/config/module.mk
-include lib/pgutils/module.mk
-
-include progs/gl_db/module.mk
-include progs/gl_report/module.mk
-include progs/gl_user/module.mk
-include progs/unittests/module.mk
+all: $(programs)
 
 $(database_program): $(database_objects) $(libraries)
 	@echo "Building gl_db..."
 	$(CXX) -o $@ $^ $(LDFLAGS)
-	@echo "Done."
 
 $(report_program): $(report_objects) $(libraries)
 	@echo "Building gl_report..."
 	$(CXX) -o $@ $^ $(LDFLAGS)
-	@echo "Done."
 
 $(user_program): $(user_objects) $(libraries)
 	@echo "Building gl_user..."
 	$(CXX) -o $@ $^ $(LDFLAGS)
-	@echo "Done."
 
 $(unittest_program): $(unittest_objects) $(libraries)
 	@echo "Building unit tests..."
 	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOSTLIBS)
-	@echo "Done."
-
 
 # Dependencies
-# ============
+ifneq "$(MAKECMDGOALS)" "clean"
+  -include $(depends)
+endif
 
--include $(depends)
-
+# Build for dependencies
 %.d: %.cpp
 	@echo "Building dependencies for $<..."
-	@$(CXX) -M $(CXXFLAGS) $< > $@.tmp; \
-		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.tmp > $@; \
-		rm -f $@.tmp
+	@$(CXX) $(CXXFLAGS) -M $< | \
+		$(SED) 's,\($(notdir $*)\.o\) *:,$(dir $@)\1: ,' > $@.tmp
+	@$(MV) $@.tmp $@
 
