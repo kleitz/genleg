@@ -10,6 +10,7 @@
 #define PG_UTILS_H
 
 #include "stringhelp.h"
+#include "currency.h"
 
 #endif      //  PG_UTILS_H
 
