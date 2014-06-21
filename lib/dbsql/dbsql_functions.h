@@ -1,5 +1,5 @@
 /*!
- * \file            dbsqlstatements.h
+ * \file            dbsql_functions.h
  * \brief           Interface to SQL module standalone functions.
  * \author          Paul Griffiths
  * \copyright       Copyright 2014 Paul Griffiths. Distributed under the terms
