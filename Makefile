@@ -37,7 +37,8 @@ unittest_objects :=
 database         := mysql
 
 # Compiler flags
-CXXFLAGS           = -std=c++11 -pedantic -Wall -Wextra -Weffc++ -Ilib
+CXXFLAGS           = -std=c++11 -pedantic -Wall -Wextra -Ilib
+#CXXFLAGS          += -Weffc++
 CXX_DEBUG_FLAGS   := -ggdb -DDEBUG -DDEBUG_ALL
 CXX_RELEASE_FLAGS := -O3 -DNDEBUG
 
