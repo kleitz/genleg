@@ -15,6 +15,11 @@
 
 namespace genleg {
 
+/*!
+ * \brief           Factory function for DBSQL objects
+ * \returns         The DBSQLStatements corresponding to the compiled-in
+ * database backend.
+ */
 std::shared_ptr<const DBSQLStatements> get_sql_object();
 
 }           //  namespace genleg
