@@ -31,6 +31,7 @@ get_field_names(MySQLResult& result);
 static TableRow
 get_row(MySQLResult& result, MYSQL_ROW row);
 
+/*  Define static class mutex  */
 std::mutex DBConnMySQL::mtx;
 
 DBConnMySQL::DBConnMySQL(const std::string& database,
