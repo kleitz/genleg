@@ -73,7 +73,26 @@ class DBConnMySQL : public DBConnImp {
          */
         virtual Table select(const std::string& sql_query);
 
-        unsigned long long last_auto_increment();
+        /*!
+         * \brief           Begins a transaction.
+         */
+        virtual void begin_transaction();
+
+        /*!
+         * \brief           Rolls back a transaction.
+         */
+        virtual void rollback_transaction();
+
+        /*!
+         * \brief           Commits a transaction.
+         */
+        virtual void commit_transaction();
+
+        /*!
+         * \brief           Returns the last auto incremented value.
+         * \returns         The last auto incremented value.
+         */
+        virtual unsigned long long last_auto_increment();
 
     private:
 

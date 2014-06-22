@@ -187,6 +187,9 @@ void GLDatabase::post_journal(const GLJournal& journal)
             journal.year(),
             journal.source(),
             journal.memo());
+
+    GLDBTransaction txn(m_dbc);
+
     m_dbc.query(query);
 
     const int n = m_dbc.last_auto_increment();
@@ -195,6 +198,8 @@ void GLDatabase::post_journal(const GLJournal& journal)
                 line.amount().string());
         m_dbc.query(query);
     }
+
+    txn.commit();
 }
 
 GLReport GLDatabase::report(const std::string& report_name,
@@ -229,6 +234,7 @@ GLReport GLDatabase::list_users_report()
     const std::string query = m_sql->listusers();
     return GLReport{decorated_report_from_table(m_dbc.select(query))};
 }
+
 static bool boolstring_to_bool(const std::string& bs) {
     if ( bs == "1" || bs == "TRUE" ) {
         return true;

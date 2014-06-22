@@ -92,6 +92,21 @@ class DBConn {
         Table select(const std::string& query);
 
         /*!
+         * \brief           Begins a transaction.
+         */
+        void begin_transaction();
+
+        /*!
+         * \brief           Rolls back a transaction.
+         */
+        void rollback_transaction();
+
+        /*!
+         * \brief           Commits a transaction.
+         */
+        void commit_transaction();
+
+        /*!
          * \brief           Returns the last auto incremented value.
          * \returns         The last auto incremented value.
          */

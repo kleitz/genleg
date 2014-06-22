@@ -41,6 +41,21 @@ class DBConnImp {
         virtual Table select(const std::string& query) = 0;
 
         /*!
+         * \brief           Begins a transaction.
+         */
+        virtual void begin_transaction() = 0;
+
+        /*!
+         * \brief           Rolls back a transaction.
+         */
+        virtual void rollback_transaction() = 0;
+
+        /*!
+         * \brief           Commits a transaction.
+         */
+        virtual void commit_transaction() = 0;
+
+        /*!
          * \brief           Returns the last auto incremented value.
          * \returns         The last auto incremented value.
          */

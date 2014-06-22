@@ -161,6 +161,38 @@ class GLDatabase {
 
 };              //  class GLDatabase
 
+/*!
+ * \brief           Database transaction RAII class
+ * \ingroup         gldatabase
+ */
+class GLDBTransaction {
+    public:
+
+        GLDBTransaction(gldb::DBConn& dbc) :
+            m_dbc(dbc), m_commit(false)
+        {
+            m_dbc.begin_transaction();
+        }
+
+        ~GLDBTransaction() {
+            if ( m_commit ) {
+                m_dbc.commit_transaction();
+            }
+            else {
+                m_dbc.rollback_transaction();
+            }
+        }
+
+        void commit() {
+            m_commit = true;
+        }
+
+    private:
+        gldb::DBConn& m_dbc;
+        bool m_commit;
+
+};
+
 }               //  namespace genleg
 
 #endif          //  PG_GENERAL_LEDGER_GL_DATABASE_H

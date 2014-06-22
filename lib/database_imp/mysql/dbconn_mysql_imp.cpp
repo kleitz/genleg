@@ -40,6 +40,9 @@ DBConnMySQL::DBConnMySQL(const std::string& database,
                          const std::string& password) :
     m_conn{nullptr}
 {
+    /*  Lock mutex since calls to mysql_init()
+     *  are not thread-safe.                    */
+
     std::unique_lock<std::mutex> lock{DBConnMySQL::mtx};
 
     m_conn = mysql_init(nullptr);
@@ -85,6 +88,21 @@ Table DBConnMySQL::select(const std::string& sql_query)
     }
 
     return table;
+}
+
+void DBConnMySQL::begin_transaction()
+{
+    query("START TRANSACTION");
+}
+
+void DBConnMySQL::rollback_transaction()
+{
+    query("ROLLBACK");
+}
+
+void DBConnMySQL::commit_transaction()
+{
+    query("COMMIT");
 }
 
 unsigned long long DBConnMySQL::last_auto_increment()

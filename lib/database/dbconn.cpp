@@ -25,6 +25,18 @@ Table DBConn::select(const std::string& query) {
     return m_imp->select(query);
 }
 
+void DBConn::begin_transaction() {
+    m_imp->begin_transaction();
+}
+
+void DBConn::rollback_transaction() {
+    m_imp->rollback_transaction();
+}
+
+void DBConn::commit_transaction() {
+    m_imp->commit_transaction();
+}
+
 unsigned long long DBConn::last_auto_increment() {
     return m_imp->last_auto_increment();
 }
