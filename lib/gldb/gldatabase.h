@@ -168,12 +168,17 @@ class GLDatabase {
 class GLDBTransaction {
     public:
 
+        /*!
+         * \brief           Constructor.
+         * \param dbc       Database connection.
+         */
         GLDBTransaction(gldb::DBConn& dbc) :
             m_dbc(dbc), m_commit(false)
         {
             m_dbc.begin_transaction();
         }
 
+        /*!  Destructor  */
         ~GLDBTransaction() {
             if ( m_commit ) {
                 m_dbc.commit_transaction();
@@ -183,12 +188,19 @@ class GLDBTransaction {
             }
         }
 
+        /*!
+         * \brief           Set commit flag.
+         */
         void commit() {
             m_commit = true;
         }
 
     private:
+
+        /*!  Database connection  */
         gldb::DBConn& m_dbc;
+
+        /*!  Commit flag  */
         bool m_commit;
 
 };

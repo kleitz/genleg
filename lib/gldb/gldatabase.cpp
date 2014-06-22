@@ -105,9 +105,7 @@ void GLDatabase::load_sample_data(const std::string& dir) try {
     /*  Load journal entries from files  */
 
     for ( const auto& p : v ) {
-        std::string f = p.string();
-        std::ifstream ifs;
-        ifs.open(f);
+        std::ifstream ifs(p.string());
         if ( !ifs.is_open() ) {
             throw GLDBException("Couldn't open file");
         }
