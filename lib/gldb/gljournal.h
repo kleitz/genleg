@@ -9,6 +9,7 @@
 #ifndef PG_GENERAL_LEDGER_JOURNAL_ENTRY_H
 #define PG_GENERAL_LEDGER_JOURNAL_ENTRY_H
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include "pgutils/pgutils.h"
@@ -28,6 +29,18 @@ class GLJELine {
         GLJELine (const std::string account,
                   const pgutils::Currency& amount) :
             m_acct{account}, m_amount{amount} {};
+
+        /*!
+         * \brief           Returns the account name/number.
+         * \returns         The account name/number.
+         */
+        std::string account() const { return m_acct; }
+
+        /*!
+         * \brief           Returns the currency amount.
+         * \returns         The currency amount.
+         */
+        pgutils::Currency amount() const { return m_amount; }
 
     private:
 
@@ -98,6 +111,12 @@ class GLJournal {
         const std::string& memo() const { return m_memo; }
 
         /*!
+         * \brief           Returns the number of lines in the entry.
+         * \returns         The number of lines in the entry.
+         */
+        size_t num_lines() const { return m_lines.size(); }
+
+        /*!
          * \brief           Index operator.
          * \param i         The index.
          * \returns         The journal entry line at index \c i.
@@ -113,6 +132,43 @@ class GLJournal {
                       const pgutils::Currency& amount) {
             m_lines.push_back(GLJELine{account, amount});
         }
+
+        /*!
+         * \brief           Checks if the journal entry lines balance.
+         * \retval true     If the journal entry lines balance.
+         * \retval false    If the journal entry lines do not balance.
+         */
+        bool balances() const;
+
+        /*!  Alias for iterator  */
+        using iterator = std::vector<GLJELine>::iterator;
+
+        /*!
+         * \brief           Returns an iterator to the first line.
+         * \returns         An iterator to the first line.
+         */
+        iterator begin() { return m_lines.begin(); }
+
+        /*!
+         * \brief           Returns an iterator to one past the last line.
+         * \returns         An iterator to one past the last line.
+         */
+        iterator end() { return m_lines.end(); }
+
+        /*!  Alias for const iterator  */
+        using const_iterator = std::vector<GLJELine>::const_iterator;
+
+        /*!
+         * \brief           Returns a const iterator to the first line.
+         * \returns         A const iterator to the first line.
+         */
+        const_iterator begin() const { return m_lines.begin(); }
+
+        /*!
+         * \brief           Returns a const iterator to one past the last line.
+         * \returns         A const iterator to one past the last line.
+         */
+        const_iterator end() const { return m_lines.end(); }
 
     private:
 
@@ -135,6 +191,14 @@ class GLJournal {
         std::vector<GLJELine> m_lines;
 
 };              //  class GLJournal
+
+/*!
+ * \brief           Returns a journal entry from a stream in a standard format.
+ * \param ifs       The input stream.
+ * \returns         The journal entry.
+ * \throws          GLDBException on failure.
+ */
+GLJournal journal_from_stream(std::istream& ifs);
 
 }               //  namespace genleg
 

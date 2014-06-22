@@ -9,9 +9,25 @@
 #ifndef PG_UTILS_CURRENCY_H
 #define PG_UTILS_CURRENCY_H
 
+#include <string>
+#include <stdexcept>
 #include <cstdint>
 
 namespace pgutils {
+
+/*!
+ * \brief       Base Currency exception class.
+ * \ingroup     gldatabase
+ */
+class CurrencyException : public std::runtime_error {
+    public:
+        /*!
+         * \brief           Constructor
+         * \param msg       Database error message
+         */
+        explicit CurrencyException(const std::string& msg) :
+            std::runtime_error(msg) {};
+};
 
 /*!
  * \brief           Currency amount class.
@@ -166,6 +182,14 @@ bool operator<=(const Currency& lhs, const Currency& rhs);
  * \retval false    If the lhs is not greater than or equal to the rhs.
  */
 bool operator>=(const Currency& lhs, const Currency& rhs);
+
+/*!
+ * \brief           Creates a currency amount from a string representation.
+ * \ingroup         utils
+ * \param s         The string representation.
+ * \returns         The currency representation.
+ */
+Currency currency_from_string(const std::string& s);
 
 }               //  namespace pgutils
 

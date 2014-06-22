@@ -13,6 +13,7 @@
 #include "gldatabase.h"
 #include "gluser.h"
 #include "glreport.h"
+#include "gljournal.h"
 
 #endif          //  PG_GENERAL_LEDGER_GLDB_H
 

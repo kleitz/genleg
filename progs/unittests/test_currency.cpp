@@ -338,5 +338,68 @@ BOOST_AUTO_TEST_CASE(currency_subtraction_negneg_carry) {
     BOOST_CHECK(c3 == c4);
 }
 
+BOOST_AUTO_TEST_CASE(test_currency_from_string_1) {
+    const std::string s{"123.45"};
+    Currency c = currency_from_string(s);
+    BOOST_CHECK_EQUAL(c.int_part(), 123);
+    BOOST_CHECK_EQUAL(c.frac_part(), 45);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_2) {
+    const std::string s{"-123.45"};
+    Currency c = currency_from_string(s);
+    BOOST_CHECK_EQUAL(c.int_part(), -123);
+    BOOST_CHECK_EQUAL(c.frac_part(), 45);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_3) {
+    const std::string s{"123"};
+    Currency c = currency_from_string(s);
+    BOOST_CHECK_EQUAL(c.int_part(), 123);
+    BOOST_CHECK_EQUAL(c.frac_part(), 0);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_4) {
+    const std::string s{"-123"};
+    Currency c = currency_from_string(s);
+    BOOST_CHECK_EQUAL(c.int_part(), -123);
+    BOOST_CHECK_EQUAL(c.frac_part(), 0);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_1) {
+    const std::string s{"-123.102"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_2) {
+    const std::string s{"finbar"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_3) {
+    const std::string s{"123.AB"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_4) {
+    const std::string s{"ABC.12"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_5) {
+    const std::string s{"ABC.DE"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_6) {
+    const std::string s{"123A.45"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
+BOOST_AUTO_TEST_CASE(test_currency_from_string_except_7) {
+    const std::string s{"123.45A"};
+    BOOST_CHECK_THROW(currency_from_string(s), CurrencyException);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
