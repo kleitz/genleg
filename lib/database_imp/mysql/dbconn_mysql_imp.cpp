@@ -35,11 +35,16 @@ DBConnMySQL::DBConnMySQL(const std::string& database,
                          const std::string& hostname,
                          const std::string& username,
                          const std::string& password) :
-    m_conn{mysql_init(nullptr)}
+    m_conn{nullptr}
 {
+    std::unique_lock<std::mutex> lock{m_mtx};
+
+    m_conn = mysql_init(nullptr);
     if ( !m_conn ) {
         throw DBConnCouldNotConnect("Could not initialize connection");
     }
+
+    lock.unlock();
 
     if ( !mysql_real_connect(m_conn, hostname.c_str(),
             username.c_str(), password.c_str(),

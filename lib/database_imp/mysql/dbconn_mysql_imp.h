@@ -10,6 +10,7 @@
 #define PG_GENERAL_LEDGER_DATABASE_DBCONNMYSQLIMP_H
 
 #include <string>
+#include <mutex>
 
 #include "database/database.h"
 
@@ -76,6 +77,9 @@ class DBConnMySQL : public DBConnImp {
 
         /*!  The initialized MySQL handle.  */
         MYSQL * m_conn;
+
+        /*!  Database connection mutex  */
+        std::mutex m_mtx;
 
 };              //  class DBConnMySQL
 
