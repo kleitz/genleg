@@ -1,0 +1,13 @@
+# Headers
+
+Entity:1
+Period:5
+Year:2014
+Source:SAMPLE
+Memo:May purchases
+
+# Lines
+
+20001000:-4020
+10005000:4020
+

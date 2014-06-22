@@ -25,3 +25,7 @@ Table DBConn::select(const std::string& query) {
     return m_imp->select(query);
 }
 
+unsigned long long DBConn::last_auto_increment() {
+    return m_imp->last_auto_increment();
+}
+

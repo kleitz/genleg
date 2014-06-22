@@ -234,6 +234,34 @@ std::string DBSQLStatements::update_user(const GLUser& user) const {
     return ss.str();
 }
 
+std::string DBSQLStatements::post_je(const unsigned int user,
+                    const unsigned int entity,
+                    const int period,
+                    const int year,
+                    const std::string& source,
+                    const std::string& memo) const
+{
+    std::ostringstream ss;
+    ss << "INSERT INTO jes "
+       << "  (user, period, year, source, entity, memo)"
+       << "  VALUES ("
+       << user << ", " << period << ", " << year << ", '"
+       << source << "', " << entity << ", '" << memo << "')";
+   return ss.str(); 
+}
+
+std::string DBSQLStatements::post_je_line(const unsigned long long je,
+        const std::string account,
+        const std::string amount) const
+{
+    std::ostringstream ss;
+    ss << "INSERT INTO jelines "
+       << "  (je, account, amount)"
+       << "  VALUES ("
+       << je << ", '" << account << "', " << amount << ")";
+    return ss.str();
+}
+
 std::string DBSQLStatements::get_perms(const std::string& user_id) const {
     std::ostringstream ss;
     ss << "SELECT p.name AS Permission FROM perms AS p "

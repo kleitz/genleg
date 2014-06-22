@@ -1,0 +1,13 @@
+# Headers
+
+Entity:1
+Period:4
+Year:2014
+Source:SAMPLE
+Memo:April accounts receivable
+
+# Lines
+
+10004000:-4800
+10003000:4800
+

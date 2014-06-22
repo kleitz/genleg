@@ -84,6 +84,11 @@ Table DBConnMySQL::select(const std::string& sql_query)
     return table;
 }
 
+unsigned long long DBConnMySQL::last_auto_increment()
+{
+    return mysql_insert_id(m_conn);
+}
+
 static TableRow
 get_field_names(MySQLResult& result)
 {

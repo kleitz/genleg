@@ -6,13 +6,18 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
+#include <iostream>
+#include <fstream>
 #include <sstream>
+#include <boost/filesystem.hpp>
 #include "gldatabase.h"
 #include "glexception.h"
 #include "database_imp/database_imp.h"
+#include "pgutils/pgutils.h"
 
 using namespace genleg;
 using namespace gldb;
+using namespace boost::filesystem;
 
 /*!
  * \brief           Converts a string representation of a bool to a bool.
@@ -67,12 +72,46 @@ catch ( const DBConnException& e ) {
 }
 
 void GLDatabase::load_sample_data(const std::string& dir) try {
+
+    /*  Load tables directly  */
+
     for ( const auto& tname : m_tables ) {
+        if ( tname == "jes" || tname == "jelines" ) {
+
+            /*  Ignore journal entry tables  */
+
+            continue;
+        }
+
         std::string filename = dir + "/" + tname;
         Table table{Table::create_from_file(filename, ':')};
         for ( size_t i = 0; i < table.num_records(); ++i ) {
             m_dbc.query(table.insert_query(tname, i));
         }
+    }
+
+    /*  Get journal entry files  */
+
+    const std::string jedir = dir + "/je";
+    if ( !is_directory(jedir) ) {
+        throw GLDBException("Sample JE directory not present");
+    }
+
+    std::vector<path> v;
+    std::copy(directory_iterator(jedir), directory_iterator(),
+            back_inserter(v));
+    std::sort(v.begin(), v.end());
+
+    /*  Load journal entries from files  */
+
+    for ( const auto& p : v ) {
+        std::string f = p.string();
+        std::ifstream ifs;
+        ifs.open(f);
+        if ( !ifs.is_open() ) {
+            throw GLDBException("Couldn't open file");
+        }
+        post_journal(journal_from_stream(ifs));
     }
 }
 catch ( const DBConnException& e ) {
@@ -134,6 +173,28 @@ void GLDatabase::grant(const GLUser& user, const std::string& perm) {
 
 void GLDatabase::revoke(const GLUser& user, const std::string& perm) {
     m_dbc.query(m_sql->revoke(user.id(), perm));
+}
+
+void GLDatabase::post_journal(const GLJournal& journal)
+{
+    if ( !journal.balances() ) {
+        throw GLDBException("Journal entry doesn't balance");
+    }
+    std::string query = m_sql->post_je(
+            1,
+            journal.entity(),
+            journal.period(),
+            journal.year(),
+            journal.source(),
+            journal.memo());
+    m_dbc.query(query);
+
+    const int n = m_dbc.last_auto_increment();
+    for ( const auto& line : journal ) {
+        std::string query = m_sql->post_je_line(n, line.account(),
+                line.amount().string());
+        m_dbc.query(query);
+    }
 }
 
 GLReport GLDatabase::report(const std::string& report_name,

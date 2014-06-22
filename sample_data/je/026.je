@@ -1,0 +1,13 @@
+# Headers
+
+Entity:1
+Period:2
+Year:2014
+Source:SAMPLE
+Memo:February accounts payable
+
+# Lines
+
+20001000:3200
+10003000:-3200
+

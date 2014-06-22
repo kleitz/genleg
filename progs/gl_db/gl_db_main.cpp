@@ -114,6 +114,19 @@ int main(int argc, char *argv[]) try {
         gdb.load_sample_data(config["loadsample"]);
         std::cout << "...success." << std::endl;
     }
+    else if ( config.is_set("reinit") ) {
+        std::cout << "Destroying database structure..." << std::endl;
+        gdb.destroy_structure();
+        std::cout << "...success." << std::endl;
+
+        std::cout << "Creating database structure..." << std::endl;
+        gdb.create_structure();
+        std::cout << "...success." << std::endl;
+
+        std::cout << "Loading sample data..." << std::endl;
+        gdb.load_sample_data(config["reinit"]);
+        std::cout << "...success." << std::endl;
+    }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
@@ -155,6 +168,7 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("create", Argument::NO_ARG);
     config.add_cmdline_option("delete", Argument::NO_ARG);
     config.add_cmdline_option("loadsample", Argument::REQ_ARG);
+    config.add_cmdline_option("reinit", Argument::REQ_ARG);
     config.populate_from_file("conf_files/gl_db_conf.conf");
     config.populate_from_cmdline(argc, argv);
 }
@@ -205,6 +219,9 @@ static void print_help_message() {
         << "  --create              Create database structure\n"
         << "  --delete              Delete database structure\n"
         << "  --loadsample=<dir>    Load database with sample data\n"
+        << "                                     from directory <dir>\n"
+        << "  --reinit=<dir>        Delete and create database structure\n"
+        << "                                     and load sample data\n"
         << "                                     from directory <dir>\n";
 }
 

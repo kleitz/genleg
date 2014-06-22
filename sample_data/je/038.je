@@ -1,0 +1,13 @@
+# Headers
+
+Entity:4
+Period:3
+Year:2014
+Source:SAMPLE
+Memo:Initial capital contribution
+
+# Lines
+
+10003000:50000.00
+30001000:-50000.00
+

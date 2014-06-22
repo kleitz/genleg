@@ -43,8 +43,9 @@ CXX_DEBUG_FLAGS   := -ggdb -DDEBUG -DDEBUG_ALL
 CXX_RELEASE_FLAGS := -O3 -DNDEBUG
 
 # Linker flags
-LDFLAGS   := -lcrypt
-BOOSTLIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
+LDFLAGS   		:= -lcrypt
+BOOST_TEST_LIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
+BOOST_LIBS 		+=-lboost_system -lboost_thread -lboost_filesystem
 
 # Clean files and globs
 CLNGLOB  = $(objects) $(libraries) $(depends) $(programs)
@@ -110,19 +111,19 @@ all: $(programs)
 
 $(database_program): $(database_objects) $(libraries)
 	@echo "Building gl_db..."
-	$(CXX) -o $@ $^ $(LDFLAGS)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOST_LIBS)
 
 $(report_program): $(report_objects) $(libraries)
 	@echo "Building gl_report..."
-	$(CXX) -o $@ $^ $(LDFLAGS)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOST_LIBS)
 
 $(user_program): $(user_objects) $(libraries)
 	@echo "Building gl_user..."
-	$(CXX) -o $@ $^ $(LDFLAGS)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOST_LIBS)
 
 $(unittest_program): $(unittest_objects) $(libraries)
 	@echo "Building unit tests..."
-	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOSTLIBS)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOST_TEST_LIBS)
 
 # Dependencies
 ifneq "$(MAKECMDGOALS)" "clean"

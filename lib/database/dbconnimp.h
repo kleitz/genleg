@@ -40,6 +40,12 @@ class DBConnImp {
          */
         virtual Table select(const std::string& query) = 0;
 
+        /*!
+         * \brief           Returns the last auto incremented value.
+         * \returns         The last auto incremented value.
+         */
+        virtual unsigned long long last_auto_increment() = 0;
+
 };              //  class DBConnImp
 
 }               //  namespace gldb

@@ -1,0 +1,13 @@
+# Headers
+
+Entity:1
+Period:3
+Year:2014
+Source:SAMPLE
+Memo:March purchases
+
+# Lines
+
+20001000:-3750
+10005000:3750
+

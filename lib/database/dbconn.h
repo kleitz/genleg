@@ -91,6 +91,12 @@ class DBConn {
          */
         Table select(const std::string& query);
 
+        /*!
+         * \brief           Returns the last auto incremented value.
+         * \returns         The last auto incremented value.
+         */
+        unsigned long long last_auto_increment();
+
         /*!  Deleted copy constructor  */
         DBConn (const DBConn&) = delete;
 

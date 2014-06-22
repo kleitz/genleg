@@ -15,6 +15,7 @@
 #include "dbsql/dbsql.h"
 #include "gluser.h"
 #include "glreport.h"
+#include "gljournal.h"
 
 namespace genleg {
 
@@ -105,6 +106,12 @@ class GLDatabase {
          * \param perm      A string containing the permission to revoke.
          */
         void revoke(const GLUser& user, const std::string& perm);
+        
+        /*!
+         * \brief           Posts a journal entry.
+         * \param journal   The journal entry to post.
+         */
+        void post_journal(const GLJournal& journal);
 
         /*!
          * \brief               Runs a report

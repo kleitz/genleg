@@ -60,6 +60,12 @@ class Currency {
         uint8_t frac_part() const { return m_frac > 0 ? m_frac : -m_frac; }
 
         /*!
+         * \brief           Returns a string representation of the amount.
+         * \returns         A string representation of the amount.
+         */
+        std::string string() const;
+
+        /*!
          * \brief           Unary negation opertor.
          * \returns         The negated currency amount.
          */

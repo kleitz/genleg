@@ -73,6 +73,8 @@ class DBConnMySQL : public DBConnImp {
          */
         virtual Table select(const std::string& sql_query);
 
+        unsigned long long last_auto_increment();
+
     private:
 
         /*!  The initialized MySQL handle.  */

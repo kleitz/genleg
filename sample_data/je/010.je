@@ -1,0 +1,15 @@
+# Headers
+
+Entity:1
+Period:1
+Year:2014
+Source:SAMPLE
+Memo:January sales
+
+# Lines
+
+40001000:-5000
+10004000:5000
+50001000:3500
+10005000:-3500
+

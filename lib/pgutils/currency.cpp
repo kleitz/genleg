@@ -7,10 +7,18 @@
  */
 
 #include <vector>
+#include <sstream>
 #include "currency.h"
 #include "stringhelp.h"
 
 using namespace pgutils;
+
+std::string Currency::string() const
+{
+    std::ostringstream ss;
+    ss << m_int << "." << m_frac;
+    return ss.str();
+}
 
 bool pgutils::operator==(const Currency& lhs, const Currency& rhs)
 {

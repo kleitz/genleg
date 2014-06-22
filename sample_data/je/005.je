@@ -1,0 +1,13 @@
+# Headers
+
+Entity:1
+Period:1
+Year:2014
+Source:SAMPLE
+Memo:January depreciation
+
+# Lines
+
+10002010:-1000.00
+60002000:1000.00
+

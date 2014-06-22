@@ -80,6 +80,36 @@ class DBSQLStatements {
         virtual std::string update_user(const GLUser& user) const;
 
         /*!
+         * \brief               Returns a SQL INSERT statement to post a
+         * journal entry.
+         * \param user          The ID of the posting user.
+         * \param entity        The entity ID.
+         * \param period        The accounting period.
+         * \param year          The accounting year.
+         * \param source        The journal entry source.
+         * \param memo          The memo for the journal entry.
+         * \returns             A string containing the query.
+         */
+        virtual std::string post_je(const unsigned int user,
+                const unsigned int entity,
+                const int period,
+                const int year,
+                const std::string& source,
+                const std::string& memo) const;
+
+        /*!
+         * \brief               Returns a SQL INSERT query to post a journal
+         * entry line.
+         * \param je            The journal entry ID.
+         * \param account       The account to which to post.
+         * \param amount        The amount to post.
+         * \returns             A string containing the SQL statement.
+         */
+        virtual std::string post_je_line(const unsigned long long je,
+                const std::string account,
+                const std::string amount) const;
+
+        /*!
          * \brief               Returns a SQL statement to grant a user a
          * permission.
          * \attention           This function always sets the user granting

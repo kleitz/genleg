@@ -1,0 +1,13 @@
+# Headers
+
+Entity:1
+Period:5
+Year:2014
+Source:SAMPLE
+Memo:May accounts receivable
+
+# Lines
+
+10004000:-6300
+10003000:6300
+
