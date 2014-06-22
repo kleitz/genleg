@@ -31,13 +31,15 @@ get_field_names(MySQLResult& result);
 static TableRow
 get_row(MySQLResult& result, MYSQL_ROW row);
 
+std::mutex DBConnMySQL::mtx;
+
 DBConnMySQL::DBConnMySQL(const std::string& database,
                          const std::string& hostname,
                          const std::string& username,
                          const std::string& password) :
     m_conn{nullptr}
 {
-    std::unique_lock<std::mutex> lock{m_mtx};
+    std::unique_lock<std::mutex> lock{DBConnMySQL::mtx};
 
     m_conn = mysql_init(nullptr);
     if ( !m_conn ) {

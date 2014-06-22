@@ -81,7 +81,7 @@ class DBConnMySQL : public DBConnImp {
         MYSQL * m_conn;
 
         /*!  Database connection mutex  */
-        std::mutex m_mtx;
+        static std::mutex mtx;
 
 };              //  class DBConnMySQL
 
