@@ -256,7 +256,9 @@ std::string DBSQLStatements::je_by_id(const std::string& je_id) const {
 
 std::string DBSQLStatements::jelines_by_id(const std::string& je_id) const {
     std::ostringstream ss;
-    ss << "SELECT * FROM jelines WHERE id = " << je_id;
+    ss << "SELECT account, amount FROM jelines "
+       << "  WHERE je = " << je_id
+       << "  ORDER BY account ASC";
     return ss.str();
 }
 

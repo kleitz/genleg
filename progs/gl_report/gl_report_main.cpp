@@ -110,6 +110,9 @@ int main(int argc, char *argv[]) try {
     else if ( config.is_set("listusers") ) {
         std::cout << gdb.report("listusers");
     }
+    else if ( config.is_set("je") ) {
+        std::cout << gdb.report("je", config["je"]);
+    }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
@@ -150,6 +153,7 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("password", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("currenttb", genleg::Argument::NO_ARG);
     config.add_cmdline_option("listusers", genleg::Argument::NO_ARG);
+    config.add_cmdline_option("je", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("entity", genleg::Argument::REQ_ARG);
     config.populate_from_file("conf_files/gl_report_conf.conf");
     config.populate_from_cmdline(argc, argv);
@@ -205,6 +209,7 @@ static void print_help_message() {
         << "\nReporting options:\n"
         << "  --entity=<entity>     Specifies an entity\n"
         << "  --listusers           Show a list of users\n"
+        << "  --je=<id>             Show a single journal entry with id <id>\n"
         << "  --listentities        Show a list of entities\n"
         << "  --listnomaccts        Show a list of nominal accounts\n"
         << "  --listjes             Show a list of simple journal entries\n"

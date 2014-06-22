@@ -125,6 +125,13 @@ class GLDatabase {
         GLEntity get_entity_by_name(const std::string& entity_name);
 
         /*!
+         * \brief               Returns a journal entry from an ID.
+         * \param je_id         The journal entry ID.
+         * \returns             The entity.
+         */
+        GLJournal get_je_by_id(const std::string& je_id);
+
+        /*!
          * \brief           Posts a journal entry.
          * \param journal   The journal entry to post.
          */
@@ -185,6 +192,12 @@ class GLDatabase {
          * \returns         A GLReport object with the report.
          */
         GLReport list_users_report();
+
+        /*!
+         * \brief           Returns a single journal entry report.
+         * \returns         A GLReport object with the report.
+         */
+        GLReport je_report(const std::string& je_id);
 
 };              //  class GLDatabase
 

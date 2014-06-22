@@ -18,6 +18,8 @@
 using namespace genleg;
 using namespace gldb;
 using namespace boost::filesystem;
+using pgutils::Currency;
+using pgutils::currency_from_string;
 
 /*!
  * \brief           Converts a string representation of a bool to a bool.
@@ -196,6 +198,26 @@ GLEntity GLDatabase::get_entity_by_name(const std::string& entity_name) {
     return create_entity(table);
 }
 
+GLJournal GLDatabase::get_je_by_id(const std::string& je_id) {
+    Table table{m_dbc.select(m_sql->je_by_id(je_id))};
+    GLJournal j{std::stoul(table.get_field("entity", 0)),
+                std::stoi(table.get_field("period", 0)),
+                std::stoi(table.get_field("year", 0)),
+                table.get_field("source", 0),
+                table.get_field("memo", 0),
+                std::stoul(table.get_field("id", 0)),
+                std::stoul(table.get_field("user", 0))};
+
+    Table lines{m_dbc.select(m_sql->jelines_by_id(je_id))};
+    for ( const auto& line : lines ) {
+        j.add_line(line[0], currency_from_string(line[1]));
+    }
+    if ( !j.balances() ) {
+        throw GLDBException("Journal entry doesn't balance after retrieval");
+    }
+    return j;
+}
+
 void GLDatabase::post_journal(const GLJournal& journal)
 {
     if ( !journal.balances() ) {
@@ -232,6 +254,9 @@ GLReport GLDatabase::report(const std::string& report_name,
     else if ( report_name == "listusers" ) {
         return list_users_report();
     }
+    else if ( report_name == "je" ) {
+        return je_report(arg);
+    }
     else {
         throw GLDBException{"Unrecognized report"};
     }
@@ -263,6 +288,39 @@ GLReport GLDatabase::list_users_report()
     const std::string query = m_sql->listusers();
     return GLReport{"Users List Report",
                     decorated_report_from_table(m_dbc.select(query))};
+}
+
+GLReport GLDatabase::je_report(const std::string& je_id)
+{
+    GLJournal j = get_je_by_id(je_id);
+
+    TableRow headers{"Account", "Amount"};
+    Table lines{headers};
+
+    for ( const auto& line : j ) {
+        TableRow row{line.account(), line.amount().string()};
+        lines.append_record(row);
+    }
+
+    GLReport report{"JE report",
+                    decorated_report_from_table(lines)};
+
+    GLEntity e = get_entity_by_id(std::to_string(j.entity()));
+    std::ostringstream es;
+    es << e.name() << " [" << e.id() << "]";
+    report.add_header("Entity", es.str());
+
+    report.add_header("Period", std::to_string(j.period()));
+    report.add_header("Year", std::to_string(j.year()));
+    report.add_header("Source", j.source());
+    report.add_header("Memo", j.memo());
+
+    GLUser u = get_user_by_id(std::to_string(j.user()));
+    std::ostringstream us;
+    us << u.username() << " [" << u.id() << "]";
+    report.add_header("Posted by", us.str());
+
+    return report;
 }
 
 static bool boolstring_to_bool(const std::string& bs) {

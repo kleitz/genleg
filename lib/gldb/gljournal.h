@@ -25,6 +25,8 @@ class GLJELine {
 
         /*!
          * \brief           Constructor
+         * \param account   The account name/ID
+         * \param amount    The currency amount
          */
         GLJELine (const std::string account,
                   const pgutils::Currency& amount) :
@@ -66,17 +68,23 @@ class GLJournal {
          * \param year      The accounting year.
          * \param source    The journal entry source.
          * \param memo      A memo for the journal entry.
+         * \param id        The journal entry ID.
+         * \param user      The posting user ID.
          */
-        GLJournal (const unsigned int entity,
+        GLJournal (const unsigned long entity,
                    const int period,
                    const int year,
                    const std::string& source,
-                   const std::string& memo) :
+                   const std::string& memo,
+                   const size_t id = 0,
+                   const size_t user = 0) :
             m_entity{entity},
             m_period{period},
             m_year{year},
             m_source{source},
             m_memo{memo},
+            m_id{id},
+            m_user{user},
             m_lines{}
         {}
 
@@ -84,7 +92,7 @@ class GLJournal {
          * \brief           Returns the entity number.
          * \returns         The entity number.
          */
-        unsigned int entity() const { return m_entity; }
+        unsigned long entity() const { return m_entity; }
 
         /*!
          * \brief           Returns the accounting period.
@@ -109,6 +117,18 @@ class GLJournal {
          * \returns         The memo for the journal entry.
          */
         const std::string& memo() const { return m_memo; }
+
+        /*!
+         * \brief           Returns the journal entry ID.
+         * \returns         The journal entry ID.
+         */
+        int id() const { return m_id; }
+
+        /*!
+         * \brief           Returns the journal entry posting user ID.
+         * \returns         The journal posting user ID.
+         */
+        int user() const { return m_user; }
 
         /*!
          * \brief           Returns the number of lines in the entry.
@@ -173,7 +193,7 @@ class GLJournal {
     private:
 
         /*!  The entity number for the journal entry.  */
-        unsigned int m_entity;
+        unsigned long m_entity;
 
         /*!  The accounting period.  */
         int m_period;
@@ -186,6 +206,12 @@ class GLJournal {
 
         /*!  The memo for the journal entry.  */
         std::string m_memo;
+
+        /*!  The journal entry ID  */
+        size_t m_id;
+
+        /*!  The journal entry posting user ID  */
+        size_t m_user;
 
         /*!  A vector of journal entry lines.  */
         std::vector<GLJELine> m_lines;
