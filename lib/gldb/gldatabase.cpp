@@ -173,6 +173,29 @@ void GLDatabase::revoke(const GLUser& user, const std::string& perm) {
     m_dbc.query(m_sql->revoke(user.id(), perm));
 }
 
+GLEntity GLDatabase::create_entity(Table& table) {
+    const bool enabled = boolstring_to_bool(table.get_field("enabled", 0));
+    const bool aggregate = boolstring_to_bool(table.get_field("aggregate", 0));
+    GLEntity new_entity(std::stoul(table.get_field("id", 0)),
+                        table.get_field("name", 0),
+                        table.get_field("shortname", 0),
+                        std::stoul(table.get_field("parent", 0)),
+                        aggregate,
+                        enabled);
+
+    return new_entity;
+}
+
+GLEntity GLDatabase::get_entity_by_id(const std::string& entity_id) {
+    Table table{m_dbc.select(m_sql->entity_by_id(entity_id))};
+    return create_entity(table);
+}
+
+GLEntity GLDatabase::get_entity_by_name(const std::string& entity_name) {
+    Table table{m_dbc.select(m_sql->entity_by_name(entity_name))};
+    return create_entity(table);
+}
+
 void GLDatabase::post_journal(const GLJournal& journal)
 {
     if ( !journal.balances() ) {
@@ -224,13 +247,22 @@ GLReport GLDatabase::current_trial_balance_report(const std::string& entity)
         query = m_sql->currenttb();
     }
 
-    return GLReport{decorated_report_from_table(m_dbc.select(query))};
+    GLReport report{"Current Trial Balance Report",
+                    decorated_report_from_table(m_dbc.select(query))};
+    if ( !entity.empty() ) {
+        GLEntity e = get_entity_by_id(entity);
+        std::ostringstream ss;
+        ss << e.name() << " [" << e.id() << "]";
+        report.add_header("Entity", ss.str());
+    }
+    return report;
 }
 
 GLReport GLDatabase::list_users_report()
 {
     const std::string query = m_sql->listusers();
-    return GLReport{decorated_report_from_table(m_dbc.select(query))};
+    return GLReport{"Users List Report",
+                    decorated_report_from_table(m_dbc.select(query))};
 }
 
 static bool boolstring_to_bool(const std::string& bs) {

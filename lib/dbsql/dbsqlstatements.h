@@ -80,6 +80,39 @@ class DBSQLStatements {
         virtual std::string update_user(const GLUser& user) const;
 
         /*!
+         * \brief               Returns a SQL statement to select an entity
+         * by ID.
+         * \param entity_id     The entity ID.
+         * \returns             The SQL statement.
+         */
+        virtual std::string entity_by_id(const std::string& entity_id) const;
+
+        /*!
+         * \brief               Returns a SQL statement to select an entity
+         * by short name.
+         * \param entity_name   The entity short name.
+         * \returns             The SQL statement.
+         */
+        virtual std::string
+        entity_by_name(const std::string& entity_name) const;
+
+        /*!
+         * \brief               Returns a SQL statement to select a journal
+         * entry by ID.
+         * \param je_id         The journal entry ID.
+         * \returns             The SQL statement.
+         */
+        virtual std::string je_by_id(const std::string& je_id) const;
+
+        /*!
+         * \brief               Returns a SQL statement to select journal
+         * entry lines by ID.
+         * \param je_id         The journal entry ID.
+         * \returns             The SQL statement.
+         */
+        virtual std::string jelines_by_id(const std::string& je_id) const;
+
+        /*!
          * \brief               Returns a SQL INSERT statement to post a
          * journal entry.
          * \param user          The ID of the posting user.

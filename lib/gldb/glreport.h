@@ -6,7 +6,6 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
-
 #ifndef PG_GENERAL_LEDGER_GLREPORT_H
 #define PG_GENERAL_LEDGER_GLREPORT_H
 
@@ -23,16 +22,30 @@ class GLReport {
     public:
 
         /*!  Constructor  */
-        GLReport (const std::string& report) :
-            m_report_text(report) {}
+        GLReport (const std::string& title,
+                  const std::string& report) :
+            m_title{title},
+            m_headers{},
+            m_report_text{report} {}
 
         /*!  Destructor  */
         ~GLReport () {}
 
+        void add_header(const std::string& name,
+                        const std::string& value) {
+            m_headers.push_back(std::pair<std::string,
+                                          std::string>{name, value});
+        }
         friend std::ostream& operator<< (std::ostream& out,
                 const GLReport& report);
 
     private:
+
+        /*!  The report title  */
+        const std::string m_title;
+
+        /*!  Report headers  */
+        std::vector<std::pair<std::string, std::string>> m_headers;
 
         /*!  The main report text  */
         const std::string m_report_text;

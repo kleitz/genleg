@@ -16,6 +16,7 @@
 #include "gluser.h"
 #include "glreport.h"
 #include "gljournal.h"
+#include "glentity.h"
 
 namespace genleg {
 
@@ -108,6 +109,22 @@ class GLDatabase {
         void revoke(const GLUser& user, const std::string& perm);
         
         /*!
+         * \brief           Returns an entity from an ID.
+         * \param entity_id The entity ID.
+         * \returns         The entity.
+         * \throws          GLDBException if the entity cannot be found.
+         */
+        GLEntity get_entity_by_id(const std::string& entity_id);
+
+        /*!
+         * \brief               Returns an entity from an entity short name.
+         * \param entity_name   The entity short name.
+         * \returns             The entity.
+         * \throws              GLDBException if the user cannot be found.
+         */
+        GLEntity get_entity_by_name(const std::string& entity_name);
+
+        /*!
          * \brief           Posts a journal entry.
          * \param journal   The journal entry to post.
          */
@@ -144,6 +161,16 @@ class GLDatabase {
          * \returns         The new user.
          */
         GLUser create_user(gldb::Table& table);
+
+        /*!
+         * \brief           Creates an entity from a query table.
+         * \details         Provided because the public functions can
+         * get a entity either from an ID or a name, this function contains
+         * the common functionality.
+         * \param table     A table from the appropriate query.
+         * \returns         The new entity.
+         */
+        GLEntity create_entity(gldb::Table& table);
 
         /*!
          * \brief           Returns a current trial balance report.

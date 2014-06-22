@@ -69,7 +69,12 @@ static std::string decorated_row(const TableRow& row,
                                  const std::vector<size_t>& widths);
 
 std::ostream& genleg::operator<< (std::ostream& out, const GLReport& report) {
-    out << report.m_report_text;
+    out << report.m_title << std::endl
+        << std::string(report.m_title.length(), '=') << std::endl;
+    for ( const auto& p : report.m_headers ) {
+        out << p.first << ": " << p.second << std::endl;
+    }
+    out << std::endl << report.m_report_text;
     return out;
 }
 

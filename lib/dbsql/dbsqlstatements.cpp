@@ -234,6 +234,32 @@ std::string DBSQLStatements::update_user(const GLUser& user) const {
     return ss.str();
 }
 
+std::string DBSQLStatements::entity_by_id(const std::string& entity_id) const {
+    std::ostringstream ss;
+    ss << "SELECT * FROM entities WHERE id = " << entity_id;
+    return ss.str();
+}
+
+std::string
+DBSQLStatements::entity_by_name(const std::string& entity_name) const
+{
+    std::ostringstream ss;
+    ss << "SELECT * FROM entities WHERE shortname = " << entity_name;
+    return ss.str();
+}
+
+std::string DBSQLStatements::je_by_id(const std::string& je_id) const {
+    std::ostringstream ss;
+    ss << "SELECT * FROM jes WHERE id = " << je_id;
+    return ss.str();
+}
+
+std::string DBSQLStatements::jelines_by_id(const std::string& je_id) const {
+    std::ostringstream ss;
+    ss << "SELECT * FROM jelines WHERE id = " << je_id;
+    return ss.str();
+}
+
 std::string DBSQLStatements::post_je(const unsigned int user,
                     const unsigned int entity,
                     const int period,
