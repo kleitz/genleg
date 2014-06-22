@@ -17,6 +17,7 @@
 #include "glreport.h"
 #include "gljournal.h"
 #include "glentity.h"
+#include "glaccount.h"
 
 namespace genleg {
 
@@ -123,6 +124,15 @@ class GLDatabase {
          * \throws              GLDBException if the user cannot be found.
          */
         GLEntity get_entity_by_name(const std::string& entity_name);
+
+        /*!
+         * \brief               Returns a nominal account from an account
+         * number/name.
+         * \param acc_name      The account number/name.
+         * \returns             The account.
+         * \throws              GLDBException if the user cannot be found.
+         */
+        GLAccount get_account_by_name(const std::string& acc_name);
 
         /*!
          * \brief               Returns a journal entry from an ID.

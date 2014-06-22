@@ -97,6 +97,15 @@ class DBSQLStatements {
         entity_by_name(const std::string& entity_name) const;
 
         /*!
+         * \brief               Returns a SQL statement to select a nominal
+         * account by name/number.
+         * \param acc_name      The account name/number.
+         * \returns             The SQL statement.
+         */
+        virtual std::string
+        account_by_name(const std::string& acc_name) const;
+
+        /*!
          * \brief               Returns a SQL statement to select a journal
          * entry by ID.
          * \param je_id         The journal entry ID.

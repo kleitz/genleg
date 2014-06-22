@@ -188,14 +188,26 @@ GLEntity GLDatabase::create_entity(Table& table) {
     return new_entity;
 }
 
-GLEntity GLDatabase::get_entity_by_id(const std::string& entity_id) {
+GLEntity GLDatabase::get_entity_by_id(const std::string& entity_id)
+{
     Table table{m_dbc.select(m_sql->entity_by_id(entity_id))};
     return create_entity(table);
 }
 
-GLEntity GLDatabase::get_entity_by_name(const std::string& entity_name) {
+GLEntity GLDatabase::get_entity_by_name(const std::string& entity_name)
+{
     Table table{m_dbc.select(m_sql->entity_by_name(entity_name))};
     return create_entity(table);
+}
+
+GLAccount GLDatabase::get_account_by_name(const std::string& acc_name)
+{
+    Table table{m_dbc.select(m_sql->account_by_name(acc_name))};
+    const bool enabled = boolstring_to_bool(table.get_field("enabled", 0));
+    GLAccount acct{table.get_field("num", 0),
+                   table.get_field("description", 0),
+                   enabled};
+    return acct;
 }
 
 GLJournal GLDatabase::get_je_by_id(const std::string& je_id) {
@@ -294,15 +306,18 @@ GLReport GLDatabase::je_report(const std::string& je_id)
 {
     GLJournal j = get_je_by_id(je_id);
 
-    TableRow headers{"Account", "Amount"};
+    TableRow headers{"Account", "Description", "Amount"};
     Table lines{headers};
 
     for ( const auto& line : j ) {
-        TableRow row{line.account(), line.amount().string()};
+        GLAccount acct = get_account_by_name(line.account());
+        TableRow row{line.account(),
+                     acct.description(),
+                     line.amount().string()};
         lines.append_record(row);
     }
 
-    GLReport report{"JE report",
+    GLReport report{"Single JE report",
                     decorated_report_from_table(lines)};
 
     GLEntity e = get_entity_by_id(std::to_string(j.entity()));

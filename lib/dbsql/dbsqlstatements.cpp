@@ -248,6 +248,14 @@ DBSQLStatements::entity_by_name(const std::string& entity_name) const
     return ss.str();
 }
 
+std::string
+DBSQLStatements::account_by_name(const std::string& acc_name) const
+{
+    std::ostringstream ss;
+    ss << "SELECT * FROM nomaccts WHERE num = " << acc_name;
+    return ss.str();
+}
+
 std::string DBSQLStatements::je_by_id(const std::string& je_id) const {
     std::ostringstream ss;
     ss << "SELECT * FROM jes WHERE id = " << je_id;
