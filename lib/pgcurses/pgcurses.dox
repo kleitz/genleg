@@ -1,0 +1,5 @@
+/**
+ * \defgroup pgcurses Terminal program library
+ * \details Module for creating a terminal program.
+ */
+

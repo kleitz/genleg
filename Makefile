@@ -19,9 +19,11 @@ RM  := rm -f
 database_program := gl_db
 report_program	 := gl_report
 user_program	 := gl_user
+term_program	 := gl_term
 unittest_program := unittests
 programs         := $(database_program) $(report_program)
 programs         += $(user_program) $(unittest_program)
+programs         += $(term_program)
 
 sources      	 := $(wildcard *.cpp)
 objects       	  = $(subst .cpp,.o,$(sources))
@@ -31,6 +33,7 @@ libraries    	 :=
 database_objects :=
 report_objects   :=
 user_objects     :=
+term_objects     :=
 unittest_objects :=
 
 # Compile options
@@ -46,6 +49,7 @@ CXX_RELEASE_FLAGS := -O3 -DNDEBUG
 LDFLAGS   		:= -lcrypt
 BOOST_TEST_LIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
 BOOST_LIBS 		+=-lboost_system -lboost_thread -lboost_filesystem
+CURSES_LIBS		:= -lcurses
 
 # Clean files and globs
 CLNGLOB  = $(objects) $(libraries) $(depends) $(programs)
@@ -60,11 +64,13 @@ include lib/dbsql/module.mk
 include lib/database_imp/$(database)/module.mk
 include lib/database/module.mk
 include lib/config/module.mk
+include lib/pgcurses/module.mk
 include lib/pgutils/module.mk
 
 include progs/gl_db/module.mk
 include progs/gl_report/module.mk
 include progs/gl_user/module.mk
+include progs/gl_term/module.mk
 include progs/unittests/module.mk
 
 # Build targets section
@@ -120,6 +126,10 @@ $(report_program): $(report_objects) $(libraries)
 $(user_program): $(user_objects) $(libraries)
 	@echo "Building gl_user..."
 	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOST_LIBS)
+
+$(term_program): $(term_objects) $(libraries)
+	@echo "Building gl_term..."
+	$(CXX) -o $@ $^ $(LDFLAGS) $(BOOST_LIBS) $(CURSES_LIBS)
 
 $(unittest_program): $(unittest_objects) $(libraries)
 	@echo "Building unit tests..."
