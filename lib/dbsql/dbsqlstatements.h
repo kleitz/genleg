@@ -54,7 +54,14 @@ class DBSQLStatements {
          * \returns             The SQL statement to drop the view.
          */
         virtual std::string drop_view(const std::string& view_name) const;
-        
+
+        /*!
+         * \brief               Returns a SQL statement to get the standing
+         * data.
+         * \returns             The SQL statement to get the data.
+         */
+        virtual std::string standing_data() const;
+
         /*!
          * \brief               Returns a SQL statement to select a user by ID.
          * \param user_id       The user_id

@@ -132,6 +132,15 @@ std::string GLDatabase::backend() {
     return get_database_type();
 }
 
+GLStandingData GLDatabase::get_standing_data()
+{
+    Table sd{m_dbc.select(m_sql->standing_data())};
+    return GLStandingData{sd.get_field("organization", 0),
+                          std::stoi(sd.get_field("current_period", 0)),
+                          std::stoi(sd.get_field("current_year", 0)),
+                          std::stoi(sd.get_field("num_periods", 0))};
+}
+
 GLUser GLDatabase::create_user(Table& table) {
     const std::string permquery = m_sql->get_perms(table.get_field("id", 0));
     Table permtable{m_dbc.select(permquery)};
@@ -260,7 +269,10 @@ void GLDatabase::post_journal(const GLJournal& journal)
 GLReport GLDatabase::report(const std::string& report_name,
                             const std::string& arg)
 {
-    if ( report_name == "currenttb" ) {
+    if ( report_name == "standingdata" ) {
+        return standing_data_report();
+    }
+    else if ( report_name == "currenttb" ) {
         return current_trial_balance_report(arg);
     }
     else if ( report_name == "listusers" ) {
@@ -272,6 +284,20 @@ GLReport GLDatabase::report(const std::string& report_name,
     else {
         throw GLDBException{"Unrecognized report"};
     }
+}
+
+GLReport GLDatabase::standing_data_report()
+{
+    GLStandingData sd = get_standing_data();
+    GLReport report{"Standing Data Report", ""};
+    report.add_header("Organization", sd.organization());
+    report.add_header("Current accounting period",
+                      std::to_string(sd.period()));
+    report.add_header("Current accounting year",
+                      std::to_string(sd.year()));
+    report.add_header("Number of accounting periods in a year",
+                      std::to_string(sd.num_periods()));
+    return report;
 }
 
 GLReport GLDatabase::current_trial_balance_report(const std::string& entity)

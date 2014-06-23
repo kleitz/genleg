@@ -16,6 +16,7 @@
 #include "gljournal.h"
 #include "glentity.h"
 #include "glaccount.h"
+#include "glstanding.h"
 
 #endif          //  PG_GENERAL_LEDGER_GLDB_H
 

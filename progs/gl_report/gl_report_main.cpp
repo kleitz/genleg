@@ -113,6 +113,9 @@ int main(int argc, char *argv[]) try {
     else if ( config.is_set("je") ) {
         std::cout << gdb.report("je", config["je"]);
     }
+    else if ( config.is_set("standing") ) {
+        std::cout << gdb.report("standingdata");
+    }
     else {
         std::cerr << progname << ": no options selected." << std::endl;
     }
@@ -151,6 +154,7 @@ static void set_configuration(Config& config, int argc, char *argv[]) {
     config.add_cmdline_option("hostname", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("username", genleg::Argument::REQ_ARG);
     config.add_cmdline_option("password", genleg::Argument::REQ_ARG);
+    config.add_cmdline_option("standing", genleg::Argument::NO_ARG);
     config.add_cmdline_option("currenttb", genleg::Argument::NO_ARG);
     config.add_cmdline_option("listusers", genleg::Argument::NO_ARG);
     config.add_cmdline_option("je", genleg::Argument::REQ_ARG);
@@ -210,18 +214,9 @@ static void print_help_message() {
         << "  --entity=<entity>     Specifies an entity\n"
         << "  --listusers           Show a list of users\n"
         << "  --je=<id>             Show a single journal entry with id <id>\n"
-        << "  --listentities        Show a list of entities\n"
-        << "  --listnomaccts        Show a list of nominal accounts\n"
-        << "  --listjes             Show a list of simple journal entries\n"
-        << "  --listjelines         Show a list of journal entry lines\n"
-        << "  --listjesrcs          Show a list of journal entry sources\n"
-        << "  --standingdata        Show the standing data\n"
+        << "  --standing            Show the standing data\n"
         << "  --currenttb           Show a current trial balance\n"
-        << "                               (optionally for <entity>)\n"
-        << "  --checktotal          Show double entry check totals\n"
-        << "                               (optionally for <entity>)\n"
-        << "  --entries[=<je_num>]  Show detailed journal entries\n"
-        << "                               (optionally for <je_num> only)\n";
+        << "                               (optionally for <entity>)\n";
 }
 
 static void print_version_message() {

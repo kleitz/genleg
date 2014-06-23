@@ -18,6 +18,7 @@
 #include "gljournal.h"
 #include "glentity.h"
 #include "glaccount.h"
+#include "glstanding.h"
 
 namespace genleg {
 
@@ -72,6 +73,12 @@ class GLDatabase {
          * \returns         A string containing the database platform name.
          */
         static std::string backend();
+
+        /*!
+         * \brief           Gets the standing data.
+         * \returns         The standing data.
+         */
+        GLStandingData get_standing_data();
 
         /*!
          * \brief           Returns a user from an ID.
@@ -188,6 +195,12 @@ class GLDatabase {
          * \returns         The new entity.
          */
         GLEntity create_entity(gldb::Table& table);
+
+        /*!
+         * \brief           Returns a standing data report.
+         * \returns         A GLReport object with the report.
+         */
+        GLReport standing_data_report();
 
         /*!
          * \brief           Returns a current trial balance report.
