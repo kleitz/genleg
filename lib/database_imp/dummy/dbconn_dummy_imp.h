@@ -56,6 +56,27 @@ class DBConnDummy : public DBConnImp {
          */
         Table select(const std::string& query);
 
+        /*!
+         * \brief           Begins a transaction.
+         */
+        virtual void begin_transaction() {}
+
+        /*!
+         * \brief           Rolls back a transaction.
+         */
+        virtual void rollback_transaction() {}
+
+        /*!
+         * \brief           Commits a transaction.
+         */
+        virtual void commit_transaction() {}
+
+        /*!
+         * \brief           Returns the last auto incremented value.
+         * \returns         The last auto incremented value.
+         */
+        virtual unsigned long long last_auto_increment() { return 1; }
+
 };              //  class DBConnDummy
 
 }               //  namespace gldb
