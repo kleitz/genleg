@@ -9,6 +9,7 @@
 #ifndef PG_CURSES_TPEXCEPTION_H
 #define PG_CURSES_TPEXCEPTION_H
 
+#include <string>
 #include <stdexcept>
 
 namespace pgcurses {
