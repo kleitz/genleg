@@ -6,35 +6,60 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
+#include <iostream>
+#include <curses.h>
 #include "tpwindowimp.h"
 #include "tpexception.h"
 
 using namespace pgcurses;
 
+namespace {
+
+/*!
+ * \brief           Makes a new curses window.
+ * \details         Throws exception on failure.
+ * \param rect      The dimensions of the new window.
+ * \throws          TPCursesException on failure.
+ */
+WINDOW * make_new_window(const Rectangle rect)
+{
+    std::cerr << "Entering make_new_window..." << std::endl;
+    std::cerr << "Size: " << rect.size.width << ", " << rect.size.height
+              << std::endl
+              << "Origin: " << rect.origin.x << ", " << rect.origin.y
+              << std::endl;
+    WINDOW * win = newwin(rect.size.height, rect.size.width,
+                          rect.origin.y, rect.origin.x);
+
+    if ( !win ) {
+        throw TPCursesException("newwin() failed initializing TPWindow");
+    }
+    std::cerr << "Leaving make_new_window..." << std::endl;
+    return win;
+}
+
+}           //  namespace
+
 TPWindowImp::TPWindowImp(const Point origin, const Size sz) :
-    m_win{nullptr},
+    m_win{::make_new_window(Rectangle{sz, origin})},
     m_origin{origin},
     m_size{sz}
-{
-    m_win = newwin(m_size.height, m_size.width, m_origin.y, m_origin.x);
-    if ( !m_win ) {
-        throw TPException("Couldn't initialize window");
-    }
-}
+{}
 
 TPWindowImp::TPWindowImp(const Rectangle rect) :
-    m_win{nullptr},
+    m_win{::make_new_window(rect)},
     m_origin{rect.origin},
     m_size{rect.size}
+{}
+
+TPWindowImp::~TPWindowImp()
 {
-    m_win = newwin(m_size.height, m_size.width, m_origin.y, m_origin.x);
-    if ( !m_win ) {
-        throw TPException("Couldn't initialize window");
-    }
+    delwin(m_win);
 }
 
-TPWindowImp::~TPWindowImp() {
-    delwin(m_win);
+int TPWindowImp::get_char()
+{
+    return wgetch(m_win);
 }
 
 void TPWindowImp::write_char(const char ch)

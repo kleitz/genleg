@@ -82,7 +82,7 @@ struct Rectangle {
      * \brief           Constructor.
      * \param sz        The size.
      */
-    Rectangle(const Size sz) :
+    explicit Rectangle(const Size sz) :
         size{sz}, origin{Point{0, 0}} {}
 
     /*!

@@ -21,7 +21,13 @@ TPWindow::TPWindow(const Rectangle rect) :
 {
 }
 
-TPWindow::~TPWindow() {
+TPWindow::~TPWindow()
+{
+}
+
+int TPWindow::get_char()
+{
+    return m_imp->get_char();
 }
 
 void TPWindow::write_char(const char ch)

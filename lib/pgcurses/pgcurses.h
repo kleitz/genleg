@@ -10,9 +10,10 @@
 #define PG_CURSES_PGCURSES_H
 
 #include "tpgentypes.h"
+#include "tpfunctions.h"
 #include "tpexception.h"
 #include "termprogram.h"
-#include "tpwindow.h"
+#include "tpwindows.h"
 
 #endif          //  PG_CURSES_PGCURSES_H
 

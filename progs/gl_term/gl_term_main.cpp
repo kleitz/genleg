@@ -14,13 +14,14 @@
 #include "database/database.h"
 #include "config/config.h"
 #include "pgcurses/pgcurses.h"
+#include "gltermmainwin.h"
 
 using namespace genleg;
+using pgcurses::terminal_size;
 using pgcurses::TermProgram;
-using pgcurses::TPWindow;
-using pgcurses::Point;
-using pgcurses::Size;
+using pgcurses::TPMainWindow;
 using pgcurses::Rectangle;
+using pgcurses::Point;
 
 /*!
  * \brief           Static variable for program name.
@@ -108,27 +109,12 @@ int main(int argc, char *argv[]) try {
     GLDatabase gdb(config["database"], config["hostname"],
                     config["username"], passwd);
 
-    Size termsize;
+    /*  Run terminal program  */
 
-    {
-        TermProgram tp;
-        termsize = tp.terminal_size();    
-        TPWindow w{Rectangle{termsize}};
-        w.write_str("Hello, world!", Point{10, 5});
-        w.draw();
-        tp.sleep(1);
-        {
-            TPWindow nw{Rectangle{termsize}};
-            nw.write_str("Second window!", Point{10, 5});
-            nw.draw();
-            tp.sleep(1);
-        }
-        w.redraw();
-        tp.sleep(1);
-    }
+    TermProgram tp;
+    tp.set_main_window(std::unique_ptr<TPMainWindow>(new GLTermMainWin));
+    tp.run();
 
-    std::cout << "Terminal size is " << termsize.width << " columns and "
-              << termsize.height << " rows." << std::endl;
     return 0;
 }
 catch ( const ConfigBadOption& e ) {

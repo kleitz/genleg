@@ -12,7 +12,7 @@
 using namespace pgcurses;
 
 TermProgram::TermProgram() :
-    m_imp{std::unique_ptr<TermProgramImp>(new TermProgramImp)}
+    m_imp{std::unique_ptr<TermProgramImp> (new TermProgramImp)}
 {
 }
 
@@ -21,9 +21,13 @@ TermProgram::~TermProgram()
 {
 }
 
-Size TermProgram::terminal_size() const
+void TermProgram::set_main_window(std::unique_ptr<TPMainWindow> mainwin)
 {
-    return m_imp->terminal_size();
+    m_imp->set_main_window(std::move(mainwin));
+}
+
+void TermProgram::run() {
+    m_imp->run();
 }
 
 void TermProgram::sleep(const unsigned int secs) const

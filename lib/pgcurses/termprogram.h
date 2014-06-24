@@ -11,6 +11,7 @@
 
 #include <memory>
 #include "tpgentypes.h"
+#include "tpmainwindow.h"
 
 namespace pgcurses {
 
@@ -40,6 +41,16 @@ class TermProgram {
 
         /*!  Deleted move assignment operator  */
         TermProgram& operator=(TermProgram&& tp) = delete;
+
+        /*!
+         * \brief               Sets the main window.
+         */
+        void set_main_window(std::unique_ptr<TPMainWindow> mainwin);
+
+        /*!
+         * \brief               Runs the program.
+         */
+        void run();
 
         /*!
          * \brief               Sleeps for a period of time.

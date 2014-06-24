@@ -7,33 +7,40 @@
  */
 
 #include <unistd.h>
-#include <sys/ioctl.h>
 #include <curses.h>
 #include "termprogramimp.h"
 #include "tpexception.h"
+#include "tpfunctions.h"
 
 using namespace pgcurses;
 
-TermProgramImp::TermProgramImp() :
-    m_mainwin{nullptr},
-    m_old_cursor{0},
-    m_termsize{0, 0}
-{
-    struct winsize ws;
-    if ( ioctl(0, TIOCGWINSZ, &ws) == -1 ) {
-        throw TPException("Couldn't get terminal size");
-    }
-    m_termsize.width = ws.ws_col;
-    m_termsize.height = ws.ws_row;
+namespace {
 
-    m_mainwin = initscr();
-    if ( !m_mainwin ) {
-        throw TPException("Couldn't initialize main curses window");
+/*!
+ * \brief           Interface to initscr() call.
+ * \details         Throws exception on failure, for use in constructor.
+ * \returns         A pointer to a valid WINDOW struct.
+ * \throws          TPException on failure.
+ */
+WINDOW * curses_init()
+{
+    WINDOW * win = initscr();
+    if ( !win ) {
+        throw TPCursesException("initscr() failed initializing curses");
     }
-    
+    return win;
+}
+
+}           //  namespace
+
+TermProgramImp::TermProgramImp() :
+    m_termsize{::terminal_size()},
+    m_mainwin{::curses_init()},
+    m_old_cursor{curs_set(0)},
+    m_win{nullptr}
+{
     noecho();
     keypad(m_mainwin, true);
-    m_old_cursor = curs_set(0);
     refresh();
 }
 
@@ -46,9 +53,16 @@ TermProgramImp::~TermProgramImp()
     refresh();
 }
 
-Size TermProgramImp::terminal_size() const
+void TermProgramImp::set_main_window(std::unique_ptr<TPMainWindow> mainwin)
 {
-    return m_termsize;
+    m_win = std::move(mainwin);
+}
+
+void TermProgramImp::run() {
+    if ( !m_win ) {
+        throw TPException("run() failed - Main window not set");
+    }
+    m_win->show();
 }
 
 void TermProgramImp::sleep(const unsigned int secs) const

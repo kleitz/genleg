@@ -29,6 +29,39 @@ class TPException : public std::runtime_error {
 
 };              //  class TPException
 
+/*!
+ * \brief           Terminal program curses exception class.
+ * \ingroup         pgcurses
+ */
+class TPCursesException : public TPException {
+    public:
+
+        /*!
+         * \brief           Constructor
+         * \param msg       Error message
+         */
+        TPCursesException (const std::string& msg) :
+            TPException(msg) {};
+
+};              //  class TPCursesException
+
+/*!
+ * \brief           Terminal program system exception class.
+ * \ingroup         pgcurses
+ */
+class TPSystemException : public TPException {
+    public:
+
+        /*!
+         * \brief           Constructor
+         * \param msg       Error message
+         */
+        TPSystemException (const std::string& msg) :
+            TPException(msg) {};
+
+};              //  class TPSystemException
+
 }               //  namespace pgcurses
 
 #endif          //  PG_CURSES_TPEXCEPTION_H
+

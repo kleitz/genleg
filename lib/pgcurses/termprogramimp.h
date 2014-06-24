@@ -9,8 +9,10 @@
 #ifndef PG_CURSES_TERM_PROGRAM_IMP_H
 #define PG_CURSES_TERM_PROGRAM_IMP_H
 
+#include <memory>
 #include <curses.h>
 #include "tpgentypes.h"
+#include "tpmainwindow.h"
 
 namespace pgcurses {
 
@@ -40,18 +42,25 @@ class TermProgramImp {
         TermProgramImp& operator=(TermProgramImp&& tp) = delete;
 
         /*!
+         * \brief               Sets the main window.
+         */
+        void set_main_window(std::unique_ptr<TPMainWindow> mainwin);
+
+        /*!
+         * \brief               Runs the program.
+         */
+        void run();
+
+        /*!
          * \brief               Sleep for a period of time.
          * \param secs          The number of seconds to sleep.
          */
         void sleep(const unsigned int secs) const;
 
-        /*!
-         * \brief               Returns the main terminal dimensions.
-         * \returns             The main terminal dimensions.
-         */
-        Size terminal_size() const;
-
     private:
+
+        /*!  Terminal size  */
+        Size m_termsize;
 
         /*!  Pointer to main window  */
         WINDOW * m_mainwin;
@@ -59,8 +68,8 @@ class TermProgramImp {
         /*!  Value of old cursor  */
         int m_old_cursor;
 
-        /*!  Terminal size  */
-        Size m_termsize;
+        /*!  Pointer to main window  */
+        std::unique_ptr<TPMainWindow> m_win;
 
 };              //  class TermProgramImp
 

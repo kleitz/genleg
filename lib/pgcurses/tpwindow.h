@@ -56,6 +56,12 @@ class TPWindow {
         TPWindow& operator=(TPWindow&& tp) = delete;
 
         /*!
+         * \brief           Gets a character.
+         * \returns         The character.
+         */
+        int get_char();
+
+        /*!
          * \brief           Writes a character to the current position.
          * \param ch        The character to write.
          */
