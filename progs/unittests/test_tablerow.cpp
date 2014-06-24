@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(tablerow_construct_string_vector_copy) {
     BOOST_CHECK_EQUAL(row.size(), 4);
     size_t i = 0;
     for ( auto& field: row ) {
-        const std::string test_string{field};
+        const std::string test_string = field;
         BOOST_CHECK_EQUAL(test_string, control[i++]);
     }
 
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(tablerow_construct_string_vector_move) {
     BOOST_CHECK_EQUAL(row.size(), 4);
     size_t i = 0;
     for ( auto& field: row ) {
-        const std::string test_string{field};
+        const std::string test_string = field;
         BOOST_CHECK_EQUAL(test_string, control[i++]);
     }
 
@@ -130,16 +130,16 @@ BOOST_AUTO_TEST_CASE(tablerow_construct_row_copy) {
     //  Check row2 constructed as expected
 
     BOOST_CHECK_EQUAL(row2.size(), 2);
-    const std::string control2_1{row2[0]};
-    const std::string control2_2{row2[1]};
+    const std::string control2_1 = row2[0];
+    const std::string control2_2 = row2[1];
     BOOST_CHECK_EQUAL(control2_1, "some");
     BOOST_CHECK_EQUAL(control2_2, "stuff");
 
     //  Check row1 unaffected
 
     BOOST_CHECK_EQUAL(row1.size(), 2);
-    const std::string control1_1{row1[0]};
-    const std::string control1_2{row1[1]};
+    const std::string control1_1 = row1[0];
+    const std::string control1_2 = row1[1];
     BOOST_CHECK_EQUAL(control1_1, "some");
     BOOST_CHECK_EQUAL(control1_2, "stuff");
 }
@@ -151,8 +151,8 @@ BOOST_AUTO_TEST_CASE(tablerow_construct_row_move) {
     //  Check row2 constructed as expected
 
     BOOST_CHECK_EQUAL(row2.size(), 2);
-    const std::string control2_1{row2[0]};
-    const std::string control2_2{row2[1]};
+    const std::string control2_1 = row2[0];
+    const std::string control2_2 = row2[1];
     BOOST_CHECK_EQUAL(control2_1, "some");
     BOOST_CHECK_EQUAL(control2_2, "stuff");
 
@@ -169,16 +169,16 @@ BOOST_AUTO_TEST_CASE(tablerow_assign_row_copy) {
     //  Check row1 updated
 
     BOOST_CHECK_EQUAL(row1.size(), 2);
-    const std::string control1_1{row1[0]};
-    const std::string control1_2{row1[1]};
+    const std::string control1_1 = row1[0];
+    const std::string control1_2 = row1[1];
     BOOST_CHECK_EQUAL(control1_1, "different");
     BOOST_CHECK_EQUAL(control1_2, "stuff");
 
     //  Check row2 unaffected
 
     BOOST_CHECK_EQUAL(row2.size(), 2);
-    const std::string control2_1{row2[0]};
-    const std::string control2_2{row2[1]};
+    const std::string control2_1 = row2[0];
+    const std::string control2_2 = row2[1];
     BOOST_CHECK_EQUAL(control2_1, "different");
     BOOST_CHECK_EQUAL(control2_2, "stuff");
 }
@@ -191,8 +191,8 @@ BOOST_AUTO_TEST_CASE(tablerow_assign_row_move) {
     //  Check row1 updated
 
     BOOST_CHECK_EQUAL(row1.size(), 2);
-    const std::string control1_1{row1[0]};
-    const std::string control1_2{row1[1]};
+    const std::string control1_1 = row1[0];
+    const std::string control1_2 = row1[1];
     BOOST_CHECK_EQUAL(control1_1, "different");
     BOOST_CHECK_EQUAL(control1_2, "stuff");
 
