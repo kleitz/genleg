@@ -7,6 +7,7 @@
  * of the GNU General Public License. <http://www.gnu.org/licenses/>
  */
 
+#include <sstream>
 #include <unistd.h>
 #include "gltermmainwin.h"
 
@@ -17,9 +18,46 @@ void GLTermMainWin::show() {
     write_str("=======================", Point{28, 6});
     write_str("Press 'Q' to quit", Point{30, 8});
     draw();
-    int ch;
+    Key key;
     do {
-        ch = get_char();
-    } while ( ch != 'Q' && ch != 'q' );
+        key = get_key();
+        write_str("You pressed: ", Point{28, 10});
+        switch ( key.value ) {
+            case Key::KeyValue::Enter:
+                write_str("<ENTER>    ", Point{41,10});
+                break;
+
+            case Key::KeyValue::Tab:
+                write_str("<TAB>      ", Point{41,10});
+                break;
+
+            case Key::KeyValue::Backspace:
+                write_str("<BACKSPACE>", Point{41,10});
+                break;
+
+            case Key::KeyValue::Up:
+                write_str("<UP>       ", Point{41,10});
+                break;
+
+            case Key::KeyValue::Left:
+                write_str("<LEFT>     ", Point{41,10});
+                break;
+
+            case Key::KeyValue::Down:
+                write_str("<DOWN>     ", Point{41,10});
+                break;
+
+            case Key::KeyValue::Right:
+                write_str("<RIGHT>    ", Point{41,10});
+                break;
+
+            case Key::KeyValue::Value:
+                std::ostringstream ss;
+                ss << "'" << static_cast<char>(key.char_value) << "'        ";
+                write_str(ss.str(), Point{41,10});
+                break;
+
+        }
+    } while ( key.char_value != 'Q' && key.char_value != 'q' );
 }
 

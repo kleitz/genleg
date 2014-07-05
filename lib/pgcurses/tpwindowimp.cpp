@@ -35,6 +35,7 @@ WINDOW * make_new_window(const Rectangle rect)
         throw TPCursesException("newwin() failed initializing TPWindow");
     }
     std::cerr << "Leaving make_new_window..." << std::endl;
+    keypad(win, true);
     return win;
 }
 

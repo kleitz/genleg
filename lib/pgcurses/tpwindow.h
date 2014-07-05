@@ -56,10 +56,10 @@ class TPWindow {
         TPWindow& operator=(TPWindow&& tp) = delete;
 
         /*!
-         * \brief           Gets a character.
-         * \returns         The character.
+         * \brief           Gets a keypress.
+         * \returns         The keypress.
          */
-        int get_char();
+        Key get_key();
 
         /*!
          * \brief           Writes a character to the current position.

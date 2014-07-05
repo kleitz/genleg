@@ -4,9 +4,8 @@ local_src := $(wildcard $(local_dir)/*.cpp)
 local_objs := $(subst .cpp,.o,$(local_src))
 
 libraries += $(local_lib)
-CXXFLAGS  += -I/usr/include/mysql
-LDFLAGS   += -L/usr/lib/x86_64-linux-gnu
-LDFLAGS   += -lmysqlclient -lpthread -lz -lm -lrt -ldl
+CXXFLAGS  += `mysql_config --include`
+LDFLAGS   += `mysql_config --libs`
 sources   += $(local_src)
 
 $(local_lib): $(local_objs)

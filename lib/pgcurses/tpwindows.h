@@ -11,6 +11,8 @@
 
 #include "tpwindow.h"
 #include "tpmainwindow.h"
+#include "tpcontrol.h"
+#include "tpinputfield.h"
 
 #endif          //  PG_CURSES_AGGREGATE_TPWINDOWS_H
 

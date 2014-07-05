@@ -94,6 +94,26 @@ struct Rectangle {
         size{sz}, origin{origin} {}
 };
 
+struct Key {
+    enum class KeyValue {
+        Value,
+        Enter,
+        Tab,
+        Backspace,
+        Up,
+        Left,
+        Down,
+        Right
+    };
+
+    enum KeyValue value;
+    int char_value;
+
+    Key() : value{KeyValue::Value}, char_value{0} {}
+    Key(const enum KeyValue value, const int char_value = 0) :
+        value{value}, char_value{char_value} {}
+};
+
 }               //  namespace pgcurses
 
 #endif          //  PG_CURSES_GENTYPES_H

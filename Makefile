@@ -46,7 +46,8 @@ CXX_DEBUG_FLAGS   := -ggdb -DDEBUG -DDEBUG_ALL
 CXX_RELEASE_FLAGS := -O3 -DNDEBUG
 
 # Linker flags
-LDFLAGS   		:= -lcrypt
+#LDFLAGS   		:= -lcrypt
+LDFLAGS   		:= 
 BOOST_TEST_LIBS :=-lboost_system -lboost_thread -lboost_unit_test_framework
 BOOST_LIBS 		+=-lboost_system -lboost_thread -lboost_filesystem
 CURSES_LIBS		:= -lcurses

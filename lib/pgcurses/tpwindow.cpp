@@ -25,9 +25,37 @@ TPWindow::~TPWindow()
 {
 }
 
-int TPWindow::get_char()
+Key TPWindow::get_key()
 {
-    return m_imp->get_char();
+    const int kv = m_imp->get_char();
+    switch ( kv ) {
+        case '\n':
+        case KEY_ENTER:
+            return Key(Key::KeyValue::Enter);
+
+        case KEY_BACKSPACE:
+        case KEY_DC:
+        case 127:
+            return Key(Key::KeyValue::Backspace);
+
+        case '\t':
+            return Key(Key::KeyValue::Tab);
+
+        case KEY_UP:
+            return Key(Key::KeyValue::Up);
+
+        case KEY_LEFT:
+            return Key(Key::KeyValue::Left);
+
+        case KEY_DOWN:
+            return Key(Key::KeyValue::Down);
+
+        case KEY_RIGHT:
+            return Key(Key::KeyValue::Right);
+
+        default:
+            return Key(Key::KeyValue::Value, kv);
+    }
 }
 
 void TPWindow::write_char(const char ch)
